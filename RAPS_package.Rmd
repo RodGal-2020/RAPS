@@ -1,0 +1,78 @@
+---
+title: "RAPS Package Creation"
+subtitle: "R Aid for P Systems"
+author: "Xopre"
+date: "`r format(Sys.time(), '%d de %B de %Y')`"
+output: 
+  html_document:
+    toc: true # Table of Contents
+    toc_float: 
+      collapsed: true # Flotante a la iqzda, colapsada por defecto
+    number_sections: false # Para numerar las secciones
+    df_print: kable # Data frame printing
+    theme: readable # El tema de Bootstrap para el texto # https://bootswatch.com/3/ (cerulean, cosmo y flatly son otras buenas opciones)
+    highlight: default # Para los bloques sintácticos (R)
+    # Referencia: https://bookdown.org/yihui/rmarkdown/html-document.html
+codification: "UTF-8"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{css, echo = FALSE}
+.blackbox {
+  padding: 1em;
+  background: #F47174;
+  color: white;
+  /* border: 2px solid orange; */
+  border-radius: 10px;
+}
+.greenbox {
+  padding: 1em;
+  background: #79d279;
+  color: white;
+  /* border: 2px solid orange; */
+  border-radius: 10px;
+}
+.center {
+  text-align: center;
+}
+
+.code {
+  font-family: Courier, "Lucida Console", monospace;
+}
+```
+
+[Reference](https://tinyheero.github.io/jekyll/update/2015/07/26/making-your-first-R-package.html)       
+
+```{r}
+# install.packages("devtools") # To make packages
+# install.packages("roxygen2") # For documentation
+```
+
+
+```{r}
+# setwd("~/GitHub/master21/Beca colab/RAPS") # Delete if useless
+my_path = getwd()
+
+# devtools::create(path = my_path) # Create framework (last component used as package name)
+```
+
+Folders:
+1. DESCRIPTION: https://r-pkgs.org/description.html
+2. RAPS.Rproj: Project to combine everything
+3. NAMESPACE: There's no need of editing this
+4. R folder, with all the functions
+
+
+```{r}
+# devtools::document()
+# devtools::install()
+```
+
+About functions in the R folder:
+- Never use "library" in them
+
+## TODO:
+- Add basic data (transition.xml)
