@@ -44,6 +44,14 @@ knitr::opts_chunk$set(echo = TRUE)
 }
 ```
 
+# Updating R if necessary
+```{r}
+# install.packages("installr")
+# library(installr)
+# updateR()
+```
+
+
 # RAPS
 [Reference](https://tinyheero.github.io/jekyll/update/2015/07/26/making-your-first-R-package.html)       
 
@@ -55,7 +63,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 # setwd("~/GitHub/master21/Beca colab/RAPS") # Delete if useless
-my_path = getwd()
+# my_path = getwd()
 
 # devtools::create(path = my_path) # Create framework (last component used as package name)
 ```

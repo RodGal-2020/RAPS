@@ -10,7 +10,7 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   ### Quickload of necessary packages:
   # if (!require("pacman")) {install.packages("pacman")} # Paquete para poder hacer lo siguiente
   # pacman::p_load(
-  #   "tidyverse",
+  ##   "tidyverse", # Maybe useless
   #   "magrittr",
   #   "xml2")
 
