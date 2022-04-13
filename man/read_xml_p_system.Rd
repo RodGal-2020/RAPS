@@ -4,7 +4,7 @@
 \alias{read_xml_p_system}
 \title{Load a P System given as a XML file}
 \usage{
-read_xml_p_system(path = NULL, verbose = TRUE, print = TRUE)
+read_xml_p_system(path, verbose = TRUE, print = TRUE)
 }
 \arguments{
 \item{path}{Path to the input file}
