@@ -4,17 +4,17 @@
 \alias{read_xml_p_system}
 \title{Load a P System given as a XML file}
 \usage{
-read_xml_p_system(path, verbose = TRUE, print = TRUE)
+read_xml_p_system(demo_mode = TRUE, path = NULL, verbose = TRUE)
 }
 \arguments{
-\item{path}{Path to the input file}
+\item{demo_mode}{Use demo settings? If not path is mandatory.}
+
+\item{path}{Path to the input file if necessary.}
 
 \item{verbose}{Verbose?}
-
-\item{print}{Show read data?}
 }
 \value{
-A loaded data.frame
+A list with a loaded data.frame and the properties of the read system
 }
 \description{
 Bla bla bla

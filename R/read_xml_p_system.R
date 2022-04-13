@@ -1,12 +1,12 @@
 #' Load a P System given as a XML file
 #'
 #' Bla bla bla
-#' @param path Path to the input file
+#' @param demo_mode Use demo settings? If not path is mandatory.
+#' @param path Path to the input file if necessary.
 #' @param verbose Verbose?
-#' @param print Show read data?
-#' @return A loaded data.frame
+#' @return A list with a loaded data.frame and the properties of the read system
 #' @export
-read_xml_p_system = function(path, verbose = TRUE, print = TRUE) {
+read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   ### Quickload of necessary packages:
   # if (!require("pacman")) {install.packages("pacman")} # Paquete para poder hacer lo siguiente
   # pacman::p_load(
@@ -16,6 +16,13 @@ read_xml_p_system = function(path, verbose = TRUE, print = TRUE) {
 
 
   ### Aux functions
+  # verbose_print = if(verbose){}
+  verbose_print = function(action) {
+    if (verbose) {
+      action
+    }
+  }
+
   # if(is.na) {exit} else {var}
   nago = function(var, ex = "-") {
     if (is.na(var)) {
@@ -52,31 +59,40 @@ read_xml_p_system = function(path, verbose = TRUE, print = TRUE) {
   # ie.empty(list("a"), cat("act1"), cat("act2"))
 
 
-  # Missing parameters
-  if(missing(path)) {
-    cat()
-    stop("Path required")
-  }
+  # Exit parameters
+  exit = list("Data" = data.frame(), "Properties" = NULL)
 
-  # Remember avoiding the "library()" function
-  cat("Function under development")
 
-  cat("Which general model follows the file?\n1: Transition; 2: Active Membrane; 3: Custom (?).\nChoose one: ")
-  cases = c("T", "AM", "Custom")
+  # Model selection
+  cat("If there is one, which general model does the file follow?\n1: Transition; 2: Active Membrane; 3: Custom (?); 4: Transition demo.\nChoose one: ")
+  cases = c("T", "AM", "Custom", "Td")
   case = cases %>% magrittr::extract(readline() %>% as.integer())
 
-  # case = "AM"
-  # cat("Escoge una de las siguientes opciones: 1: T; 2: AM\n")
+  ## TODO
+  if (case == "Custom") {
+    cat("TODO: Include property file in order to avoid this info and generalize as much as possible\n")
+    stop("Not made yet.")
+  }
 
+  if (demo_mode) {
+    cat("Using the", case, "case\n") %>% verbose_print
+    dir = switch(case,
+                 "T" = "data/transition.xml", # Squares' generator
+                 "Td" = "data/transition_demo.xml", # One w/out meaning but with all the types of trasition rules
+                 "AM" = "data/activemembranes.xml") # The one solving the SATEl que resuelve el SAT
+    cat("Using the following directory:", case, "\n") %>% verbose_print
+  } else {
+    if(missing(path)) {
+      cat()
+      stop("Path required")
+    }
+    cat("Using the", case, "case\n") %>% verbose_print
+    dir = path
+    cat("Using the following directory:", case, "\n") %>% verbose_print
+  }
 
-  dir = switch(case,
-               "T" = "data/transition.xml", # El generador de cuadrados
-               "Td" = "data/transition_demo.xml", # Uno sin sentido pero con todos los tipos de reglas de los sistemas P de transición
-               "AM" = "data/activemembranes.xml") # El que resuelve el SAT
-  cat("Nos encontramos en el caso", case, "\n")
   data_xml = xml2::read_xml(dir)
   data_list = data_xml %>% xml2::as_list()
-
 
   # model type: transition
   model_type = data_xml %>%
@@ -108,7 +124,7 @@ read_xml_p_system = function(path, verbose = TRUE, print = TRUE) {
 
   cat(crayon::bold("Reglas:\n"))
 
-  if (case == "AM") {
+  if (case == "T") {
     cat(
       "\t[a --> @d]'3;\n",
       "\t[b --> b*2]'3;\n",
@@ -226,5 +242,6 @@ read_xml_p_system = function(path, verbose = TRUE, print = TRUE) {
   }
 }
 
-## Error
+## Demo
 # read_xml_p_system()
+# read_xml_p_system(demo = FALSE, path = "data/transition.xml")
