@@ -63,9 +63,9 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
 
 
   # Exit parameters
-  exit = list("Rules" = tibble(),
+  exit = list("Rules" = tibble::tibble(),
               "Initial_config" = NULL,
-              "Properties" = tibble(System = 1))
+              "Properties" = tibble::tibble(System = 1))
 
   # Model selection
   cat("If there is one, which general model does the file follow?\n1: Transition; 2: Active Membrane; 3: Custom (?); 4: Transition demo.\nChoose one: ")
@@ -147,7 +147,7 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   cat("\n####################################################\n")
   for (i in 1:n_rules) {
     # Para cada regla
-    new_row = tibble(rule_id = i)
+    new_row = tibble::tibble(rule_id = i)
 
     cat(crayon::bold("r_", i, "\n", sep= ""))
 
