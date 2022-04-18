@@ -76,8 +76,8 @@ Folders:
 
 
 ```{r}
-# devtools::document()
-# devtools::install()
+# devtools::document() # To update
+# devtools::install() # To install as package
 ```
 
 About functions in the R folder:
