@@ -7,7 +7,7 @@
 read_xml_p_system(demo_mode = TRUE, path = NULL, verbose = TRUE)
 }
 \arguments{
-\item{demo_mode}{Use demo settings? If not path is mandatory.}
+\item{demo_mode}{Use demo settings? If FALSE path is mandatory.}
 
 \item{path}{Path to the input file if necessary.}
 
