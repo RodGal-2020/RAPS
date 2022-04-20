@@ -30,7 +30,7 @@ simulate_p_system = function(p_system, verbose = TRUE, save = FALSE, semantic_di
   #   stop("P System required")
   # }
 
-  cat("Using RAPS 0.03 - read and simulate\n\n")
+  cat("Using RAPS 0.0.0.0003 - read and simulate\n\n")
   if (save) {
     cat("Write the saving directory:\n")
     dir = readline()

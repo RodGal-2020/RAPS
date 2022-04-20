@@ -20,7 +20,7 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   #   "dplyr",
   #   "tibble",
   #   "xml2")
-  cat("Using RAPS 0.02\n\n")
+  cat("Using RAPS 0.0.0.0002\n\n")
 
 
   ### Aux functions
