@@ -19,3 +19,7 @@ A list with a loaded data.frame and the properties of the read system
 \description{
 Bla bla bla
 }
+\examples{
+example_p_system = read_xml_p_system()
+read_xml_p_system(demo = FALSE, path = "data/transition.xml")
+}

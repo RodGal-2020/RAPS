@@ -5,6 +5,9 @@
 #' @param path Path to the input file if necessary.
 #' @param verbose Verbose?
 #' @return A list with a loaded data.frame and the properties of the read system
+#' @examples
+#' example_p_system = read_xml_p_system()
+#' read_xml_p_system(demo = FALSE, path = "data/transition.xml")
 #' @export
 read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   ### Quickload of necessary packages:
@@ -289,7 +292,3 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   # colnames(exit$Properties) = "Value" # TODO: Delete if useless
   return(exit)
 }
-
-## Demo
-# salida = read_xml_p_system()
-# read_xml_p_system(demo = FALSE, path = "data/transition.xml")
