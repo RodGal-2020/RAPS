@@ -1,6 +1,6 @@
 #' Simulate the evolution of a loaded P System
 #'
-#' Bla bla bla
+#' Given a P System and some semantics we want to follow, simulate the evolution of the system.
 #' @param p_system The p_system whose evolution we want to simulate.
 #' @param verbose Verbose?
 #' @param save Do you want to save the results? TODO

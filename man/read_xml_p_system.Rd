@@ -17,7 +17,7 @@ read_xml_p_system(demo_mode = TRUE, path = NULL, verbose = TRUE)
 A list with a loaded data.frame and the properties of the read system
 }
 \description{
-Bla bla bla
+This functions admits a demo mode, loading predefined systems. It is the basic function of the package.
 }
 \examples{
 example_p_system = read_xml_p_system()

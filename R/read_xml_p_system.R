@@ -1,6 +1,6 @@
 #' Load a P System given as a XML file
 #'
-#' Bla bla bla
+#' This functions admits a demo mode, loading predefined systems. It is the basic function of the package.
 #' @param demo_mode Use demo settings? If FALSE path is mandatory.
 #' @param path Path to the input file if necessary.
 #' @param verbose Verbose?

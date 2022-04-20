@@ -24,7 +24,7 @@ simulate_p_system(
 A list with a loaded data.frame and the properties of the read system
 }
 \description{
-Bla bla bla
+Given a P System and some semantics we want to follow, simulate the evolution of the system.
 }
 \examples{
 example_p_system = read_xml_p_system()
