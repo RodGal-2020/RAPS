@@ -26,7 +26,15 @@ A list with a loaded data.frame and the properties of the read system
 \description{
 Given a P System and some semantics we want to follow, simulate the evolution of the system.
 }
+\section{Warning}{
+
+Function under developmente.
+}
+
 \examples{
 example_p_system = read_xml_p_system()
 simulate_p_system(example_p_system)
+}
+\seealso{
+\code{\link[=read_xml_p_system]{read_xml_p_system()}} for loading P Systems
 }

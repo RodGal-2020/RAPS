@@ -8,6 +8,8 @@
 #' @examples
 #' example_p_system = read_xml_p_system()
 #' read_xml_p_system(demo = FALSE, path = "data/transition.xml")
+#' @section Warning:
+#' Experimental function.
 #' @export
 read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   ### Quickload of necessary packages:

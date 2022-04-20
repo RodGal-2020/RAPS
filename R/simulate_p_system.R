@@ -9,6 +9,10 @@
 #' @examples
 #' example_p_system = read_xml_p_system()
 #' simulate_p_system(example_p_system)
+#' @section Warning:
+#' Function under developmente.
+#' @seealso
+#' [read_xml_p_system()] for loading P Systems
 #' @export
 simulate_p_system = function(p_system, verbose = TRUE, save = FALSE, semantic_dir = "semantics/transition_semantics_1.txt") {
   ### Aux functions

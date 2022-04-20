@@ -78,6 +78,10 @@ Folders:
 ```{r}
 # devtools::document() # To update
 # devtools::install() # To install as package
+
+# Guides about roxygen2's tags (@param and so on):
+# https://r-pkgs.org/man.html
+# https://roxygen2.r-lib.org/articles/rd.html
 ```
 
 About functions in the R folder:

@@ -19,6 +19,11 @@ A list with a loaded data.frame and the properties of the read system
 \description{
 This functions admits a demo mode, loading predefined systems. It is the basic function of the package.
 }
+\section{Warning}{
+
+Experimental function.
+}
+
 \examples{
 example_p_system = read_xml_p_system()
 read_xml_p_system(demo = FALSE, path = "data/transition.xml")
