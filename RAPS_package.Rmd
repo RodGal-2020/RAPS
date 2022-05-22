@@ -79,7 +79,7 @@ Folders:
 To update everytime a change occurs:
 ```{r}
 # devtools::document() # To update
-# devtools::install() # To install as package
+# devtools::install() # To install as package locally
 
 # Guides about roxygen2's tags (@param and so on):
 # https://r-pkgs.org/man.html
