@@ -85,10 +85,14 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
 
   if (demo_mode) {
     cat("Using the", case, "case\n") %>% verbose_print
-    dir = switch(case,
-                 "T" = "data/transition.xml", # Squares' generator
-                 "Td" = "data/transition_demo.xml", # One w/out meaning but with all the types of trasition rules
-                 "AM" = "data/activemembranes.xml") # The one solving the SATEl que resuelve el SAT
+    cat("Choose between transition_i.xml for i in 1:8 or transition_full.xml for full example\n")
+    xml_file = readline()
+    dir = paste0("https://github.com/Xopre/psystems-examples/tree/main/plingua/", xml_file)
+    # dir = switch(case,
+    #              "T" = "data/transition.xml", # Squares' generator
+    #              "Td" = "data/transition_demo.xml", # One w/out meaning but with all the types of trasition rules
+    #              "AM" = "data/activemembranes.xml") # The one solving the SATEl que resuelve el SAT
+
     cat("Using the following directory:", dir, "\n") %>% verbose_print
   } else {
     if(missing(path)) {

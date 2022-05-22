@@ -55,12 +55,13 @@ knitr::opts_chunk$set(echo = TRUE)
 # RAPS
 [Reference](https://tinyheero.github.io/jekyll/update/2015/07/26/making-your-first-R-package.html)       
 
+Basic packages needed:
 ```{r}
 # install.packages("devtools") # To make packages
 # install.packages("roxygen2") # For documentation
 ```
 
-
+Creating the framework (run only once!):
 ```{r}
 # setwd("~/GitHub/master21/Beca colab/RAPS") # Delete if useless
 # my_path = getwd()
@@ -75,6 +76,7 @@ Folders:
 4. R folder, with all the functions
 
 
+To update everytime a change occurs:
 ```{r}
 # devtools::document() # To update
 # devtools::install() # To install as package
