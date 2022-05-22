@@ -75,7 +75,7 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   # Model selection
   cat("If there is one, which general model does the file follow?\n")
   cases = c("Transition", "Active Membrane", "Custom")
-  cat(paste(1:length(cases_full), ": ", cases_full, ",", sep = ""), "\nChoose one:")
+  cat(paste(1:length(cases), ": ", cases, ",", sep = ""), "\nChoose one:")
   case = cases %>% magrittr::extract(readline() %>% as.integer())
 
   ## TODO
