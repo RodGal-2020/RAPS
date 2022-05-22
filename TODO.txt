@@ -1,3 +1,8 @@
+Prioritary with (n)
+
 R/read_xml_p_system.R 
-	-> Add init_config.
+	(1) -> Add init_config.
 	-> Use unnest_wider, longer or auto to reduce the use of lists.
+	
+R/simulate_p_system.R
+	(2) -> Make it work
