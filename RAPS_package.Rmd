@@ -85,6 +85,7 @@ To update everytime a change occurs:
 # https://r-pkgs.org/man.html
 # https://roxygen2.r-lib.org/articles/rd.html
 ```
+If you get an `lazy-load database ... RAPS.rdb is corrupt` then restart R session.
 
 About functions in the R folder:
 - Never use "library" in them

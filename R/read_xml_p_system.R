@@ -73,27 +73,27 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
               "Properties" = tibble::tibble(System = 1))
 
   # Model selection
-  cat("If there is one, which general model does the file follow?\n1: Transition; 2: Active Membrane; 3: Custom (?); 4: Transition demo.\nChoose one: ")
-  cases = c("T", "AM", "Custom", "Td")
+  cat("If there is one, which general model does the file follow?\n")
+  cases = c("Transition", "Active Membrane", "Custom")
+  cat(paste(1:length(cases_full), ": ", cases_full, ",", sep = ""), "\nChoose one:")
   case = cases %>% magrittr::extract(readline() %>% as.integer())
 
   ## TODO
   if (case == "Custom") {
     cat("TODO: Include property file in order to avoid this info and generalize as much as possible\n")
-    stop("Not made yet.")
+    stop("Not made yet. If you were trying to use the demo mode, try using the transition option.")
   }
 
   if (demo_mode) {
-    cat("Using the", case, "case\n") %>% verbose_print
+    cat("Using the", case, "case in demo mode\n") %>% verbose_print
     cat("Choose between transition_i.xml for i in 1:8 or transition_full.xml for full example\n")
     xml_file = readline()
-    dir = paste0("https://github.com/Xopre/psystems-examples/tree/main/plingua/", xml_file)
+    dir = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua/", xml_file)
     # dir = switch(case,
-    #              "T" = "data/transition.xml", # Squares' generator
-    #              "Td" = "data/transition_demo.xml", # One w/out meaning but with all the types of trasition rules
-    #              "AM" = "data/activemembranes.xml") # The one solving the SATEl que resuelve el SAT
-
-    cat("Using the following directory:", dir, "\n") %>% verbose_print
+    #              "Transition" = "data/transition.xml", # Squares' generator
+    #              "Transition demo" = "data/transition_demo.xml", # One w/out meaning but with all the types of trasition rules
+    #              "Active Membrane" = "data/activemembranes.xml") # The one solving the SATEl que resuelve el SAT
+    cat("Using the following demo directory:", dir, "\n") %>% verbose_print
   } else {
     if(missing(path)) {
       cat()
@@ -101,7 +101,7 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
     }
     cat("Using the", case, "case\n") %>% verbose_print
     dir = path
-    cat("Using the following directory:", case, "\n") %>% verbose_print
+    cat("Using the following custom directory:", case, "\n") %>% verbose_print
   }
 
   data_xml = xml2::read_xml(dir)
@@ -114,6 +114,7 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   exit$Properties %<>%
     dplyr::mutate("PLingua_Model_type" = model_type)
 
+  #### TODO: NEXT STEP
   # init_config
   # init_config_xml_nodeset = data_xml %>%
   #   xml2::xml_children() %>%
