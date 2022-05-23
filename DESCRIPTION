@@ -1,6 +1,6 @@
 Package: RAPS
 Title: R Aid for P Systems
-Version: 0.0.0.0003
+Version: 0.0.0.0005
 Authors@R: 
     person("Xopre", "-", , "rodgal2020@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
@@ -10,7 +10,7 @@ License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Imports:
 	tibble,
 	xml2

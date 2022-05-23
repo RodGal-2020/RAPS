@@ -26,5 +26,5 @@ Experimental function.
 
 \examples{
 example_p_system = read_xml_p_system()
-read_xml_p_system(demo = FALSE, path = "data/transition.xml")
+read_xml_p_system(demo = FALSE, path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua/transition_full.xml")
 }

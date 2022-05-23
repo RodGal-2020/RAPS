@@ -7,7 +7,7 @@
 #' @return A list with a loaded data.frame and the properties of the read system
 #' @examples
 #' example_p_system = read_xml_p_system()
-#' read_xml_p_system(demo = FALSE, path = "data/transition.xml")
+#' read_xml_p_system(demo = FALSE, path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua/transition_full.xml")
 #' @section Warning:
 #' Experimental function.
 #' @export
@@ -69,7 +69,7 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
 
   # Exit parameters
   exit = list("Rules" = tibble::tibble(),
-              "Initial_config" = NULL,
+              "Initial_config" = tibble::tibble(),
               "Properties" = tibble::tibble(System = 1))
 
   # Model selection
@@ -105,21 +105,49 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   }
 
   data_xml = xml2::read_xml(dir)
-  # data_list = data_xml %>% xml2::as_list() # TODO: Delete if useless
 
-  # model type: transition
+  # model type: transition, TODO: complete.
   model_type = data_xml %>%
     xml2::xml_attr("model")
 
   exit$Properties %<>%
     dplyr::mutate("PLingua_Model_type" = model_type)
 
-  #### TODO: NEXT STEP
+
   # init_config
-  # init_config_xml_nodeset = data_xml %>%
-  #   xml2::xml_children() %>%
-  #   magrittr::extract(1) %>%
-  #   xml2::xml_find_all( '//membrane')
+  init_config_membranes = data_xml %>%
+    xml2::xml_children() %>%
+    magrittr::extract(1) %>%
+    xml2::xml_find_all('//membrane')
+
+  n_membranes = length(init_config_membranes)
+
+  labels = init_config_membranes %>%
+    xml2::xml_attr("label")
+
+  direct_descendants = tibble(direct_descendants = rep(list(NA), n_membranes))
+  objects = tibble(objects = rep(list(NA), n_membranes))
+  for (i in 1:n_membranes) {
+    children = init_config_membranes %>%
+      magrittr::extract(i) %>%
+      xml2::xml_child()
+
+    direct_descendants[i, ][[1]] = children %>%
+      xml2::xml_children() %>%
+      xml2::xml_attr("label") %>%
+      na_omit() %>%
+      list() # Compare with as.list() if needed
+
+    objects[i, ][[1]] = children %>%
+      # magrittr::extract(1) %>%
+      xml2::xml_find_all(".//object") %>%
+      xml2::xml_attrs() %>% # name & multiciplicity if given
+      list() # Compare with as.list() if needed
+  }
+
+  exit$Initial_config = tibble(labels,
+                               direct_descendants,
+                               objects)
 
   # init_config paths
   # init_config_paths = init_config_xml_nodeset %>%
@@ -299,3 +327,4 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   # colnames(exit$Properties) = "Value" # TODO: Delete if useless
   return(exit)
 }
+
