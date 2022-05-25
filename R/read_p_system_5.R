@@ -68,7 +68,7 @@ read_p_system_5 = function(demo_mode = TRUE, path = NULL, verbose = 5) {
   # Basic data reading
   ######################################
   if (demo_mode) {
-    cat("Using the demo mode\n") %>% verbose_print
+    cat("Using the demo mode\n") %>% verbose_print()
     cat("Choose between transition_i.xml for i in 1:8 or transition_full.xml for full example\n")
     xml_file = readline()
     dir = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua/", xml_file)
