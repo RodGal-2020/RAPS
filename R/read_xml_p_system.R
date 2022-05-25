@@ -45,6 +45,14 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   # nago("+1")
   # nago(NA, ex = "0")
 
+  # if(is.na) {exit} else {var}
+  nullgo = function(var, ex = NA) {
+    if (is.null(var)) {
+      return(ex)
+    } else {
+      return(var)
+    }
+  }
 
   # is.empty?
   is.empty = function(var) {
@@ -122,36 +130,49 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
 
   n_membranes = length(init_config_membranes)
 
-  labels = init_config_membranes %>%
+  label = init_config_membranes %>%
     xml2::xml_attr("label")
 
-  direct_descendants = tibble(direct_descendants = rep(list(NA), n_membranes))
-  objects = tibble(objects = rep(list(NA), n_membranes))
+  init_config = tibble(label,
+                       direct_descendants = list(NA),
+                       objects = list(tibble(names = NA, multiplicity = NA)))
+
   for (i in 1:n_membranes) {
     children = init_config_membranes %>%
       magrittr::extract(i) %>%
       xml2::xml_child()
 
-    direct_descendants[i, ][[1]] = children %>%
+    # Descendants
+    init_config$direct_descendants[[i]] = children %>%
       xml2::xml_children() %>%
       xml2::xml_attr("label") %>%
       na_omit() %>%
-      list() # Compare with as.list() if needed
+      nullgo()
 
-    objects[i, ][[1]] = children %>%
-      # magrittr::extract(1) %>%
-      xml2::xml_find_all(".//object") %>%
-      xml2::xml_attrs() %>% # name & multiciplicity if given
-      list() # Compare with as.list() if needed
+    # Objects
+    new_objects = children %>%
+      xml2::xml_find_all(".//object")
+
+    object_names = new_objects %>%
+      xml2::xml_attr("name")
+
+    multiplicity = new_objects %>%
+      xml2::xml_attr("multiplicity")
+
+    m_length = multiplicity %>% length
+    for (j in 1:m_length) {
+      multiplicity[j] %<>% nago(ex = 1)
+      # Update with mutate or apply
+      # multiplicity %>% apply(FUN = nago(ex = 1), MARGIN = 2)
+      # multiplicity %>% mutate(across(value, nago))
+    }
+
+    new_objects = tibble(object_names, multiplicity)
+
+    init_config$objects[[i]] = new_objects
   }
 
-  exit$Initial_config = tibble(labels,
-                               direct_descendants,
-                               objects)
-
-  # init_config paths
-  # init_config_paths = init_config_xml_nodeset %>%
-  #   xml2::xml_path()
+  exit$Initial_config = init_config
 
   # rules
   rules_xml_nodeset = data_xml %>%
