@@ -2,10 +2,8 @@ Prioritary with (n)
 
 R/read_xml_p_system.R 
 	-> Use unnest_wider, longer or auto to reduce the use of lists.
-	-> Check if is it better to use as_list() over list() or viceversa.
-	(1) -> Improve objects' readings with this idea p = list(a = 2, b = 3)
+	(1) -> Improve rules' readings with this idea p = list(a = 2, b = 3) used in new_objects for objects
 	
 R/simulate_p_system.R
 	(2) -> Make it work
 			+> Begin with basic evolution rules.
-			+> 
