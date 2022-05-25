@@ -12,15 +12,7 @@
 #' Experimental function.
 #' @export
 read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
-  ### Quickload of necessary packages:
-  # if (!require("pacman")) {install.packages("pacman")} # Paquete para poder hacer lo siguiente
-  # pacman::p_load(
-  ##   "tidyverse", # Maybe useless
-  #   "magrittr",
-  #   "dplyr",
-  #   "tibble",
-  #   "xml2")
-  cat("Using RAPS 0.0.0.0002\n\n")
+  cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
 
   ### Aux functions
@@ -45,7 +37,7 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   # nago("+1")
   # nago(NA, ex = "0")
 
-  # if(is.na) {exit} else {var}
+  # if(is.null) {exit} else {var}
   nullgo = function(var, ex = NA) {
     if (is.null(var)) {
       return(ex)
@@ -104,7 +96,6 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
     cat("Using the following demo directory:", dir, "\n") %>% verbose_print
   } else {
     if(missing(path)) {
-      cat()
       stop("Path required")
     }
     cat("Using the", case, "case\n") %>% verbose_print

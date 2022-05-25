@@ -1,7 +1,11 @@
 Prioritary with (n)
 
+GENERAL
+	(1) -> Adapt parser to plingua 5
+	(2) -> Create simulator for plingua 5
+
 R/read_xml_p_system.R 
-	-> Use unnest_wider, longer or auto to reduce the use of lists.
+	-> Check using of unnest_wider, longer or auto to reduce the use of lists.
 	(1) -> Improve rhs_multisets with process_multiset and print_multiset, just as I did before with lhs_multisets
 	
 R/simulate_p_system.R

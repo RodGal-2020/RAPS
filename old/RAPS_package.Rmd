@@ -79,6 +79,9 @@ Folders:
 To update everytime a change occurs:
 ```{r}
 # devtools::document() # To update the documentation
+fileConn<-file("DESCRIPTION")
+writeLines(c("Hello","World"), fileConn)
+close(fileConn)
 # devtools::install() # To install as local package
 
 # Guides about roxygen2's tags (@param and so on):

@@ -13,6 +13,20 @@
 #' Experimental function.
 #' @export
 process_multiset = function(xml_multiset, label, n_membranes) {
+  # if(is.na) {exit} else {var}
+  nago = function(var, ex = "-") {
+    if (is.na(var)) {
+      return(ex)
+    } else {
+      return(var)
+    }
+  }
+
+  # Examples
+  # nago(NA)
+  # nago("+1")
+  # nago(NA, ex = "0")
+
 
   multiset = tibble(label,
                     objects = list(tibble(names = NA, multiplicity = NA)))
