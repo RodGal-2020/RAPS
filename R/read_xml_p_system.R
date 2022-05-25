@@ -129,6 +129,8 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
     xml2::xml_find_all('//membrane')
 
   n_membranes = length(init_config_membranes)
+  exit$Properties %<>%
+    dplyr::mutate("N_membranes" = n_membranes)
 
   label = init_config_membranes %>%
     xml2::xml_attr("label")
@@ -189,20 +191,6 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   exit$Properties %<>%
     dplyr::mutate("N_rules" = n_rules)
 
-  if (case == "T") {
-    cat(crayon::bold("Reglas:\n"))
-    cat(
-      "\t[a --> @d]'3;\n",
-      "\t[b --> b*2]'3;\n",
-      "\t[c --> c*3, d*4]'3;\n",
-      "\t[d []'4 --> [d]'4]'2;\n",
-      "\t[[e]'4 --> e []'4]'2;\n",
-      "\t[f [g]'4 --> g [f]'4]'2;\n",
-      "(1)\t[h --> h]'2;\n",
-      "(2)\t[i --> i]'2;\n")
-  }
-
-
   cat("\n####################################################\n")
   for (i in 1:n_rules) {
     # Para cada regla
@@ -246,10 +234,26 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
       dplyr::mutate(lhs_outer_membrane_label = lhs_outer_membrane_label,
                        lhs_outer_membrane_charge = lhs_outer_membrane_charge)
 
-    lhs_multisets = lhs_nodes %>%
-      xml2::xml_find_all(".//outer_membrane/multiset/object") %>%
-      xml2::xml_attrs() # Generamos name y multiplicity
-    cat("\t\tlhs_multisets: ", paste0(lhs_multisets %>% unlist, collapse = ", "), "\n", sep = "")
+    new_objects = lhs_nodes %>%
+      xml2::xml_find_all(".//outer_membrane/multiset/object")
+    # %>%
+    #   xml2::xml_attrs() # Generamos name y multiplicity
+    # TODO: Copy new_objects style as tibbles
+
+    object_names = new_objects %>%
+      xml2::xml_attr("name")
+
+    multiplicity = new_objects %>%
+      xml2::xml_attr("multiplicity")
+
+    m_length = multiplicity %>% length
+    for (j in 1:m_length) {
+      multiplicity[j] %<>% nago(ex = 1)
+    }
+
+    lhs_multisets = tibble(object_names, multiplicity)
+
+    cat("\t\tlhs_multisets: ", paste0(lhs_multisets, collapse = "*"), "\n", sep = "")
     new_row %<>%
       dplyr::mutate(lhs_multisets = list(lhs_multisets))
 
