@@ -10,7 +10,7 @@
 #' @section Warning:
 #' Experimental function.
 #' @export
-read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = 5) {
+read_p_system_5 = function(demo_mode = TRUE, path = NULL, verbose = 5) {
 
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
