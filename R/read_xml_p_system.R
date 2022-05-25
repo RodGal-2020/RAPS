@@ -135,9 +135,16 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
   label = init_config_membranes %>%
     xml2::xml_attr("label")
 
+  ## BEFORE
+  # init_config = tibble(label,
+  #                      direct_descendants = list(NA),
+  #                      objects = list(tibble(names = NA, multiplicity = NA)))
+  ## AFTER
   init_config = tibble(label,
-                       direct_descendants = list(NA),
-                       objects = list(tibble(names = NA, multiplicity = NA)))
+                       direct_descendants = list(NA))
+  objects = process_multiset(init_config_membranes, label, n_membranes)
+  init_config %<>%
+    dplyr::left_join(objects)
 
   for (i in 1:n_membranes) {
     children = init_config_membranes %>%
@@ -151,27 +158,28 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
       na_omit() %>%
       nullgo()
 
+    ## BEFORE
     # Objects
-    new_objects = children %>%
-      xml2::xml_find_all(".//object")
-
-    object_names = new_objects %>%
-      xml2::xml_attr("name")
-
-    multiplicity = new_objects %>%
-      xml2::xml_attr("multiplicity")
-
-    m_length = multiplicity %>% length
-    for (j in 1:m_length) {
-      multiplicity[j] %<>% nago(ex = 1)
-      # Update with mutate or apply
-      # multiplicity %>% apply(FUN = nago(ex = 1), MARGIN = 2)
-      # multiplicity %>% mutate(across(value, nago))
-    }
-
-    new_objects = tibble(object_names, multiplicity)
-
-    init_config$objects[[i]] = new_objects
+    # new_objects = children %>%
+    #   xml2::xml_find_all(".//object")
+    #
+    # object_names = new_objects %>%
+    #   xml2::xml_attr("name")
+    #
+    # multiplicity = new_objects %>%
+    #   xml2::xml_attr("multiplicity")
+    #
+    # m_length = multiplicity %>% length
+    # for (j in 1:m_length) {
+    #   multiplicity[j] %<>% nago(ex = 1)
+    #   # Update with mutate or apply
+    #   # multiplicity %>% apply(FUN = nago(ex = 1), MARGIN = 2)
+    #   # multiplicity %>% mutate(across(value, nago))
+    # }
+    #
+    #     new_objects = tibble(object_names, multiplicity)
+    #
+    #     init_config$objects[[i]] = new_objects
   }
 
   exit$Initial_config = init_config
@@ -232,34 +240,40 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
     cat("\tlhs_label: ", paste(lhs_outer_membrane_label, sep = ", "), "\tlhs_charge: ", lhs_outer_membrane_charge, "\n", sep = "")
     new_row %<>%
       dplyr::mutate(lhs_outer_membrane_label = lhs_outer_membrane_label,
-                       lhs_outer_membrane_charge = lhs_outer_membrane_charge)
+                    lhs_outer_membrane_charge = lhs_outer_membrane_charge)
 
-    new_objects = lhs_nodes %>%
-      xml2::xml_find_all(".//outer_membrane/multiset/object")
-    # %>%
-    #   xml2::xml_attrs() # Generamos name y multiplicity
-    # TODO: Copy new_objects style as tibbles
+    ## BEFORE
+    # new_objects = lhs_nodes %>%
+    #   xml2::xml_find_all(".//outer_membrane/multiset/object")
+    # # %>%
+    # #   xml2::xml_attrs() # Generamos name y multiplicity
+    # # TODO: Copy new_objects style as tibbles
+    #
+    # object_names = new_objects %>%
+    #   xml2::xml_attr("name")
+    #
+    # multiplicity = new_objects %>%
+    #   xml2::xml_attr("multiplicity")
+    #
+    # m_length = multiplicity %>% length
+    # for (j in 1:m_length) {
+    #   multiplicity[j] %<>% nago(ex = 1)
+    # }
+    #
+    # lhs_multisets = tibble(object_names, multiplicity)
+    ## AFTER
+    lhs_multisets = process_multiset(xml_multiset = lhs_nodes, label = 1, n_membranes = 1) %>%
+      extract("objects") %>%
+      extract2(1) %>%
+      extract2(1)
+    cat("\t\tlhs_multisets: ", print_multiset(lhs_multisets), "\n", sep = "")
 
-    object_names = new_objects %>%
-      xml2::xml_attr("name")
-
-    multiplicity = new_objects %>%
-      xml2::xml_attr("multiplicity")
-
-    m_length = multiplicity %>% length
-    for (j in 1:m_length) {
-      multiplicity[j] %<>% nago(ex = 1)
-    }
-
-    lhs_multisets = tibble(object_names, multiplicity)
-
-    cat("\t\tlhs_multisets: ", paste0(lhs_multisets, collapse = "*"), "\n", sep = "")
     new_row %<>%
       dplyr::mutate(lhs_multisets = list(lhs_multisets))
 
     lhs_inner_membranes = lhs_nodes %>%
       xml2::xml_find_all(".//inner_rule_membranes/inner_membrane") %>%
-      xml2::xml_attrs() # Generamos name y multiplicity
+      xml2::xml_attr("label")
     ie.empty(lhs_inner_membranes,
              {
                cat("\tlhs_inner_membranes: -\n", sep = "")
@@ -268,12 +282,30 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
                cat("\tlhs_inner_membranes: ", paste0(lhs_inner_membranes %>% unlist, collapse = ", "), "\n", sep = "")
                new_row %<>%
                  dplyr::mutate(lhs_inner_membranes = lhs_inner_membranes)
-               lhs_inner_membranes_multisets = lhs_nodes %>%
-                 xml2::xml_find_all(".//inner_rule_membranes/inner_membrane/multiset/object") %>%
-                 xml2::xml_attrs() # Generamos name y multiplicity
-               cat("\t\tlhs_inner_membranes_multisets: ", paste0(lhs_inner_membranes_multisets %>% unlist, collapse = ", "), "\n", sep = "")
-               new_row %<>%
-                 dplyr::mutate(lhs_inner_membranes_multisets = list(lhs_inner_membranes_multisets))
+               ## BEFORE
+               # lhs_inner_membranes_multisets = lhs_nodes %>%
+               #   xml2::xml_find_all(".//inner_rule_membranes/inner_membrane/multiset/object") %>%
+               #   xml2::xml_attrs() # Generamos name y multiplicity
+               ## AFTER
+               xml_multiset = lhs_nodes %>% xml2::xml_find_all(".//inner_rule_membranes/inner_membrane")
+               tryCatch(
+                 {
+                   process_multiset(xml_multiset, label = 1, n_membranes = 1)
+                   lhs_inner_membranes_multisets = process_multiset(xml_multiset, label = 1, n_membranes = 1) %>%
+                     extract("objects") %>%
+                     extract2(1) %>%
+                     extract2(1)
+                   cat("\t\tlhs__inner_membranes_multisets: ", print_multiset(lhs_multisets), "\n", sep = "")
+
+                   new_row %<>%
+                     dplyr::mutate(lhs_inner_membranes_multisets = list(lhs_inner_membranes_multisets))
+                 },
+                 error=function(cond) {
+                   cat("")
+                 },
+                 warning=function(cond) {
+                   cat("Warning")
+                 })
              })
 
 
@@ -348,8 +380,6 @@ read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
     cat("####################################################\n")
   }
 
-  # Return data
-  # colnames(exit$Properties) = "Value" # TODO: Delete if useless
   return(exit)
 }
 
