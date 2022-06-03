@@ -10,7 +10,7 @@
 #' @section Warning:
 #' Experimental function.
 #' @export
-read_p_system_5 = function(demo_mode = TRUE, path = NULL, verbose = 5) {
+read_ps5 = function(demo_mode = TRUE, path = NULL, verbose = 5) {
 
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
@@ -68,10 +68,18 @@ read_p_system_5 = function(demo_mode = TRUE, path = NULL, verbose = 5) {
   # Basic data reading
   ######################################
   if (demo_mode) {
-    cat("Using the demo mode\n") %>% verbose_print()
-    cat("Choose between transition_i.xml for i in 1:8 or transition_full.xml for full example\n")
+    cat("Using the demo mode with XML files\n") %>% verbose_print()
+    cat("Choose between transition_i for i in 1:3u7:8\n")
     xml_file = readline()
-    dir = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua/", xml_file)
+    dir = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/", xml_file, ".xml")
+    psystem_pli = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/", xml_file, ".pli")
+
+    psystem_pli %<>% readr::read_lines(n_max = 100)
+    cat("Codification of the P system in .pli format:")
+    cat("-----------------------------------------------------------\n")
+    cat(psystem_pli, sep = "\n")
+    cat("-----------------------------------------------------------\n")
+
     cat("Using the following demo directory:", dir, "\n") %>% verbose_print
   } else {
     if(missing(path)) {
@@ -81,12 +89,72 @@ read_p_system_5 = function(demo_mode = TRUE, path = NULL, verbose = 5) {
     cat("Using the following custom directory:", case, "\n") %>% verbose_print
   }
 
-  data_xml = xml2::read_xml(dir)
+  data_xml = xml2::read_xml(dir) %>%
+    xml2::xml_children() %>%
+    xml2::xml_children()
 
   ######################################
   # Model info & properties
   ######################################
-  # model type: transition, TODO: complete.
+  properties = list()
+
+  ## Property: PLingua version
+  properties$version = data_xml %>%
+    xml2::xml_find_all('//version') %>%
+    xml2::xml_contents() %>%
+    xml2::xml_text()
+
+  # Keep only the psystem info
+  data_xml %<>%
+    magrittr::extract(3) %>%
+    xml2::xml_children()
+
+  ## Property: Objects used in the PS
+  properties$objects = data_xml %>%
+    xml2::xml_find_all("//objects") %>%
+    xml2::xml_children() %>%
+    xml2::xml_contents() %>%
+    xml2::xml_text()
+
+  ## Property: Labels used in the membrane structure
+  properties$labels = data_xml %>%
+    xml2::xml_find_all("//labels") %>%
+    xml2::xml_children() %>%
+    xml2::xml_text() # May not be numbers
+
+  ## Property: Features
+  properties$features = data_xml %>%
+    xml2::xml_find_all("//features") %>%
+    magrittr::extract(1) %>%
+    xml2::xml_children() %>%
+    xml2::xml_text()
+
+  ## Property: Strings
+  properties$strings = data_xml %>%
+    xml2::xml_find_all("//strings") %>%
+    xml2::xml_children() %>%
+    xml2::xml_text()
+
+  ## Property: Max multiplicity
+  properties$max_multiplicity = data_xml %>%
+    xml2::xml_find_all("//max_multiplicity") %>%
+    xml2::xml_integer()
+
+  ## Property: Model id
+  ## TODO: EIN?
+  properties$max_multiplicity = data_xml %>%
+    xml2::xml_find_all("//model") %>%
+    xml2::xml_text()
+
+  ## Property: Semantics
+  ## HASTA AQUÍ
+  data_xml %>%
+    xml2::xml_find_all("//semantics") %>%
+    xml2::xml_children()
+    xml2::xml_text()
+  semantics =
+
+
   model_type = data_xml %>%
     xml2::xml_attr("model")
 
@@ -168,3 +236,4 @@ read_p_system_5 = function(demo_mode = TRUE, path = NULL, verbose = 5) {
     )
   )
 }
+

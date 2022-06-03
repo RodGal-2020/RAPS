@@ -15,5 +15,6 @@ Imports:
 	tibble,
 	xml2,
 	magrittr,
-	dplyr
+	dplyr,
+	readr
 Depends: crayon
