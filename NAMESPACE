@@ -3,6 +3,6 @@
 export(na_omit)
 export(print_multiset)
 export(process_multiset)
-export(read_p_system_5)
+export(read_ps5)
 export(read_xml_p_system)
 export(simulate_p_system)
