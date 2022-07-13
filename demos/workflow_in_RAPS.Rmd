@@ -82,6 +82,6 @@ RAPS::show_rap(my_new_rap)
 
 And now let's see what would happen if we simulate 100 steps:
 ```{r}
-my_newer_rap = RAPS::simulate(my_rap, n_steps = 1)
+my_newer_rap = RAPS::simulate(my_rap, n_steps = 100)
 RAPS::show_rap(my_newer_rap)
 ```

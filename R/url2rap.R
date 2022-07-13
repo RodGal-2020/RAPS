@@ -1,6 +1,6 @@
 #' Load a P System given as a URL to a XML/JSON file
 #'
-#' This functions admits a demo mode, loading predefined systems. It is the basic function of the package.
+#' This is the basic function of the package, and allows us to read a given P system, turning it into a rap object.
 #' @param url URL to the input file.
 #' @param verbose Level of verbosity, between 0 and 5.
 #' @return A rap object.
@@ -8,6 +8,8 @@
 #' TODO
 #' @section Warning:
 #' Experimental function.
+#' @section Future work:
+#' - Include different formats for inputs, like JSON or even the `.pli` itself.
 #' @export
 url2rap = function(url = NULL, verbose = 5) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
@@ -138,22 +140,44 @@ url2rap = function(url = NULL, verbose = 5) {
     xml2::xml_integer()
 
   ## Property: Model id
-  ## TODO: EIN?
-  properties$max_multiplicity = data_xml %>%
+  properties$model_id = data_xml %>%
     xml2::xml_find_all("//model") %>%
     xml2::xml_text()
 
   ## Property: Semantics
-  ## HASTA AQUÍ
-  data_xml %>%
+  semantics = list()
+  semantics_aux = data_xml %>%
     xml2::xml_find_all("//semantics") %>%
-    xml2::xml_children() %>%
-  xml2::xml_text()
-  semantics = NULL
+    xml2::xml_children()
+  semantics$value = semantics_aux %>% magrittr::extract(1) %>% xml2::xml_integer()
+  semantics$inf = semantics_aux %>% magrittr::extract(2) %>% xml2::xml_text()
+  if (semantics$inf == "true") {
+    semantics$inf = TRUE
+  } else {
+    semantics$inf = FALSE
+  }
+  semantics$patterns = "TODO"
+  semantics$children_size = semantics_aux %>% magrittr::extract(4) %>% xml2::xml_attr("size")
+
+  properties$semantics = semantics
+
+  ######################################
+  # Structure
+  ######################################
+  # Expected result (caso [[b*2, c*3]+'2 a]-'1)
+  ## Membrane | Charge | Objects | SuperM | SubM |
+  ## 1 | - | [(a, 1)] | 0 (skin) | 2 |
+  ## 2 | + | [(b, 2), (c,3)] | 1 | NULL |
+  # Continue working with: https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/transition_1.xml
+
+  data_xml %>%
+    xml2::xml_find_all("//structure") %>%
+    xml2::xml_children()
 
 
-    model_type = data_xml %>%
-    xml2::xml_attr("model")
+  skin = data_xml %>%
+    xml2::xml_find_all("//structure") %>%
+    xml2::xml_children()
 
   exit$Properties %<>%
     dplyr::mutate("PLingua_Model_type" = model_type)

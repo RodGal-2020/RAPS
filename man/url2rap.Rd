@@ -2,24 +2,33 @@
 % Please edit documentation in R/url2rap.R
 \name{url2rap}
 \alias{url2rap}
-\title{Template for new functions}
+\title{Load a P System given as a URL to a XML/JSON file}
 \usage{
-url2rap(my_param)
+url2rap(url = NULL, verbose = 5)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{url}{URL to the input file.}
+
+\item{verbose}{Level of verbosity, between 0 and 5.}
 }
 \value{
-It returns...
+A rap object.
 }
 \description{
-This is a template.
+This is the basic function of the package, and allows us to read a given P system, turning it into a rap object.
 }
 \section{Warning}{
 
-This is a warning
+Experimental function.
+}
+
+\section{Future work}{
+
+\itemize{
+\item Include different formats for inputs, like JSON or even the \code{.pli} itself.
+}
 }
 
 \examples{
-Some examples
+TODO
 }
