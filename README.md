@@ -20,12 +20,18 @@
 * `README.md`: The document you're reading right now.
 * `renv.lock`: Info for the `renv` package.
 
+<!-- Help for mermaid: http://mermaid-js.github.io/mermaid/#/ -->
 ```mermaid
   graph TD;
-      A-->B;
-      A-->C;
-      B-->D;
-      C-->D;
+      url-->url2rap;
+      url2rap-->rap;
+      
+      rap-->choose_rule;
+      choose_rule-->apply_rule;
+      apply_rule-->new_rap;
+
+      rap-->simulate;
+      simulate-->new_rap;
 ```
 
 ## Status
@@ -53,26 +59,26 @@
 ## Functions
 
 ### New ideas
-NOMBRE DEL DATAFRAME: NOMBREpt
+> **Important**: The name of the main class considered is `rap`, for *Representing A P-system*, and also to attune with the name of the package.
 
 * `apply_rule`
 * `choose_rule`
-* `tib2NOMBREpt`
-* `df2NOMBREpt`
-* `url2NOMBREpt(format = "pl5")`
+* `tib2rap`
+* `df2rap`
+* `url2rap(format = "pl5")`
 
 Ideal order of application:
 ```{r}
-my_NOMBREpt = data.frame %>%
-  tib2NOMBREpt()
+my_rap = data.frame %>%
+  tib2rap()
   
-my_NOMBREpt = my_url %>%
-  url2NOMBREpt(format = "pl5")
+my_rap = my_url %>%
+  url2rap(format = "pl5")
   
-selected_rule = my_NOMBREpt %>%
+selected_rule = my_rap %>%
   choose_rule()
   
-new_NOMBREpt = my_NOMBREpt %>%
+new_rap = my_rap %>%
   apply_rule(selected_rule)
 ```
 
