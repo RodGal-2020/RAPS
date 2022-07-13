@@ -1,11 +1,39 @@
 # RAPS: R Aid for P systems
 
+## Contents
+* `.Rproj.user/`: User data.
+* `man/`: `roxygen2`-generated documentation.
+* `utils/`: Some auxiliar code. Do not pay much attention.
+  * `UPDATE.R`: Utility for updating the package.
+  * `RAPS_package.Rmd`: The father of `UPDATE.R`.
+* `R/`: The functions included in this package.
+* `RData/`: `RData` for some demos.
+* `renv/`: Folder for the `renv` package.
+* `semantics/`: Folder for different semantics.
+* `.gitignore`: git-ignored files.
+* `.Rbuildignore`: Build ignored files.
+* `.Rhistory`: Ignore this. Should be empty.
+* `.Rprofile`: My profile.
+* `DESCRIPTION`: Description of the package.
+* `NAMESPACE`: `roxygen2`-generated documentation about exports.
+* `RAPS.Rproj`: The project wherein everything is developed.
+* `README.md`: The document you're reading right now.
+* `renv.lock`: Info for the `renv` package.
+
+```mermaid
+  graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+```
+
 ## Status
 **General objectives:**
 - [x] Create `README.md`
 - [ ] Complete `README.md`
 
-
+- [ ]
 - [ ] Adapt parser to P-Lingua 5
 - [ ] Create one or more simulators:
   - [ ] A general simulator
