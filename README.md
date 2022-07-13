@@ -1,26 +1,9 @@
 # RAPS: R Aid for P systems
+Welcome to the repository behind the RAPS package.
 
-## Contents
-* `.Rproj.user/`: User data.
-* `man/`: `roxygen2`-generated documentation.
-* `utils/`: Some auxiliar code. Do not pay much attention.
-  * `UPDATE.R`: Utility for updating the package.
-  * `RAPS_package.Rmd`: The father of `UPDATE.R`.
-* `R/`: The functions included in this package.
-* `RData/`: `RData` for some demos.
-* `renv/`: Folder for the `renv` package.
-* `semantics/`: Folder for different semantics.
-* `.gitignore`: git-ignored files.
-* `.Rbuildignore`: Build ignored files.
-* `.Rhistory`: Ignore this. Should be empty.
-* `.Rprofile`: My profile.
-* `DESCRIPTION`: Description of the package.
-* `NAMESPACE`: `roxygen2`-generated documentation about exports.
-* `RAPS.Rproj`: The project wherein everything is developed.
-* `README.md`: The document you're reading right now.
-* `renv.lock`: Info for the `renv` package.
-
+## Quickstart
 <!-- Help for mermaid: http://mermaid-js.github.io/mermaid/#/ -->
+Main workflow with `RAPS`:
 ```mermaid
   graph TD;
       url-->url2rap;
@@ -67,7 +50,7 @@
 * `df2rap`
 * `url2rap(format = "pl5")`
 
-Ideal order of application:
+Ideal order of application (as shown by the abovementioned `mermaid` diagram):
 ```{r}
 my_rap = data.frame %>%
   tib2rap()
@@ -89,3 +72,23 @@ new_rap = my_rap %>%
 * `read_ps5`
 * `read_xml_p_system`
 * `simulate_p_system`
+
+## Contents
+* `.Rproj.user/`: User data.
+* `man/`: `roxygen2`-generated documentation.
+* `utils/`: Some auxiliar code. Do not pay much attention.
+  * `UPDATE.R`: Utility for updating the package.
+  * `RAPS_package.Rmd`: The father of `UPDATE.R`.
+* `R/`: The functions included in this package.
+* `RData/`: `RData` for some demos.
+* `renv/`: Folder for the `renv` package.
+* `semantics/`: Folder for different semantics.
+* `.gitignore`: git-ignored files.
+* `.Rbuildignore`: Build ignored files.
+* `.Rhistory`: Ignore this. Should be empty.
+* `.Rprofile`: My profile.
+* `DESCRIPTION`: Description of the package.
+* `NAMESPACE`: `roxygen2`-generated documentation about exports.
+* `RAPS.Rproj`: The project wherein everything is developed.
+* `README.md`: The document you're reading right now.
+* `renv.lock`: Info for the `renv` package.
