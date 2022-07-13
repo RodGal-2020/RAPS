@@ -65,29 +65,28 @@ url2rap = function(url = NULL, verbose = 5) {
   ######################################
   # Basic data reading
   ######################################
-  if (demo_mode) {
-    cat("Using the demo mode with XML files\n") %>% verbose_print()
-    cat("Choose between transition_i for i in 1:3u7:8\n")
-    xml_file = readline()
-    dir = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/", xml_file, ".xml")
-    psystem_pli = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/", xml_file, ".pli")
-
-    psystem_pli %<>% readr::read_lines(n_max = 100)
-    cat("Codification of the P system in .pli format:")
-    cat("-----------------------------------------------------------\n")
-    cat(psystem_pli, sep = "\n")
-    cat("-----------------------------------------------------------\n")
-
-    cat("Using the following demo directory:", dir, "\n") %>% verbose_print
-  } else {
-    if(missing(path)) {
-      stop("Path required")
+  # if (demo_mode) {
+  #   cat("Using the demo mode with XML files\n") %>% verbose_print()
+  #   cat("Choose between transition_i for i in 1:3u7:8\n")
+  #   xml_file = readline()
+  #   dir = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/", xml_file, ".xml")
+  #   psystem_pli = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/", xml_file, ".pli")
+  #
+  #   psystem_pli %<>% readr::read_lines(n_max = 100)
+  #   cat("Codification of the P system in .pli format:")
+  #   cat("-----------------------------------------------------------\n")
+  #   cat(psystem_pli, sep = "\n")
+  #   cat("-----------------------------------------------------------\n")
+  #
+  #   cat("Using the following demo directory:", dir, "\n") %>% verbose_print
+  # } else {
+    if(missing(url)) {
+      stop("URL required")
     }
-    dir = path
-    cat("Using the following custom directory:", case, "\n") %>% verbose_print
-  }
+  # cat("Using the following directory:", case, "\n") %>% verbose_print
+  # }
 
-  data_xml = xml2::read_xml(dir) %>%
+  data_xml = xml2::read_xml(url) %>%
     xml2::xml_children() %>%
     xml2::xml_children()
 
@@ -148,9 +147,9 @@ url2rap = function(url = NULL, verbose = 5) {
   ## HASTA AQUÍ
   data_xml %>%
     xml2::xml_find_all("//semantics") %>%
-    xml2::xml_children()
+    xml2::xml_children() %>%
   xml2::xml_text()
-  semantics =
+  semantics = NULL
 
 
     model_type = data_xml %>%
