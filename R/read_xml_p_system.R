@@ -12,6 +12,7 @@
 #' Experimental function.
 #' @export
 read_xml_p_system = function(demo_mode = TRUE, path = NULL, verbose = TRUE) {
+  cat("Perhaps this function is now deprecated in favor of url2rap")
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
 

@@ -21,8 +21,10 @@ Main workflow with `RAPS`:
 **General objectives:**
 - [x] Create `README.md`
 - [ ] Complete `README.md`
+  - [x] Workflow diagram
+  - [ ] Functional demos
+  - [ ] Simulation of stochastic P systems
 
-- [ ]
 - [ ] Adapt parser to P-Lingua 5
 - [ ] Create one or more simulators:
   - [ ] A general simulator
@@ -30,6 +32,7 @@ Main workflow with `RAPS`:
 
 **Functions**
 - [x] Organise the main functions in the "Functions" section
+- [ ] Establish the deprecated functions as such
 
 `R/read_xml_p_system.R`
 - [ ] Check using of `unnest_wider`, `longer` or `auto` to reduce the use of lists

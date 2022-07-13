@@ -11,6 +11,7 @@
 #' Experimental function.
 #' @export
 read_ps5 = function(demo_mode = TRUE, path = NULL, verbose = 5) {
+  cat("THIS FUNCTION IS NOW PART OF url2rap")
 
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
