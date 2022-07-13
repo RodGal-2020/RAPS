@@ -49,6 +49,7 @@ Main workflow with `RAPS`:
 * `tib2rap`
 * `df2rap`
 * `url2rap(format = "pl5")`
+* `show_rap`
 
 Ideal order of application (as shown by the abovementioned `mermaid` diagram):
 ```{r}
@@ -75,14 +76,15 @@ new_rap = my_rap %>%
 
 ## Contents
 * `.Rproj.user/`: User data.
+* `demos/`: Examples of use of the RAPS package.
 * `man/`: `roxygen2`-generated documentation.
-* `utils/`: Some auxiliar code. Do not pay much attention.
-  * `UPDATE.R`: Utility for updating the package.
-  * `RAPS_package.Rmd`: The father of `UPDATE.R`.
 * `R/`: The functions included in this package.
 * `RData/`: `RData` for some demos.
 * `renv/`: Folder for the `renv` package.
 * `semantics/`: Folder for different semantics.
+* `utils/`: Some auxiliar code. Do not pay much attention.
+  * `UPDATE.R`: Utility for updating the package.
+  * `RAPS_package.Rmd`: The father of `UPDATE.R`.
 * `.gitignore`: git-ignored files.
 * `.Rbuildignore`: Build ignored files.
 * `.Rhistory`: Ignore this. Should be empty.
