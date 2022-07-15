@@ -1,4 +1,4 @@
-# RAPS: R Aid for P systems
+# 🎤 RAPS: R Aid for P systems
 Welcome to the repository behind the RAPS package.
 
 ## Quickstart
