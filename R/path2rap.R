@@ -24,59 +24,65 @@ path2rap = function(path = NULL, verbose = 5, demo = TRUE, max_depth = 3) {
     cat("Using the demo version")
 
     expected_exit = list(
+
       "RAP" = tibble::tibble(
         environment = c(0, 0, 0, 0),
         id = c(0, 1, 2, 3),
         label = c(0, 1, 1, 2), # Both children have the same label
-        objects = c(list(object = c("a", "b"), multiplicity = 1:2),
-                    list(object = c("c", "d"), multiplicity = 3:4),
-                    list(object = c("e", "f"), multiplicity = 5:6),
-                    list(object = c("g", "h"), multiplicity = 7:8)),
-        superM = c(NA, 0, 0, 2), # Given by ID
-        subM = c(list(children = c(1, 2)), NA, list(children = 3), NA),
+        objects = list(
+          tibble::tibble(object = c("a", "b"),
+                         multiplicity = 1:2),
+          tibble::tibble(object = c("c", "d"),
+                         multiplicity = 3:4),
+          tibble::tibble(object = c("e", "f"),
+                         multiplicity = 5:6),
+          tibble::tibble(object = c("g", "h"),
+                         multiplicity = 7:8)
+          ),
+        superM = c(NA, 0, 0, 2), # Given by ID # END: We could have more than one parent
+
+        subM = list(
+          tibble::tibble(children = c(1, 2)),
+          tibble::tibble(children = NA),
+          tibble::tibble(children = 3),
+          tibble::tibble(children = NA)),
         charge = c(0, 1, -1, 0),
         other_params = c(NA, NA, NA, NA)
       ),
 
-      ## TODO: Check if tibbles are better, just like with "Initial config"
       "Rules" = tibble::tibble(
         rule_id = 1:2,
         dissolves = c(TRUE, FALSE),
         priority = c("-", "1"),
 
-        lhs = c(
-          list(lhs_multisets = list(
-            object = c("a", "b"),
-            multiplicity = 1:2),
-            lhs_membranes = 1), # Membranes given by label
-          list(lhs_multisets = list(
-            object = c("c", "d"),
-            multiplicity = c(2,2)),
-            lhs_membranes = 1)
+        lhs_membrane_label = c(1,1),
+        lhs = list(
+          tibble::tibble(object = c("a", "b"),
+                         multiplicity = 1:2),
+          tibble::tibble(object = c("c", "d"),
+                         multiplicity = 3:4)
         ),
 
-        rhs = c(
-          list(
-            rhs_multisets = list(object = c("c", "d"),
-                                 multiplicity = 2:3),
-            rhs_membranes = 1), # Membranes given by label
-          list(
-            rhs_multisets = list(object = c("e", "f"),
-                                 multiplicity = 4:5),
-            rhs_membranes = 1)
+        rhs_membrane_label = c(1,1),
+        rhs = list(
+          tibble::tibble(object = c("a", "b"),
+                         multiplicity = 1:2),
+          tibble::tibble(object = c("c", "d"),
+                         multiplicity = 3:4)
         )
       ),
 
-      "Initial_config" = tibble::tibble(
-        label = 1:2,
-        direct_descendants = list(c("3", "4"), NA),
-        objects = list(
-          tibble::tibble(object = c("a", "b"),
-                 multiplicity = 1:2),
-          tibble::tibble(object = "c",
-                 multiplicity = 3)
-        )
-      ),
+      ## Included in rap
+      # "Initial_config" = tibble::tibble(
+      #   label = 1:2,
+      #   direct_descendants = list(c("3", "4"), NA),
+      #   objects = list(
+      #     tibble::tibble(object = c("a", "b"),
+      #            multiplicity = 1:2),
+      #     tibble::tibble(object = "c",
+      #            multiplicity = 3)
+      #   )
+      # ),
 
       "Properties" = tibble::tibble(
         System = 1,
@@ -138,7 +144,7 @@ path2rap = function(path = NULL, verbose = 5, demo = TRUE, max_depth = 3) {
   ######################################
   exit = list("Rules" = tibble::tibble(),
               "RAP" = tibble::tibble(),
-              "Initial_config" = tibble::tibble(),
+              # "Initial_config" = tibble::tibble(), # Included in RAP
               "Properties" = tibble::tibble(System = 1, Note = "System ID included for generalisation"))
 
 
