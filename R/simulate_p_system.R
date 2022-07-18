@@ -10,7 +10,8 @@
 #' example_p_system = read_xml_p_system()
 #' simulate_p_system(example_p_system)
 #' @section Warning:
-#' Function under developmente.
+#' Function under development.
+#' DEPRECATED IN FAVOR OF `simulate`
 #' @seealso
 #' [read_xml_p_system()] for loading P Systems
 #' @export

@@ -11,9 +11,9 @@ path2rap(path = NULL, verbose = 5, demo = TRUE, max_depth = 3)
 
 \item{verbose}{Level of verbosity, between 0 and 5.}
 
-\item{demo}{To execute as a demo}
+\item{demo}{To execute as a demo.}
 
-\item{max_depth}{To look for new structures}
+\item{max_depth}{To look for new structures in the jerarchy of the P system.}
 }
 \value{
 A rap object.
@@ -34,5 +34,5 @@ Experimental function.
 }
 
 \examples{
-TODO
+TODO.
 }

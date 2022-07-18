@@ -3,11 +3,11 @@
 #' This is the basic function of the package, and allows us to read a given P system, turning it into a rap object.
 #' @param path Path/URL to the input file.
 #' @param verbose Level of verbosity, between 0 and 5.
-#' @param demo To execute as a demo
-#' @param max_depth To look for new structures
+#' @param demo To execute as a demo.
+#' @param max_depth To look for new structures in the jerarchy of the P system.
 #' @return A rap object.
 #' @examples
-#' TODO
+#' TODO.
 #' @section Warning:
 #' Experimental function.
 #' @section Future work:
@@ -21,7 +21,7 @@ path2rap = function(path = NULL, verbose = 5, demo = TRUE, max_depth = 3) {
   # DEMO
   ######################################
   if (demo) {
-    cat("Using the demo version")
+    cat("Using the demo version\n")
 
     expected_exit = list(
 

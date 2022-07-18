@@ -63,7 +63,8 @@ my_url = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua
 Now we can extract the P system inside the URL, with the `url2rap()` function, which creates a `rap` (*Representating A P-system*) variable. In order to show the `rap`, we have the `show_rap()` function.
 
 ```{r}
-my_rap = RAPS::url2rap(my_url)
+# my_rap = RAPS::url2rap(my_url)
+my_rap = RAPS::path2rap(demo = TRUE) # We can even call it without a url
 RAPS::show_rap(my_rap)
 ```
 

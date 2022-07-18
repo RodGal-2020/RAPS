@@ -2,24 +2,21 @@
 % Please edit documentation in R/choose_rule.R
 \name{choose_rule}
 \alias{choose_rule}
-\title{Template for new functions}
+\title{Choose a rule to be applied in a rap object}
 \usage{
-choose_rule(my_param)
+choose_rule(rap, semantics = "GIL")
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rap}{A rap object.}
+
+\item{semantics}{The path to a semantics object, or the id of a given algorithm from the following list: GIL (for Gillespie), DET (for Deterministic Waiting Times Algorithm).}
 }
 \value{
-It returns...
+The id of a rule which is to be applied.
 }
 \description{
-This is a template.
+Note that the rule is not applied.
 }
-\section{Warning}{
-
-This is a warning
-}
-
 \examples{
-Some examples
+TODO.
 }

@@ -7,12 +7,12 @@
 simulate(rap, n_steps)
 }
 \arguments{
-\item{rap}{A rap object}
+\item{rap}{A rap object.}
 
-\item{n_steps}{The number of evolutive steps to simulate}
+\item{n_steps}{The number of evolutive steps to simulate.}
 }
 \value{
-A rap object
+A rap object.
 }
 \description{
 TODO: The description.
@@ -23,5 +23,5 @@ This function comes with no warranty.
 }
 
 \examples{
-TODO: Some examples
+TODO.
 }

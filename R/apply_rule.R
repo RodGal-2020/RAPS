@@ -1,13 +1,17 @@
-#' Template for new functions
+#' Apply a rule to a given rap object
 #'
-#' This is a template.
-#' @param my_param Yep, it's a parameter.
-#' @return It returns...
+#' @param rap A rap object-
+#' @param rule_id The id of the rule to be applied-
+#' @return A new rap object, the result of applying the given rule-
 #' @examples
-#' Some examples
-#' @section Warning:
-#' This is a warning
+#' TODO
+#' @seealso
+#' `apply_rules` to apply more than one rule at the same time.
 #' @export
-apply_rule = function(my_param) {
-  cat("What did you expect running a function whose name is ", crayon::italic("template"), "?", sep = "")
+apply_rule = function(rap, rule_id) {
+  cat("\n\tApplying the rule with id", crayon::italic(rule_id), "to the system")
+
+  # rap$Rules # Main section of the rap object to take into account
+
+  return(rap)
 }

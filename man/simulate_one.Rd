@@ -7,10 +7,10 @@
 simulate_one(rap)
 }
 \arguments{
-\item{rap}{A rap object}
+\item{rap}{A rap object.}
 }
 \value{
-A rap object
+A rap object.
 }
 \description{
 TODO: The description.
@@ -21,5 +21,5 @@ This function comes with no warranty.
 }
 
 \examples{
-TODO: Some examples
+TODO.
 }

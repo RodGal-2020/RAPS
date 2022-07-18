@@ -2,24 +2,24 @@
 % Please edit documentation in R/apply_rule.R
 \name{apply_rule}
 \alias{apply_rule}
-\title{Template for new functions}
+\title{Apply a rule to a given rap object}
 \usage{
-apply_rule(my_param)
+apply_rule(rap, rule_id)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rap}{A rap object-}
+
+\item{rule_id}{The id of the rule to be applied-}
 }
 \value{
-It returns...
+A new rap object, the result of applying the given rule-
 }
 \description{
-This is a template.
+Apply a rule to a given rap object
 }
-\section{Warning}{
-
-This is a warning
-}
-
 \examples{
-Some examples
+TODO
+}
+\seealso{
+\code{apply_rules} to apply more than one rule at the same time.
 }

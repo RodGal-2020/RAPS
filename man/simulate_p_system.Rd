@@ -28,7 +28,8 @@ Given a P System and some semantics we want to follow, simulate the evolution of
 }
 \section{Warning}{
 
-Function under developmente.
+Function under development.
+DEPRECATED IN FAVOR OF \code{simulate}
 }
 
 \examples{
