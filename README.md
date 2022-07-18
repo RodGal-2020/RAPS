@@ -6,8 +6,8 @@ Welcome to the repository behind the RAPS package.
 Main workflow with `RAPS`:
 ```mermaid
   graph TD;
-      url-->url2rap;
-      url2rap-->rap;
+      url/path-->path2rap;
+      path2rap-->rap;
       
       rap-->choose_rule;
       choose_rule-->apply_rule;
@@ -16,6 +16,13 @@ Main workflow with `RAPS`:
       rap-->simulate;
       simulate-->new_rap;
 ```
+
+In `RAPS` we use the `rap` (Representing A P system) objects, which have the following aspect:
+
+Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_params | 
+------------|----|-------|-----------------|----------|------|--------|--------------|
+1           | 1  | 1     | [(a, 1)]        | 0 (skin) | 2    |     -1 | NULL         |
+1           | 2  | 2     | [(b, 2), (c,3)] | 1        | NULL |     +1 | NULL         |
 
 ## Status
 **General objectives:**

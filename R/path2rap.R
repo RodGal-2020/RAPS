@@ -1,8 +1,10 @@
-#' Load a P System given as a URL to a XML/JSON file
+#' Load a P System given as a path/URL to a XML/JSON file
 #'
 #' This is the basic function of the package, and allows us to read a given P system, turning it into a rap object.
-#' @param url URL to the input file.
+#' @param path Path/URL to the input file.
 #' @param verbose Level of verbosity, between 0 and 5.
+#' @param demo To execute as a demo
+#' @param max_depth To look for new structures
 #' @return A rap object.
 #' @examples
 #' TODO
@@ -11,8 +13,83 @@
 #' @section Future work:
 #' - Include different formats for inputs, like JSON or even the `.pli` itself.
 #' @export
-url2rap = function(url = NULL, verbose = 5) {
+path2rap = function(path = NULL, verbose = 5, demo = TRUE, max_depth = 3) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
+
+
+  ######################################
+  # DEMO
+  ######################################
+  if (demo) {
+    cat("Using the demo version")
+
+    expected_exit = list(
+      "RAP" = tibble::tibble(
+        environment = c(0, 0, 0, 0),
+        id = c(0, 1, 2, 3),
+        label = c(0, 1, 1, 2), # Both children have the same label
+        objects = c(list(object = c("a", "b"), multiplicity = 1:2),
+                    list(object = c("c", "d"), multiplicity = 3:4),
+                    list(object = c("e", "f"), multiplicity = 5:6),
+                    list(object = c("g", "h"), multiplicity = 7:8)),
+        superM = c(NA, 0, 0, 2), # Given by ID
+        subM = c(list(children = c(1, 2)), NA, list(children = 3), NA),
+        charge = c(0, 1, -1, 0),
+        other_params = c(NA, NA, NA, NA)
+      ),
+
+      ## TODO: Check if tibbles are better, just like with "Initial config"
+      "Rules" = tibble::tibble(
+        rule_id = 1:2,
+        dissolves = c(TRUE, FALSE),
+        priority = c("-", "1"),
+
+        lhs = c(
+          list(lhs_multisets = list(
+            object = c("a", "b"),
+            multiplicity = 1:2),
+            lhs_membranes = 1), # Membranes given by label
+          list(lhs_multisets = list(
+            object = c("c", "d"),
+            multiplicity = c(2,2)),
+            lhs_membranes = 1)
+        ),
+
+        rhs = c(
+          list(
+            rhs_multisets = list(object = c("c", "d"),
+                                 multiplicity = 2:3),
+            rhs_membranes = 1), # Membranes given by label
+          list(
+            rhs_multisets = list(object = c("e", "f"),
+                                 multiplicity = 4:5),
+            rhs_membranes = 1)
+        )
+      ),
+
+      "Initial_config" = tibble::tibble(
+        label = 1:2,
+        direct_descendants = list(c("3", "4"), NA),
+        objects = list(
+          tibble::tibble(object = c("a", "b"),
+                 multiplicity = 1:2),
+          tibble::tibble(object = "c",
+                 multiplicity = 3)
+        )
+      ),
+
+      "Properties" = tibble::tibble(
+        System = 1,
+        PLingua_model = "Transition",
+        N_membranes = 4,
+        N_rules = 11,
+        Max_depth_in_rules = 1 # For now at least
+      )
+    )
+
+    return(expected_exit)
+  }
+
 
   ######################################
   ### Aux functions
@@ -60,6 +137,7 @@ url2rap = function(url = NULL, verbose = 5) {
   # Exit parameters
   ######################################
   exit = list("Rules" = tibble::tibble(),
+              "RAP" = tibble::tibble(),
               "Initial_config" = tibble::tibble(),
               "Properties" = tibble::tibble(System = 1, Note = "System ID included for generalisation"))
 
@@ -82,13 +160,13 @@ url2rap = function(url = NULL, verbose = 5) {
   #
   #   cat("Using the following demo directory:", dir, "\n") %>% verbose_print
   # } else {
-    if(missing(url)) {
-      stop("URL required")
+    if(missing(path)) {
+      stop("Path required")
     }
   # cat("Using the following directory:", case, "\n") %>% verbose_print
   # }
 
-  data_xml = xml2::read_xml(url) %>%
+  data_xml = xml2::read_xml(path) %>%
     xml2::xml_children() %>%
     xml2::xml_children()
 
@@ -161,30 +239,120 @@ url2rap = function(url = NULL, verbose = 5) {
 
   properties$semantics = semantics
 
+  ## TODO: Delete if useless
+  exit$Properties %<>%
+    # dplyr::mutate("PLingua_Model_type" = model_type)
+
   ######################################
-  # Structure
+  exit$Properties = properties
+  ######################################
+
+  ######################################
+  # RAP
   ######################################
   # Expected result (caso [[b*2, c*3]+'2 a]-'1)
-  ## Membrane | Charge | Objects | SuperM | SubM |
-  ## 1 | - | [(a, 1)] | 0 (skin) | 2 |
-  ## 2 | + | [(b, 2), (c,3)] | 1 | NULL |
-  # Continue working with: https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/transition_1.xml
+  #   Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_params |
+  #   ------------|----|-------|-----------------|----------|------|--------|--------------|
+  #   1           | 1  | 1     | [(a, 1)]        | 0 (skin) | 2    |     -1 | NULL         |
+  #   1           | 2  | 2     | [(b, 2), (c,3)] | 1        | NULL |     +1 | NULL         |
 
-  data_xml %>%
+  # children >
+  #             charge
+  #             label > value0 > id
+  #             children >
+  #                         value0 >
+  #                                   charge
+  #                                   label > value0 > id
+  #                                   children > ...
+  #                         value1 >
+  #                                   charge
+  #                                   label > value0 > id
+  #                                   children > ...
+
+  rap = tibble(
+    environment = 0,
+    id = 0,
+    label = 0,
+    objects = NA,
+    superM = NA,
+    subM = NA,
+    charge = 0, # Could be other
+    other_params = NA
+  )
+
+  structure = data_xml %>%
     xml2::xml_find_all("//structure") %>%
     xml2::xml_children()
+  # charge, label, size
 
+  children = structure %>%
+    magrittr::extract(3) %>%
+    xml2::xml_children() # One or more value_i > charge, label, children
 
-  skin = data_xml %>%
-    xml2::xml_find_all("//structure") %>%
-    xml2::xml_children()
+  n_children = length(children)
 
-  exit$Properties %<>%
-    dplyr::mutate("PLingua_Model_type" = model_type)
+  ######################################
+  # Structure
+
+  if (n_children != 0) {
+    for (level in 1:max_depth) {
+      cat("\tChecking level", level)
+      ### TODO: Complete taking into account the previous part
+
+      for (branch in 1:n_children) {
+        new_row_xml_i = children %>%
+          magrittr::extract(branch) %>%
+          xml2::xml_children()
+
+        new_environment = 0
+
+        new_id = new_row_xml_i %>%
+          magrittr::extract(2) %>%
+          xml2::xml_find_first(".//id") %>%
+          xml2::xml_integer()
+
+        new_label = new_row_xml_i %>%
+          magrittr::extract(2) %>%
+          xml2::xml_find_first(".//id") %>%
+          xml2::xml_integer()
+
+        new_objects = NA
+
+        new_superM = NA
+
+        new_subM = NA
+
+        new_charge = 0
+
+        new_other_params = NA
+
+        rap %<>%
+          dplyr::bind_rows(
+            tibble::tibble(
+              environment = new_environment,
+              id = new_id,
+              label = new_label,
+              objects = new_objects,
+              superM = new_superM,
+              subM = new_subM,
+              charge = new_charge,
+              other_params = new_other_params
+            )
+          )
+
+      }
+    }
+  } else {
+    cat("Unexpected structure size. Empty P system?")
+  }
 
   ######################################
   # Initial configuration
+
   ######################################
+  exit$RAP = rap
+  ######################################
+
 
   ######################################
   # Rules
@@ -221,39 +389,5 @@ url2rap = function(url = NULL, verbose = 5) {
     cat("####################################################\n")
   }
 
-
   return(exit)
-
-  ######################################
-  # Expected exit
-  ######################################
-  expected_exit = list(
-    "Rules" = tibble(
-      rule_id = 1:2,
-      dissolves = c(TRUE, FALSE),
-      priority = c("-", "1"),
-      lhs_multisets = c("For", "example"),
-      lhs_membranes = c("For", "example"),
-      rhs = c("The", "same")
-      # read_xml_p_system:
-      # rule_id dissolves priority lhs_outer_membrane_label lhs_outer_membrane_charge lhs_multisets rhs_outer_membrane_label rhs_outer_membrane_charge rhs_multisets lhs_inner_membranes rhs_inner_membranes rhs_inner_membranes_multisets lhs_inner_membranes_multisets
-    ),
-    "Initial_config" = tibble(
-      label = 1:2,
-      direct_descendants = list(as.character(3:4), NA),
-      objects = list(
-        tibble(object = c("a", "b"),
-               multiplicity = 1:2),
-        tibble(object = "c",
-               multiplicity = 3)
-      )
-    ),
-    "Properties" = tibble(
-      System = 1,
-      PLingua_model = "Transition",
-      N_membranes = 4,
-      N_rules = 11,
-      Max_depth_in_rules = 1 # For now at least
-    )
-  )
 }
