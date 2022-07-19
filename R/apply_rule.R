@@ -21,21 +21,62 @@ apply_rule = function(rap, rule_id) {
   rule_info$lhs[[1]] # Demo: a, b*2
   colnames(rule_info$lhs[[1]]) = c("object", "rule_multiplicity")
 
-  new_objects = rap$RAP %>%
-    dplyr::filter(label == rule_info$lhs_membrane_label) %$%
-    objects
+  # Case: w/o dissolution
+  if (rule_info$dissolves) {
+    cat("\nDissolution is yet to be implemented")
+  } else {
 
-  for (i in 1:new_objects) {
-    new_objects[[i]] %>%
-      dplyr::left_join(rule_info$lhs[[1]]) %>% # To preserve previous objects
-      dplyr::mutate(rule_multiplicity = tidyr::replace_na(rule_multiplicity, 0))
+    ########################
+    ###### Remove LHS ######
+    ########################
+    affected_lhs_membranes = rap$RAP %>%
+      dplyr::filter(label == rule_info$lhs_membrane_label)
 
-    # %>%
-      # dplyr::mutate(multiplicity = multiplicity - rule_multiplicity)
+    considered_objects = affected_lhs_membranes %$%
+      objects # c*3, d*4; e*5, f*6
+
+    for (i in 1:length(considered_objects)) {
+      affected_lhs_membranes$objects[[i]] %<>%
+        dplyr::left_join(rule_info$lhs[[1]]) %>% # To preserve previous objects
+        dplyr::mutate(multiplicity = multiplicity - tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
+        dplyr::select(object, multiplicity)
+    }
+
+    ##########################
+    ###### Update rap ########
+    rap$RAP %<>%
+      dplyr::filter(label != rule_info$lhs_membrane_label) %>% # Untouched ones
+      dplyr::bind_rows(affected_lhs_membranes) %>%
+      dplyr::arrange(label) # id could also work
+
+
+    #######################
+    ###### Add RHS ########
+    #######################
+    affected_rhs_membranes = rap$RAP %>%
+      dplyr::filter(label == rule_info$rhs_membrane_label)
+
+    considered_objects = affected_rhs_membranes %$%
+      objects # c*3, d*4; e*5, f*6 modified perhaps by previous rule
+
+    for (i in 1:length(considered_objects)) {
+      # affected_rhs_membranes$objects[[i]] %<>%
+      affected_rhs_membranes$objects[[i]] %>%
+        dplyr::left_join(rule_info$lhs[[1]]) %>%
+        dplyr::mutate(multiplicity = multiplicity - tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
+        dplyr::select(object, multiplicity)
+    }
+
+    ##########################
+    ###### Update rap ########
+    rap$RAP %<>%
+      dplyr::filter((label != rule_info$lhs_membrane_label) & (label != rule_info$rhs_membrane_label)) %>% # Untouched ones
+      dplyr::bind_rows(affected_lhs_membranes) %>%
+      dplyr::bind_rows(affected_rhs_membranes) %>%
+      dplyr::arrange(label) # id could also work
+
 
   }
-
-
   # Notes
   rule_info$rhs # Demo: a, b*2
   rule_info$lhs_membrane_label # Demo: 1
