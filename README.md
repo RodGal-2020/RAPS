@@ -25,7 +25,8 @@ Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_pa
 1           | 2  | 2     | [(b, 2), (c,3)] | 1        | NULL |     +1 | NULL         |
 
 ## Status
-**General objectives:**
+
+### **General objectives:**
 - [x] Create `README.md`
 - [ ] Complete `README.md`
   - [x] Workflow diagram
@@ -37,10 +38,25 @@ Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_pa
   - [ ] A general simulator
   - [ ] For P-Lingua 5
 
-**Functions**
+### **Functions**
 - [x] Organise the main functions in the "Functions" section
 - [ ] Establish the deprecated functions as such
-- [ ] Achieve control over time 
+- [ ] Achieve control over time
+
+### **Rules**
+
+Supported rules:
+* Evolution: $[u \rightarrow v]_i$
+
+Will-be-supported rules, by priority:
+1. In-communication: $[\ u \rightarrow v_1 \ [v_2]_j\ ]_i$
+2. Out-communication: $[\ u_1 \ [u_2]_j \rightarrow v\ ]_i$
+3. In/Out-communication: $[\ u_1 \ [u_2]_j \rightarrow v_1 \ [v_2]_k\ ]_i$
+2. Charge change: $[u]_i^{\alpha}  \rightarrow [v]_i^{\beta}$
+4. Dissolution: $[u \rightarrow v, \lambda]_i$
+
+Unsupported rules:
+* Division: $[\ [\ ]_j \rightarrow [\ ]_j [\ ]_j]_i$
 
 `R/read_xml_p_system.R`
 - [ ] Check using of `unnest_wider`, `longer` or `auto` to reduce the use of lists
