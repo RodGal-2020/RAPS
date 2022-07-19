@@ -55,6 +55,8 @@ Will-be-supported rules, by priority:
 2. Charge change: $[u]_i^{\alpha}  \rightarrow [v]_i^{\beta}$
 4. Dissolution: $[u \rightarrow v, \lambda]_i$
 
+## Functions
+
 Unsupported rules:
 * Division: $[\ [\ ]_j \rightarrow [\ ]_j [\ ]_j]_i$
 
@@ -66,8 +68,6 @@ Unsupported rules:
 - [ ]  Make it work
   - [ ] Begin with basic evolution rules.
   
-## Functions
-
 ### New ideas
 > **Important**: The name of the main class considered is `rap`, for *Representing A P-system*, and also to attune with the name of the package.
 
