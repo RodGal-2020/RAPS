@@ -8,12 +8,11 @@
 #' @seealso
 #' `apply_rules` to apply more than one rule at the same time.
 #' #' @section TODO:
-#' * FIXME: Add parameter to check if a rule can be applied to a given label (or use just the id of the membrane). Trying w/ the membrane_id parameter.
 #' * Print the trace of the execution, perhaps with the `RAPS::show_rap()` function.
 #' @export
 apply_rule = function(rap, rule_id, membrane_id) {
 
-  cat("\n\tApplying the rule with id", crayon::italic(rule_id), "to the system")
+  cat("\n\tApplying the rule with id", crayon::bold(rule_id), "to the membrane with id", crayon::bold(rule_id), "of the system")
 
   ##############################
   # Application
@@ -70,8 +69,8 @@ apply_rule = function(rap, rule_id, membrane_id) {
     ###### Add RHS ########
     #######################
     affected_rhs_membranes = rap$RAP %>%
-      dplyr::filter(label == rule_info$rhs_membrane_label)
-    # FIXME: PROBLEM: Chosen membranes w/o the object (the id should be chosen, not the label)
+      # dplyr::filter(label == rule_info$rhs_membrane_label)
+      dplyr::filter(id == membrane_id) # TODO: We are only considering evolution rules, for now...
 
     considered_objects = affected_rhs_membranes %$%
       objects # c*3, d*4; e*5, f*6 modified perhaps by previous rule
@@ -86,7 +85,8 @@ apply_rule = function(rap, rule_id, membrane_id) {
     ##########################
     ###### Update rap ########
     rap$RAP %<>%
-      dplyr::filter(label != rule_info$rhs_membrane_label) %>% # Untouched ones
+      dplyr::filter(id != membrane_id) %>% # Untouched ones
+      # dplyr::filter(label != rule_info$rhs_membrane_label) %>% # Untouched ones
       dplyr::bind_rows(affected_rhs_membranes) %>%
       dplyr::arrange(label) # id could also work
   }

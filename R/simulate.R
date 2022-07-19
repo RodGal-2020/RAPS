@@ -10,7 +10,7 @@
 #' This function comes with no warranty.
 #' @export
 simulate = function(rap, n_steps) {
-  cat("\nSimulating ", crayon::bold(n_steps), "steps")
+  cat("\nSimulating", crayon::bold(n_steps), "steps")
 
   for (i in 1:n_steps) {
     chosen_rule_info = choose_rule(rap)

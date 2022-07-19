@@ -40,6 +40,7 @@ Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_pa
 **Functions**
 - [x] Organise the main functions in the "Functions" section
 - [ ] Establish the deprecated functions as such
+- [ ] Achieve control over time 
 
 `R/read_xml_p_system.R`
 - [ ] Check using of `unnest_wider`, `longer` or `auto` to reduce the use of lists

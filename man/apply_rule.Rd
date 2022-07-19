@@ -4,7 +4,7 @@
 \alias{apply_rule}
 \title{Apply a rule to a given rap object}
 \usage{
-apply_rule(rap, rule_id)
+apply_rule(rap, rule_id, membrane_id)
 }
 \arguments{
 \item{rap}{A rap object-}
@@ -22,4 +22,8 @@ TODO
 }
 \seealso{
 \code{apply_rules} to apply more than one rule at the same time.
+#' @section TODO:
+\itemize{
+\item Print the trace of the execution, perhaps with the \code{RAPS::show_rap()} function.
+}
 }

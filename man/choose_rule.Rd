@@ -12,7 +12,7 @@ choose_rule(rap, semantics = "GIL")
 \item{semantics}{The path to a semantics object, or the id of a given algorithm from the following list: GIL (for Gillespie), DET (for Deterministic Waiting Times Algorithm).}
 }
 \value{
-The id of a rule which is to be applied.
+The id of a rule which is to be applied and the id of the chosen membrane.
 }
 \description{
 Note that the rule is not applied.

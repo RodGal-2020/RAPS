@@ -5,9 +5,10 @@
 #' @return It returns...
 #' @examples
 #' Some examples
-#' @section Warning:
-#' This is a warning
+#' @section TODO:
+#' * Improve visualization.
 #' @export
-show_rap = function(my_param) {
-  cat("What did you expect running a function whose name is ", crayon::italic("template"), "?", sep = "")
+show_rap = function(rap) {
+  cat("Function under development, returning the default R visualization")
+  rap
 }

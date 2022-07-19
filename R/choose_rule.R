@@ -8,7 +8,7 @@
 #' TODO.
 #' @export
 choose_rule = function(rap, semantics = "GIL") {
-  cat(crayon::italic("\n\tchoose_rule"), "is under develpment, returning", crayon::italic("rule_id = 1"), "by default")
+  cat(crayon::italic("\n\tchoose_rule"), "is under develpment, returning", crayon::italic("rule_id = 1, membrane_id = 1"), "by default")
 
 
   ########################################

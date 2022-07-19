@@ -4,7 +4,7 @@
 \alias{show_rap}
 \title{Template for new functions}
 \usage{
-show_rap(my_param)
+show_rap(rap)
 }
 \arguments{
 \item{my_param}{Yep, it's a parameter.}
@@ -15,9 +15,11 @@ It returns...
 \description{
 This is a template.
 }
-\section{Warning}{
+\section{TODO}{
 
-This is a warning
+\itemize{
+\item Improve visualization.
+}
 }
 
 \examples{
