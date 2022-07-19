@@ -7,37 +7,52 @@
 #' TODO
 #' @seealso
 #' `apply_rules` to apply more than one rule at the same time.
+#' #' @section TODO:
+#' * FIXME: Add parameter to check if a rule can be applied to a given label (or use just the id of the membrane). Trying w/ the membrane_id parameter.
+#' * Print the trace of the execution, perhaps with the `RAPS::show_rap()` function.
 #' @export
-apply_rule = function(rap, rule_id) {
+apply_rule = function(rap, rule_id, membrane_id) {
 
   cat("\n\tApplying the rule with id", crayon::italic(rule_id), "to the system")
 
   ##############################
   # Application
   ##############################
-  # rap$Rules # Main section of the rap object to take into account
   rule_info = rap$Rules[rule_id, ]
 
-  rule_info$lhs[[1]] # Demo: a, b*2
-  colnames(rule_info$lhs[[1]]) = c("object", "rule_multiplicity")
+  # NOTES:
+  # rule_info$lhs[[1]] # Demo: a, b*2
+  # rap$RAP %>%
+  #   dplyr::filter(label == rule_info$lhs_membrane_label) %$%
+  #   objects # a*1, b*2; c*3, d*4
 
-  # Case: w/o dissolution
+  # To directly avoid duplicates with dplyr
+  colnames(rule_info$lhs[[1]]) = c("object", "rule_multiplicity")
+  colnames(rule_info$rhs[[1]]) = c("object", "rule_multiplicity")
+
+  # Case w/ dissolution
   if (rule_info$dissolves) {
     cat("\nDissolution is yet to be implemented")
+    # rap$RAP %<>%
+    #   dplyr::filter(label != rule_info$rhs_membrane_label) # We delete all the rhs membranes
+
+  # Case w/o dissolution
   } else {
 
     ########################
     ###### Remove LHS ######
     ########################
     affected_lhs_membranes = rap$RAP %>%
-      dplyr::filter(label == rule_info$lhs_membrane_label)
+      # dplyr::filter(label == rule_info$lhs_membrane_label)
+      dplyr::filter(id == membrane_id)
+
 
     considered_objects = affected_lhs_membranes %$%
-      objects # c*3, d*4; e*5, f*6
+      objects # a*1, b*2; c*3, d*4
 
     for (i in 1:length(considered_objects)) {
       affected_lhs_membranes$objects[[i]] %<>%
-        dplyr::left_join(rule_info$lhs[[1]]) %>% # To preserve previous objects
+        dplyr::left_join(rule_info$lhs[[1]], by = "object") %>% # To preserve previous objects
         dplyr::mutate(multiplicity = multiplicity - tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
         dplyr::select(object, multiplicity)
     }
@@ -45,7 +60,8 @@ apply_rule = function(rap, rule_id) {
     ##########################
     ###### Update rap ########
     rap$RAP %<>%
-      dplyr::filter(label != rule_info$lhs_membrane_label) %>% # Untouched ones
+      # dplyr::filter(label != rule_info$lhs_membrane_label) %>% # Untouched by the LHS
+      dplyr::filter(id != membrane_id) %>% # Untouched by the LHS
       dplyr::bind_rows(affected_lhs_membranes) %>%
       dplyr::arrange(label) # id could also work
 
@@ -55,39 +71,24 @@ apply_rule = function(rap, rule_id) {
     #######################
     affected_rhs_membranes = rap$RAP %>%
       dplyr::filter(label == rule_info$rhs_membrane_label)
+    # FIXME: PROBLEM: Chosen membranes w/o the object (the id should be chosen, not the label)
 
     considered_objects = affected_rhs_membranes %$%
       objects # c*3, d*4; e*5, f*6 modified perhaps by previous rule
 
     for (i in 1:length(considered_objects)) {
-      # affected_rhs_membranes$objects[[i]] %<>%
-      affected_rhs_membranes$objects[[i]] %>%
-        dplyr::left_join(rule_info$lhs[[1]]) %>%
-        dplyr::mutate(multiplicity = multiplicity - tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
+      affected_rhs_membranes$objects[[i]] %<>%
+        dplyr::full_join(rule_info$rhs[[1]], by = "object") %>%
+        dplyr::mutate(multiplicity = tidyr::replace_na(multiplicity, 0) + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
         dplyr::select(object, multiplicity)
     }
 
     ##########################
     ###### Update rap ########
     rap$RAP %<>%
-      dplyr::filter((label != rule_info$lhs_membrane_label) & (label != rule_info$rhs_membrane_label)) %>% # Untouched ones
-      dplyr::bind_rows(affected_lhs_membranes) %>%
+      dplyr::filter(label != rule_info$rhs_membrane_label) %>% # Untouched ones
       dplyr::bind_rows(affected_rhs_membranes) %>%
       dplyr::arrange(label) # id could also work
-
-
-  }
-  # Notes
-  rule_info$rhs # Demo: a, b*2
-  rule_info$lhs_membrane_label # Demo: 1
-  rule_info$rhs_membrane_label # Demo: 1
-
-  affected_membranes = rap$RAP %>%
-    dplyr::filter(label == rule_info$lhs_membrane_label)
-
-  if (rule_info$dissolves) {
-    # rap$RAP %<>%
-    #   dplyr::filter(label != rule_info$rhs_membrane_label) # We delete all the rhs membranes
   }
 
   return(rap)

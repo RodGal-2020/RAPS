@@ -13,8 +13,11 @@ simulate = function(rap, n_steps) {
   cat("\nSimulating ", crayon::bold(n_steps), "steps")
 
   for (i in 1:n_steps) {
-    new_rule_id = choose_rule(rap)
-    rap %<>% apply_rule(new_rule_id)
+    chosen_rule_info = choose_rule(rap)
+    rule_id = chosen_rule_info[1]
+    membrane_id = chosen_rule_info[2]
+
+    rap %<>% apply_rule(rule_id, membrane_id)
   }
 
   return(rap)

@@ -3,7 +3,7 @@
 #' Note that the rule is not applied.
 #' @param rap A rap object.
 #' @param semantics The path to a semantics object, or the id of a given algorithm from the following list: GIL (for Gillespie), DET (for Deterministic Waiting Times Algorithm).
-#' @return The id of a rule which is to be applied.
+#' @return The id of a rule which is to be applied and the id of the chosen membrane.
 #' @examples
 #' TODO.
 #' @export
@@ -30,10 +30,11 @@ choose_rule = function(rap, semantics = "GIL") {
   # Applying the algorithm
   ########################################
   rule_id = 1
+  membrane_id = 1
 
   ########################################
   # Returning the generated exit
   ########################################
-  cat("\n\tWe choose the rule with id:", crayon::bold(rule_id))
-  return(rule_id)
+  cat("\n\tWe choose the rule with id:", crayon::bold(rule_id), "in the membrane with id:", crayon::bold(membrane_id))
+  return(c(rule_id, membrane_id))
 }

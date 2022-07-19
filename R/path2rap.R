@@ -30,14 +30,13 @@ path2rap = function(path = NULL, verbose = 5, demo = TRUE, max_depth = 3) {
         id = c(0, 1, 2, 3),
         label = c(0, 1, 1, 2), # Both children have the same label
         objects = list(
+          tibble::tibble(),
           tibble::tibble(object = c("a", "b"),
                          multiplicity = 1:2),
           tibble::tibble(object = c("c", "d"),
                          multiplicity = 3:4),
           tibble::tibble(object = c("e", "f"),
-                         multiplicity = 5:6),
-          tibble::tibble(object = c("g", "h"),
-                         multiplicity = 7:8)
+                         multiplicity = 5:6)
           ),
         superM = c(NA, 0, 0, 2), # Given by ID # END: We could have more than one parent
 
@@ -52,7 +51,7 @@ path2rap = function(path = NULL, verbose = 5, demo = TRUE, max_depth = 3) {
 
       "Rules" = tibble::tibble(
         rule_id = 1:2,
-        dissolves = c(TRUE, FALSE),
+        dissolves = c(FALSE, TRUE),
         priority = c("-", "1"),
 
         lhs_membrane_label = c(1,1),
@@ -65,8 +64,8 @@ path2rap = function(path = NULL, verbose = 5, demo = TRUE, max_depth = 3) {
 
         rhs_membrane_label = c(1,1),
         rhs = list(
-          tibble::tibble(object = c("a", "b"),
-                         multiplicity = 1:2),
+          tibble::tibble(object = c("a", "b", "ap", "bp"),
+                         multiplicity = 1:4),
           tibble::tibble(object = c("c", "d"),
                          multiplicity = 3:4)
         )
