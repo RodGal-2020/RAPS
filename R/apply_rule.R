@@ -13,25 +13,6 @@ apply_rule = function(rap, rule_id) {
   cat("\n\tApplying the rule with id", crayon::italic(rule_id), "to the system")
 
   ##############################
-  # Aux functions
-  ##############################
-  if_is_na_or_null = function(var, new_element) {
-    l_var = length(var)
-    exit = c()
-
-    for (i in 1:l_var) {
-      if (is.na(var[i]) || is.null(var[i])) {
-        exit %<>% c(new_element)
-      } else {
-        exit %<>% c(var[i])
-      }
-    }
-
-    return(exit)
-  }
-
-
-  ##############################
   # Application
   ##############################
   # rap$Rules # Main section of the rap object to take into account
@@ -47,7 +28,7 @@ apply_rule = function(rap, rule_id) {
   for (i in 1:new_objects) {
     new_objects[[i]] %>%
       dplyr::left_join(rule_info$lhs[[1]]) %>% # To preserve previous objects
-      dplyr::mutate(rule_multiplicity = if_is_na_or_null(rule_multiplicity, 0))
+      dplyr::mutate(rule_multiplicity = tidyr::replace_na(rule_multiplicity, 0))
 
     # %>%
       # dplyr::mutate(multiplicity = multiplicity - rule_multiplicity)

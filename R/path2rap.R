@@ -114,6 +114,8 @@ path2rap = function(path = NULL, verbose = 5, demo = TRUE, max_depth = 3) {
   # verbose_print(cat("Hola!"), 2)
 
 
+  ### TODO: Substitute with tidyr::replace_na(var, new_element = "-"), which is compatible w/ mutate & friends
+
   ### if(is.na or is.null) {exit} else {var}
   substitute_if_empty = function(var, new_element = "-") {
     if (is.na(var) || is.null(var)) {
