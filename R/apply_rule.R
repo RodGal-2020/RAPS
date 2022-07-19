@@ -47,8 +47,10 @@ apply_rule = function(rap, rule_id) {
   for (i in 1:new_objects) {
     new_objects[[i]] %>%
       dplyr::left_join(rule_info$lhs[[1]]) %>% # To preserve previous objects
-      dplyr::mutate(across(rule_multiplicity), if_is_na_or_null(., 0)) %>%
-      dplyr::mutate(multiplicity = multiplicity - rule_multiplicity)
+      dplyr::mutate(rule_multiplicity = if_is_na_or_null(rule_multiplicity, 0))
+
+    # %>%
+      # dplyr::mutate(multiplicity = multiplicity - rule_multiplicity)
 
   }
 
