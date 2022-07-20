@@ -45,20 +45,54 @@ simulate_gil = function(rap_environment) {
       dplyr::bind_rows(new_gil_exit) # (j_c, tau_c)
   }
 
-  gil_exit %<>%
-    dplyr::arrange(dplyr::desc(tau_c)) # TODO: Check if desc or not
-
   ### DELETE THIS DEMO
   gil_exit[2,] = list(1, 2, 3)
   ###
 
-  chosen_trinity = gil_exit %>%
-    magrittr::extract(1, )
+  #####################
+  ##### ITERATION #####
+  #####################
 
+  ## We don't need to arrange this, as we have the dplyr::top_n() function
+  gil_exit %<>%
+    dplyr::arrange(tau_c) # TODO: Check if desc or not
+
+  ## Choose the trinity
+  chosen_trinity = gil_exit[1, ]
+  tau_c_0 = chosen_trinity$tau_c
+  j_c_0 = chosen_trinity$j_c
+  c_0 = chosen_trinity$c
+
+  ## Delete the trinity
+  gil_exit %<>%
+    magrittr::extract(-1, )
+
+  # chosen_trinity = gil_exit %>%
+  #   dplyr::top_n(1, dplyr::desc(tau_c))
+
+  ## Update simulation time
   simulation_time %<>%
-    sum(chosen_trinity$tau_c)
+    sum(tau_c_0)
 
-  gil_exit %>%
+  ## Update waiting time of other trinities
+  gil_exit %<>%
+    dplyr::mutate(tau_c = tau_c - tau_c_0)
+
+  ## TODO: Apply rule r_j_c_0 ONCE actualizing the affected environments
+  # prov_RAP %<>%
+  #   RAPS::apply_rule()
+
+  ## For each cp affected environment:
+
+  ### TODO: https://www.cs.us.es/~marper/docencia/ARMB-2021-2022/temas/ARMB-tema-4-trans.pdf
 
 
+  ########################
+  #####  UPDATE RAP  #####
+  #####       &      #####
+  ##### END FUNCTION #####
+  ########################
+  rap$RAP = prov_RAP
+
+  return(rap)
 }
