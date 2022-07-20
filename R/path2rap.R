@@ -68,7 +68,8 @@ path2rap = function(path = NULL, verbose = 5, demo = TRUE, max_depth = 3) {
                          multiplicity = 1:4),
           tibble::tibble(object = c("c", "d"),
                          multiplicity = 3:4)
-        )
+        ),
+        propensity = c(0.4, 0.7)
       ),
 
       ## Included in rap

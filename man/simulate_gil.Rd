@@ -4,7 +4,7 @@
 \alias{simulate_gil}
 \title{Template for new functions}
 \usage{
-simulate_gil(rap_environment)
+simulate_gil(rap_environment, max_T = 100)
 }
 \arguments{
 \item{my_param}{Yep, it's a parameter.}

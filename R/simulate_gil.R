@@ -8,7 +8,7 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-simulate_gil = function(rap_environment) {
+simulate_gil = function(rap_environment, max_T = 100) {
   ### DELETE THIS DEMO
   cat("\nUsing the demo rap...")
   rap = RAPS::path2rap()
@@ -52,47 +52,60 @@ simulate_gil = function(rap_environment) {
   #####################
   ##### ITERATION #####
   #####################
+  while (simulation_time < max_T) {
 
-  ## We don't need to arrange this, as we have the dplyr::top_n() function
-  gil_exit %<>%
-    dplyr::arrange(tau_c) # TODO: Check if desc or not
+    ## We don't need to arrange this, as we have the dplyr::top_n() function
+    gil_exit %<>%
+      dplyr::arrange(tau_c)
 
-  ## Choose the trinity
-  chosen_trinity = gil_exit[1, ]
-  tau_c_0 = chosen_trinity$tau_c
-  j_c_0 = chosen_trinity$j_c
-  c_0 = chosen_trinity$c
+    ## Choose the trinity
+    chosen_trinity = gil_exit[1, ]
+    tau_c_0 = chosen_trinity$tau_c
+    j_c_0 = chosen_trinity$j_c
+    c_0 = chosen_trinity$c
 
-  ## Delete the trinity
-  gil_exit %<>%
-    magrittr::extract(-1, )
+    ## Delete the trinity
+    gil_exit %<>%
+      magrittr::extract(-1, )
 
-  # chosen_trinity = gil_exit %>%
-  #   dplyr::top_n(1, dplyr::desc(tau_c))
+    # chosen_trinity = gil_exit %>%
+    #   dplyr::top_n(1, dplyr::desc(tau_c))
 
-  ## Update simulation time
-  simulation_time %<>%
-    sum(tau_c_0)
+    ## Update simulation time
+    simulation_time %<>%
+      sum(tau_c_0)
 
-  ## Update waiting time of other trinities
-  gil_exit %<>%
-    dplyr::mutate(tau_c = tau_c - tau_c_0)
+    ## Update waiting time of other trinities
+    gil_exit %<>%
+      dplyr::mutate(tau_c = tau_c - tau_c_0)
 
-  ## TODO: Apply rule r_j_c_0 ONCE actualizing the affected environments
-  # prov_RAP %<>%
-  #   RAPS::apply_rule()
+    ## TODO: Apply rule r_j_c_0 ONCE actualizing the affected environments
+    # prov_RAP %<>%
+    #   RAPS::apply_rule()
 
-  ## For each cp affected environment:
+    ## For each cp affected environment:
 
-  ### TODO: https://www.cs.us.es/~marper/docencia/ARMB-2021-2022/temas/ARMB-tema-4-trans.pdf
+    ### Delete trinity (j_cp, tau_cp, cp) from the list
+
+    ### Update propensities
+
+    ### Execute alg_gillespie in cp, obtaining (js_cp, taus_cp, cp) # s for Star
+
+    ### Add the (js_cp, taus_cp, cp) trinity to the list
+    # gil_exit
+
+    ### Order the new list by decreasing tau_c
+    ## We don't need to arrange this, as we have the dplyr::top_n() function
+
+    ########################
+    #####  UPDATE RAP  #####
+    ########################
+    rap$RAP = prov_RAP
+  }
 
 
   ########################
-  #####  UPDATE RAP  #####
-  #####       &      #####
   ##### END FUNCTION #####
   ########################
-  rap$RAP = prov_RAP
-
   return(rap)
 }
