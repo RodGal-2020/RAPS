@@ -4,7 +4,7 @@
 \alias{alg_gillespie}
 \title{Template for new functions}
 \usage{
-alg_gillespie(rap_environment)
+alg_gillespie(rap)
 }
 \arguments{
 \item{my_param}{Yep, it's a parameter.}
