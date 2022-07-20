@@ -10,6 +10,17 @@
 choose_rule = function(rap, semantics = "GIL") {
   cat(crayon::italic("\n\tchoose_rule"), "is under develpment, returning", crayon::italic("rule_id = 1, membrane_id = 1"), "by default")
 
+  ### DELETE THIS DEMO
+  cat("\nUsing the demo rap...")
+  rap = RAPS::path2rap()
+  new_environment = rap$RAP %>%
+    magrittr::extract(1:2, ) %>%
+    dplyr::mutate(environment = 1)
+
+  rap$RAP %<>%
+    dplyr::bind_rows(new_environment)
+  ###
+
 
   ########################################
   # Algorithm
@@ -27,10 +38,45 @@ choose_rule = function(rap, semantics = "GIL") {
   }
 
   ########################################
+  ########################################
   # Applying the algorithm
+  ########################################
   ########################################
   rule_id = 1
   membrane_id = 1
+
+
+  if (semantics == "GIL") {
+    ########################################
+    # Gillespie algorithm
+    ########################################
+    simulation_time = 0
+    prov_RAP = rap$RAP
+
+    n_envs = prov_RAP %$%
+      environment %>%
+      max() %>%
+      sum(1) # We start with 0
+
+    # grouped_RAP = prov_RAP %>%
+    #   dplyr::group_by(environment)
+
+    gil_exit = tibble::tibble()
+
+    for (i in 0:n_envs) {
+      env_i = prov_RAP %>%
+        dplyr::filter(environment == i)
+      gil_exit %<>%
+        dplyr::bind_rows(RAPS::alg_gillespie(env_i)) # (j_c, tau_c)
+    }
+
+    gil_exit %<>%
+      dplyr::arrange(dplyr::desc(tau_c)) # TODO: Check if desc or not
+
+    # We stop here, as it wouldn't make sense to have the following inside a "choose_rule" function
+    # We develop, as a result, the simulate_gil function
+
+  }
 
   ########################################
   # Returning the generated exit
