@@ -85,39 +85,120 @@ Let's try them one by one:
 ```{r}
 mem_1_objects = list()
 
-for (i in 1:11) {
+for (i in 1:2) {
   objects = my_rap %>%
-    apply_rule(rule_id = 1) %$% 
+    apply_rule(rule_id = i) %$% 
     RAP %>% 
     dplyr::filter(id == 1) %$%
     objects
   
-  mem_1_objects %<>% append(objects)
+  mem_1_objects[[i]] = objects
 }
 ```
 
 Let's give them a look:
 
 ```{r}
-for (i in 1:3) {
-  print(mem_1_objects[[i]])
-}
+i = 1
+cat("i = ")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
 ```
 
 ```{r}
-for (i in 4:6) {
-  print(mem_1_objects[[i]])
-}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
 ```
 
 ```{r}
-for (i in 7:9) {
-  print(mem_1_objects[[i]])
-}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
 ```
 
 ```{r}
-for (i in 10:11) {
-  print(mem_1_objects[[i]])
-}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
+```
+
+```{r}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
+```
+
+```{r}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
+```
+
+```{r}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
+```
+
+```{r}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
+```
+
+```{r}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
+```
+
+```{r}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
+```
+
+```{r}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
+```
+
+```{r}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
+```
+
+```{r}
+cat("i = ", i, "\n")
+print(mem_1_objects[[i]])
+print(my_rap$Rules$rhs[[i]])
+
+i %<>% sum(1)
 ```

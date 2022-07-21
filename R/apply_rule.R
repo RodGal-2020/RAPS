@@ -13,7 +13,7 @@
 #' @export
 apply_rule = function(rap, rule_id) {
 
-  cat("\n\tApplying the rule with id", crayon::bold(rule_id), "to the membrane with id", crayon::bold(rule_id), "of the system")
+  cat("\n\tApplying the rule with id", crayon::bold(rule_id))
 
   ##############################
   # Application
