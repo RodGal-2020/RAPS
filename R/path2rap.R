@@ -64,6 +64,32 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
                          multiplicity = 3:4)
         ),
 
+        # THE FOLLOWING VS CONSIDERING A NEW LABEL FOR THE MEMBRANE, LIKE:
+        # MAIN MEMBRANE 0
+
+        # LHS
+        # membrane | object | multiplicity
+        # 0 | z | 1
+        # 1 | a | 1
+        # 2 | b | 2
+
+        # RHS
+        # membrane | object | multiplicity
+        # 0 | zp | 1
+        # 1 | ap | 1
+        # 2 | bp | 2
+
+        # FOR THE RULE WITH  [ z [a]'1 [b*2]'2 --> zp [ap]'1 [bp*2]'2]'0
+        # GIVEN THE CLASSICAL EVOLUTIONAL INTERPRETATION
+
+        # lhs_membranes = list(
+        #   tibble::tibble(membrane_id = c(2, 2),
+        #                  object = c("a", "b"),
+        #                  multiplicity = 1:2)),
+        #   tibble::tibble(object = c("c", "d"),
+        #                  multiplicity = 3:4)
+        # ),
+
         rhs_membrane_label = c(1,1),
         rhs = list(
           tibble::tibble(object = c("a", "b", "ap", "bp"),
