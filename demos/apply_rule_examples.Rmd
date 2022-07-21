@@ -85,7 +85,7 @@ Let's try them one by one:
 ```{r}
 mem_1_objects = list()
 
-for (i in 1:2) {
+for (i in 1:12) {
   objects = my_rap %>%
     apply_rule(rule_id = i) %$% 
     RAP %>% 
