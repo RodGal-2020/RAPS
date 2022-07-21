@@ -17,13 +17,14 @@ Main workflow with `RAPS`:
 
       rap-->simulate;
       simulate-->new_rap;
-
-      # rap-->simulate_gil;
-      # simulate_gil-->new_rap;
-      # 
-      # rap-->simulate("GIL");
-      # simulate("GIL)-->new_rap;
 ```
+<!-- 
+# rap- ->simulate_gil;
+# simulate_gil- ->new_rap;
+# 
+# rap- ->simulate("GIL");
+# simulate("GIL)- ->new_rap;
+-->
 
 In `RAPS` we use the `rap` (Representing A P system) objects, which have the following aspect:
 
