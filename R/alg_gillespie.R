@@ -1,6 +1,6 @@
 #' Template for new functions
 #'
-#' This is a template.
+#' BADGE: ![GitHub CI](https://github.com/dwyl/auth_plug/actions/workflows/ci.yml/badge.svg).
 #' @param my_param Yep, it's a parameter.
 #' @return It returns...
 #' @examples
@@ -44,9 +44,11 @@ alg_gillespie = function(rap, max_T = 100, return_middle_states = TRUE) {
     ## Update simulation_time
     simulation_time %<>% sum(exit_rule$tau_c)
 
-    ## Get new state
-    raps %<>% append(rap)
-    new_index %<>% sum(1)
+    ## Append new state
+    if (return_middle_states) {
+      raps %<>% append(rap)
+      new_index %<>% sum(1)
+    }
   }
 
 

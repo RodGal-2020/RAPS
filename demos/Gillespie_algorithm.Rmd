@@ -1,0 +1,91 @@
+---
+title: "Gillespie algorithm"
+subtitle: "For mono-environmental and multienvironmental P systems"
+author: "Xopre"
+date: "`r format(Sys.time(), '%d de %B de %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_float: 
+      collapsed: true
+    number_sections: false 
+    df_print: kable
+    theme: readable
+    highlight: default 
+codification: "UTF-8"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{css, echo = FALSE}
+.blackbox {
+  padding: 1em;
+  background: #F47174;
+  color: white;
+  /* border: 2px solid orange; */
+  border-radius: 10px;
+}
+.greenbox {
+  padding: 1em;
+  background: #79d279;
+  color: white;
+  /* border: 2px solid orange; */
+  border-radius: 10px;
+}
+.center {
+  text-align: center;
+}
+
+.code {
+  font-family: Courier, "Lucida Console", monospace;
+}
+```
+
+If RAPS is not installed, uncomment the following:
+```{r}
+# devtools::document() # To update the documentation
+# devtools::install() # To install as package
+```
+
+```{r}
+library(RAPS)
+```
+
+# Monoenvironmental
+```{r}
+my_rap = RAPS::path2rap(demo = TRUE)
+```
+
+```{r}
+my_new_rap = RAPS::alg_gillespie(rap = my_rap,
+                                 max_T = 100,
+                                 return_middle_states = FALSE)
+```
+# Multienvironmental
+```{r}
+my_rap = RAPS::path2rap(demo = TRUE)
+
+new_environment = my_rap$RAP %>%
+  magrittr::extract(1:2, ) %>%
+  dplyr::mutate(environment = 1)
+
+my_rap$RAP %<>%
+  dplyr::bind_rows(new_environment)
+```
+
+```{r}
+# my_rap %<>%
+  # RAPS::simulate_gil(max_T = 100)
+
+## ORRRR
+
+# my_rap %<>%
+#   RAPS::simulate(alg = "GIL", n_steps = 100, max_T = 100)
+
+
+my_rap
+```
+
+
