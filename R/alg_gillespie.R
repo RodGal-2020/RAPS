@@ -18,25 +18,7 @@ alg_gillespie = function(rap) {
 
   rules = rap$Rules
 
-  ##################
-  ##### KERNEL #####
-  ##################
-
-  p = rules$propensity
-  n_rules = dim(rules)[1]
-
-  p_0 = sum(p)
-
-  a_1 = runif(1)
-  a_2 = runif(1)
-
-  # Selected rule
-  j_0 = sample(x = 1:n_rules, size = 1, prob = p / p_0) # Equivalent to choosing the index verifying the condition
-
-  # Waiting time
-  tau = 1 / p_0 * log(1 / a_1)
-
-  exit_rule = tibble::tibble(j_c = j_0, tau_c = tau)
+  exit_rule = alg_gillespie_kernel(rules) # Written as an independent function for clearness
 
   return(exit_rule)
 }
