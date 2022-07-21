@@ -74,18 +74,6 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
         propensity = c(0.4, 0.7)
       ),
 
-      ## Included in rap
-      # "Initial_config" = tibble::tibble(
-      #   label = 1:2,
-      #   direct_descendants = list(c("3", "4"), NA),
-      #   objects = list(
-      #     tibble::tibble(object = c("a", "b"),
-      #            multiplicity = 1:2),
-      #     tibble::tibble(object = "c",
-      #            multiplicity = 3)
-      #   )
-      # ),
-
       "Properties" = tibble::tibble(
         System = 1,
         PLingua_model = "Transition",
@@ -178,7 +166,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
                          multiplicity = 1),
           tibble::tibble(object = "b",
                          multiplicity = 2),
-          tibble::tibble(object = "b", "c",
+          tibble::tibble(object = c("b", "c"),
                          multiplicity = c(2,1)),
           tibble::tibble(object = "c",
                          multiplicity = 1),
