@@ -4,7 +4,12 @@
 \alias{alg_gillespie}
 \title{Template for new functions}
 \usage{
-alg_gillespie(rap, max_T = 100, return_middle_states = TRUE)
+alg_gillespie(
+  rap,
+  max_T = 100,
+  propensity_function = NULL,
+  return_middle_states = TRUE
+)
 }
 \arguments{
 \item{my_param}{Yep, it's a parameter.}

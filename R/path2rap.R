@@ -20,7 +20,9 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
   # DEMO
   ######################################
   if (demo == 1) {
-    #### Demo 2
+    ##################
+    ##### Demo 1 #####
+    ##################
     cat("Using the demo 1\n")
 
     expected_exit = list(
@@ -92,67 +94,124 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
         Max_depth_in_rules = 1 # For now at least
       )
     )
-    } else if (demo == 2){
-      #### Demo 2
-      cat("Using the demo 2\n")
+  } else if (demo == 2) {
+    ##################
+    ##### Demo 2 #####
+    ##################
+    cat("Using the demo 2\n")
 
-      expected_exit = list(
+    expected_exit = list(
 
-        "RAP" = tibble::tibble(
-          environment = c(0, 0, 0),
-          id = c(0, 1, 2),
-          label = c(0, 1, 2), # Both children have the same label
-          objects = list(
-            tibble::tibble(),
-            tibble::tibble(object = c("a", "b", "c", "d"),
-                           multiplicity = 1:4),
-            tibble::tibble()
-          ),
-          superM = c(NA, 0, 1), # Given by ID # END: We could have more than one parent
+      "RAP" = tibble::tibble(
+        environment = c(0, 0, 0),
+        id = c(0, 1, 2),
+        label = c(0, 1, 2), # Both children have the same label
+        objects = list(
+          tibble::tibble(),
+          tibble::tibble(object = c("a", "b", "c", "d"),
+                         multiplicity = 1:4),
+          tibble::tibble()
+        ),
+        superM = c(NA, 0, 1), # Given by ID # END: We could have more than one parent
 
-          subM = list(
-            tibble::tibble(children = 1),
-            tibble::tibble(children = 2),
-            tibble::tibble(children = NA)),
-          charge = c(0, 1, -1),
-          other_params = c(NA, NA, NA)
+        subM = list(
+          tibble::tibble(children = 1),
+          tibble::tibble(children = 2),
+          tibble::tibble(children = NA)),
+        charge = c(0, 1, -1),
+        other_params = c(NA, NA, NA)
+      ),
+
+      "Rules" = tibble::tibble(
+        # Rules:
+        # 1. a --> b
+        # 2. a --> b*2
+        # 3. a --> b*2, c
+        # 4. b*2 --> c
+        # 5. a, b --> c
+        # 6. a, b*2 --> c
+        # 7. a, b*2 --> c*3
+        # 8. a, b*2 --> c*3, d*4
+        # 9. a --> lambda
+        # 10. [a [ ]'2 --> [a]'2]'1
+        # 11. [ [a]'2 --> a [ ]'2]'1
+
+        # Propensity = (11 - Rule number) / 11
+
+        rule_id = 1:11,
+        dissolves = c(rep(FALSE, 8), TRUE, FALSE, FALSE),
+        priority = rep("-", 11),
+
+        lhs_membrane_label = rep(1, 11),
+        lhs = list(
+          tibble::tibble(object = "a",
+                         multiplicity = 1),
+          tibble::tibble(object = "a",
+                         multiplicity = 1),
+          tibble::tibble(object = "a",
+                         multiplicity = 1),
+          tibble::tibble(object = "b",
+                         multiplicity = 2),
+          tibble::tibble(object = c("a", "b"),
+                         multiplicity = c(1,1)),
+          tibble::tibble(object = c("a", "b"),
+                         multiplicity = 1:2),
+          tibble::tibble(object = c("a", "b"),
+                         multiplicity = 1:2),
+          tibble::tibble(object = c("a", "b"),
+                         multiplicity = 1:2),
+          tibble::tibble(object = "a",
+                         multiplicity = 1),
+          # TODO: 10, 11
+          tibble::tibble(object = "TODO",
+                         multiplicity = 1),
+          tibble::tibble(object = "TODO",
+                         multiplicity = 1)
         ),
 
-        "Rules" = tibble::tibble(
-          rule_id = 1:2,
-          dissolves = c(FALSE, TRUE),
-          priority = c("-", "1"),
-
-          lhs_membrane_label = c(1,1),
-          lhs = list(
-            tibble::tibble(object = c("a", "b"),
-                           multiplicity = 1:2),
-            tibble::tibble(object = c("c", "d"),
-                           multiplicity = 3:4)
-          ),
-
-          rhs_membrane_label = c(1,1),
-          rhs = list(
-            tibble::tibble(object = c("a", "b", "ap", "bp"),
-                           multiplicity = 1:4),
-            tibble::tibble(object = c("c", "d"),
-                           multiplicity = 3:4)
-          ),
-          propensity = c(0.4, 0.7)
+        rhs_membrane_label = rep(1, 11),
+        rhs = list(
+          tibble::tibble(object = "b",
+                         multiplicity = 1),
+          tibble::tibble(object = "b",
+                         multiplicity = 2),
+          tibble::tibble(object = "b", "c",
+                         multiplicity = c(2,1)),
+          tibble::tibble(object = "c",
+                         multiplicity = 1),
+          tibble::tibble(object = "c",
+                         multiplicity = 1),
+          tibble::tibble(object = "c",
+                         multiplicity = 1),
+          tibble::tibble(object = "c",
+                         multiplicity = 3),
+          tibble::tibble(object = c("c", "d"),
+                         multiplicity = 3:4),
+          tibble::tibble(object = "@lambda",
+                         multiplicity = 1),
+          # TODO: 10, 11
+          tibble::tibble(object = "TODO",
+                         multiplicity = 1),
+          tibble::tibble(object = "TODO",
+                         multiplicity = 1)
         ),
+        propensity = seq(1, 1/11, -1/11)
+      ),
 
-        "Properties" = tibble::tibble(
-          System = NA,
-          PLingua_model = NA,
-          N_membranes = 2,
-          N_rules = NA,
-          Max_depth_in_rules = NA # For now at least
-        )
+      "Properties" = tibble::tibble(
+        System = NA,
+        PLingua_model = NA,
+        N_membranes = 2,
+        N_rules = NA,
+        Max_depth_in_rules = NA # For now at least
       )
-    }
+    )
+  }
 
+  if (demo) {
     return(expected_exit)
   }
+
 
 
   ######################################
