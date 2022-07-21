@@ -47,6 +47,8 @@ If RAPS is not installed, uncomment the following:
 ```{r}
 # devtools::document() # To update the documentation
 # devtools::install() # To install as package
+## Or use:
+# devtools::install_github("Xopre/RAPS")
 ```
 
 ```{r}

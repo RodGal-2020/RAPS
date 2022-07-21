@@ -5,6 +5,12 @@ Welcome to the repository behind the RAPS package.
 
 ## Quickstart
 <!-- Help for mermaid: http://mermaid-js.github.io/mermaid/#/ -->
+
+Run the following to install the package locally, directly from GitHub:
+```{r}
+devtools::install_github("Xopre/RAPS")
+```
+
 Main workflow with `RAPS`:
 ```mermaid
   graph TD;

@@ -8,7 +8,7 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-alg_gillespie = function(rap, max_T = 100, return_middle_states = TRUE) {
+alg_gillespie = function(rap, max_T = 100, propensity_function = NULL, return_middle_states = TRUE) {
   cat(crayon::italic("\n\talg_gillepie"), "is under develpment, returning", crayon::italic("(j, tau) = (0,1)"), "by default")
 
   ### DELETE THIS DEMO
@@ -23,7 +23,6 @@ alg_gillespie = function(rap, max_T = 100, return_middle_states = TRUE) {
   rules = rap$Rules
   if (return_middle_states) {
     raps = list(rap)
-    new_index = 2
   }
 
 
@@ -31,9 +30,6 @@ alg_gillespie = function(rap, max_T = 100, return_middle_states = TRUE) {
   ##### ITERATION #####
   #####################
   while (simulation_time < max_T) {
-    ## Update propensities
-    rules$propensity = rules$propensity # WOW
-
     ## Execute Gillespie algorithm with the new propensities
     exit_rule = RAPS::alg_gillespie_kernel(rules) # Written as an independent function for clearness
 
@@ -41,13 +37,19 @@ alg_gillespie = function(rap, max_T = 100, return_middle_states = TRUE) {
     rap %<>% # rap is modified
       RAPS::apply_rule(rule_id = exit_rule$j_c, membrane_id = NULL) # TODO: Check membrane_id
 
+    ## Update propensities
+    if (is.null(propensity_function)) {
+      rules$propensity = rules$propensity # WOW
+    } else {
+      rules$propensity = propensity_function(rap)
+    }
+
     ## Update simulation_time
     simulation_time %<>% sum(exit_rule$tau_c)
 
     ## Append new state
     if (return_middle_states) {
       raps %<>% append(rap)
-      new_index %<>% sum(1)
     }
   }
 

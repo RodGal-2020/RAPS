@@ -13,15 +13,15 @@
 #' @section Future work:
 #' - Include different formats for inputs, like JSON or even the `.pli` itself.
 #' @export
-path2rap = function(path = NULL, verbose = 5, demo = TRUE, max_depth = 3) {
+path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
-
 
   ######################################
   # DEMO
   ######################################
-  if (demo) {
-    cat("Using the demo version\n")
+  if (demo == 1) {
+    #### Demo 2
+    cat("Using the demo 1\n")
 
     expected_exit = list(
 
@@ -92,6 +92,64 @@ path2rap = function(path = NULL, verbose = 5, demo = TRUE, max_depth = 3) {
         Max_depth_in_rules = 1 # For now at least
       )
     )
+    } else if (demo == 2){
+      #### Demo 2
+      cat("Using the demo 2\n")
+
+      expected_exit = list(
+
+        "RAP" = tibble::tibble(
+          environment = c(0, 0, 0),
+          id = c(0, 1, 2),
+          label = c(0, 1, 2), # Both children have the same label
+          objects = list(
+            tibble::tibble(),
+            tibble::tibble(object = c("a", "b", "c", "d"),
+                           multiplicity = 1:4),
+            tibble::tibble()
+          ),
+          superM = c(NA, 0, 1), # Given by ID # END: We could have more than one parent
+
+          subM = list(
+            tibble::tibble(children = 1),
+            tibble::tibble(children = 2),
+            tibble::tibble(children = NA)),
+          charge = c(0, 1, -1),
+          other_params = c(NA, NA, NA)
+        ),
+
+        "Rules" = tibble::tibble(
+          rule_id = 1:2,
+          dissolves = c(FALSE, TRUE),
+          priority = c("-", "1"),
+
+          lhs_membrane_label = c(1,1),
+          lhs = list(
+            tibble::tibble(object = c("a", "b"),
+                           multiplicity = 1:2),
+            tibble::tibble(object = c("c", "d"),
+                           multiplicity = 3:4)
+          ),
+
+          rhs_membrane_label = c(1,1),
+          rhs = list(
+            tibble::tibble(object = c("a", "b", "ap", "bp"),
+                           multiplicity = 1:4),
+            tibble::tibble(object = c("c", "d"),
+                           multiplicity = 3:4)
+          ),
+          propensity = c(0.4, 0.7)
+        ),
+
+        "Properties" = tibble::tibble(
+          System = NA,
+          PLingua_model = NA,
+          N_membranes = 2,
+          N_rules = NA,
+          Max_depth_in_rules = NA # For now at least
+        )
+      )
+    }
 
     return(expected_exit)
   }
