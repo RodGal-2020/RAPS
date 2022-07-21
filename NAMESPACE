@@ -3,6 +3,7 @@
 export(alg_gillespie)
 export(alg_gillespie_kernel)
 export(apply_rule)
+export(apply_rule_pdp)
 export(apply_rules)
 export(choose_rule)
 export(na_omit)

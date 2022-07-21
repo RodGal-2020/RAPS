@@ -1,5 +1,6 @@
 #' Omit all NAs in a given vector
 #'
+#' `r lifecycle::badge("deprecated")`
 #' Used as help in some functions
 #' @param v The vector.
 #' @return The vector v without the NAs.

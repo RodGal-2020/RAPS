@@ -3,7 +3,7 @@ Title: 🎤 RAPS: R Aid for P Systems
 Version: 0.0.0.20220721
 Authors@R: 
     person("Xopre", "-", , "rodgal2020@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0002-5825-2724"))
 Description: In this paragraph I will explain what the package does.
     The description continues here.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a

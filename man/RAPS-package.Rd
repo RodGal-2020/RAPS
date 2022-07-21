@@ -9,7 +9,7 @@
 In this paragraph I will explain what the package does. The description continues here.
 }
 \author{
-\strong{Maintainer}: Xopre - \email{rodgal2020@gmail.com} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Xopre - \email{rodgal2020@gmail.com} (\href{https://orcid.org/0000-0002-5825-2724}{ORCID})
 
 }
 \keyword{internal}

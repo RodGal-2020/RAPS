@@ -135,14 +135,15 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
         # 9. a --> lambda
         # 10. [a [ ]'2 --> [a]'2]'1
         # 11. [ [a]'2 --> a [ ]'2]'1
+        # 12. a --> NEW
 
         # Propensity = (11 - Rule number) / 11
 
-        rule_id = 1:11,
-        dissolves = c(rep(FALSE, 8), TRUE, FALSE, FALSE),
-        priority = rep("-", 11),
+        rule_id = 1:12,
+        dissolves = c(rep(FALSE, 8), TRUE, FALSE, FALSE, FALSE),
+        priority = rep("-", 12),
 
-        lhs_membrane_label = rep(1, 11),
+        lhs_membrane_label = rep(1, 12),
         lhs = list(
           tibble::tibble(object = "a",
                          multiplicity = 1),
@@ -166,10 +167,12 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
           tibble::tibble(object = "TODO",
                          multiplicity = 1),
           tibble::tibble(object = "TODO",
+                         multiplicity = 1),
+          tibble::tibble(object = "a",
                          multiplicity = 1)
         ),
 
-        rhs_membrane_label = rep(1, 11),
+        rhs_membrane_label = rep(1, 12),
         rhs = list(
           tibble::tibble(object = "b",
                          multiplicity = 1),
@@ -193,9 +196,12 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
           tibble::tibble(object = "TODO",
                          multiplicity = 1),
           tibble::tibble(object = "TODO",
+                         multiplicity = 1),
+          tibble::tibble(object = "NEW",
                          multiplicity = 1)
+
         ),
-        propensity = seq(1, 1/11, -1/11)
+        propensity = seq(1, 1/12, -1/12)
       ),
 
       "Properties" = tibble::tibble(

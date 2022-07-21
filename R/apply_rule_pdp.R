@@ -1,6 +1,6 @@
 #' Apply a rule to a given rap object
 #'
-#' `r lifecycle::badge("experimental")`
+#' `r lifecycle::badge("deprecated")`
 #' @param rap A rap object-
 #' @param rule_id The id of the rule to be applied-
 #' @return A new rap object, the result of applying the given rule-
@@ -11,7 +11,7 @@
 #' #' @section TODO:
 #' * Print the trace of the execution, perhaps with the `RAPS::show_rap()` function.
 #' @export
-apply_rule = function(rap, rule_id) {
+apply_rule_pdp = function(rap, rule_id, membrane_id) {
 
   cat("\n\tApplying the rule with id", crayon::bold(rule_id), "to the membrane with id", crayon::bold(rule_id), "of the system")
 
@@ -43,7 +43,9 @@ apply_rule = function(rap, rule_id) {
     ###### Remove LHS ######
     ########################
     affected_lhs_membranes = rap$RAP %>%
-      dplyr::filter(label == rule_info$lhs_membrane_label)
+      # dplyr::filter(label == rule_info$lhs_membrane_label)
+      dplyr::filter(id == membrane_id)
+
 
     considered_objects = affected_lhs_membranes %$%
       objects # a*1, b*2; c*3, d*4
@@ -58,7 +60,8 @@ apply_rule = function(rap, rule_id) {
     ##########################
     ###### Update rap ########
     rap$RAP %<>%
-      dplyr::filter(label != rule_info$lhs_membrane_label) %>% # Untouched by the LHS
+      # dplyr::filter(label != rule_info$lhs_membrane_label) %>% # Untouched by the LHS
+      dplyr::filter(id != membrane_id) %>% # Untouched by the LHS
       dplyr::bind_rows(affected_lhs_membranes) %>%
       dplyr::arrange(label) # id could also work
 
@@ -67,7 +70,8 @@ apply_rule = function(rap, rule_id) {
     ###### Add RHS ########
     #######################
     affected_rhs_membranes = rap$RAP %>%
-      dplyr::filter(label == rule_info$rhs_membrane_label)
+      # dplyr::filter(label == rule_info$rhs_membrane_label)
+      dplyr::filter(id == membrane_id) # TODO: We are only considering evolution rules, for now...
 
     considered_objects = affected_rhs_membranes %$%
       objects # c*3, d*4; e*5, f*6 modified perhaps by previous rule
@@ -82,7 +86,8 @@ apply_rule = function(rap, rule_id) {
     ##########################
     ###### Update rap ########
     rap$RAP %<>%
-      dplyr::filter(label != rule_info$rhs_membrane_label) %>% # Untouched ones
+      dplyr::filter(id != membrane_id) %>% # Untouched ones
+      # dplyr::filter(label != rule_info$rhs_membrane_label) %>% # Untouched ones
       dplyr::bind_rows(affected_rhs_membranes) %>%
       dplyr::arrange(label) # id could also work
   }
