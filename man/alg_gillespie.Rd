@@ -13,7 +13,7 @@ alg_gillespie(rap, max_T = 100, return_middle_states = TRUE)
 It returns...
 }
 \description{
-\figure{https://github.com/dwyl/auth_plug/actions/workflows/ci.yml/badge.svg}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \section{Warning}{
 
