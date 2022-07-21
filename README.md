@@ -1,6 +1,8 @@
 # 🎤 RAPS: R Aid for P systems
 Welcome to the repository behind the RAPS package.
 
+![BADGE](https://img.shields.io/github/checks-status/Xopre/RAPS/develop?color=orange&label=build&style=plastic)
+
 ## Quickstart
 <!-- Help for mermaid: http://mermaid-js.github.io/mermaid/#/ -->
 Main workflow with `RAPS`:
