@@ -45,13 +45,14 @@ Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_pa
 - [x] Create `README.md`
 - [ ] Complete `README.md`
   - [x] Workflow diagram
-  - [ ] Functional demos
+  - [x] Functional demos
   - [ ] Simulation of stochastic P systems
 
 - [ ] Adapt parser to P-Lingua 5
 - [ ] Create one or more simulators:
   - [ ] A general simulator
   - [ ] For P-Lingua 5
+  - [ ] For RAPS' objects
 
 ### **Functions**
 - [x] Organise the main functions in the "Functions" section
@@ -62,13 +63,18 @@ Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_pa
 
 Supported rules:
 * Evolution: $[u \rightarrow v]_i$
+* In-communication: $[\ u \rightarrow v_1 \ [v_2]_j\ ]_i$
+* Out-communication: $[\ u_1 \ [u_2]_j \rightarrow v\ ]_i$
+* In/Out-communication: $[\ u_1 \ [u_2]_j \rightarrow v_1 \ [v_2]_k\ ]_i$
 
 Will-be-supported rules, by priority:
-1. In-communication: $[\ u \rightarrow v_1 \ [v_2]_j\ ]_i$
-2. Out-communication: $[\ u_1 \ [u_2]_j \rightarrow v\ ]_i$
-3. In/Out-communication: $[\ u_1 \ [u_2]_j \rightarrow v_1 \ [v_2]_k\ ]_i$
-2. Charge change: $[u]_i^{\alpha}  \rightarrow [v]_i^{\beta}$
-4. Dissolution: $[u \rightarrow v, \lambda]_i$
+1. Charge change: $[u]_i^{\alpha}  \rightarrow [v]_i^{\beta}$
+2. Dissolution: $[u \rightarrow v, \lambda]_i$
+3. Membrane generation: $u \rightarrow [\ ]_i$
+
+Might be supported but are nonstandard:
+* Presence of one or more membranes: $[\ ]_i [\ ]_j \rightarrow a$
+* Crazy multicommunication: $[u_1]_i [u_2]_j [u_3]_k \rightarrow [v_1]_{ip} [v_2]_{jp} [v_3]_{kp}$
 
 ## Functions
 
