@@ -16,7 +16,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
   ### DELETE THIS DEMO
   # cat("\nUsing the demo rap...")
   # rap = RAPS::path2rap(demo = 2)
-  # rule_id = 1
+  # rule_id = 3
   ###
 
   rule_info = rap$Rules[rule_id, ]
@@ -33,8 +33,9 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
   # Check if it can be applied
   ##############################
   # TODO
-  cat("\nWe can't check if the rule could be applied. Let's hope it could :)")
-
+  if (verbose) {
+    cat("\nWe can't check if the rule could be applied. Let's hope it could :)")
+  }
 
   ####################################
   ###### Get affected membranes ######
@@ -137,9 +138,10 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
 
       if (where == "@here") {
         affected_membranes[main_membrane_index, ]$objects[[1]] %<>%
-          dplyr::full_join(rule_info$rhs[[1]], by = "object") %>%
+          dplyr::full_join(rule_info$rhs[[1]][i, ], by = "object") %>%
           dplyr::mutate(multiplicity = tidyr::replace_na(multiplicity, 0) + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
           dplyr::select(object, multiplicity)
+        ## Alternative: add everything and then prune the special objects (like "@exists")
 
         # Some other membrane or "@exists"
       } else if (where == "@exists"){
