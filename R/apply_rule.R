@@ -176,5 +176,18 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
 
   }
 
+  ###########################
+  ####### Clean rap #########
+  ###########################
+
+  # We just delete the objects which have 0 multiplicity:
+
+  l_objects = length(objects)
+
+  for (i in 1:l_objects) {
+    rap$RAP$objects[[i]] %<>%
+      dplyr::filter(multiplicity != 0)
+  }
+
   return(rap)
 }
