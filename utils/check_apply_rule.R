@@ -1,5 +1,6 @@
 library(RAPS)
 my_rap = RAPS::path2rap(demo = 2)
+rules = my_rap$Rules
 
 # We have the following rules:
 #
@@ -17,194 +18,54 @@ my_rap = RAPS::path2rap(demo = 2)
 # 12. a --> NEW
 
 
-##################
-i = 1
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
+with_rule = function(index) {
+  i = index
+  cat("i = ", i )
+  RAPS::show_rule(rules[i, ])
+  my_new_rap = my_rap %>%
+    apply_rule(rule_id = i) %$%
+    RAP
 
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
+  for (membrane in 1:3) {
+    cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
+    print(my_new_rap$objects[[membrane]])
+    cat("----------------------------------")
+    cat("\n----------------------------------")
+  }
 }
 
-##################
-i = 2
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
+# a --> b
+with_rule(1)
 
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
-}
+# a --> b*2
+with_rule(2)
 
-##################
-i = 3
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
+# a --> b*2, c
+with_rule(3)
 
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
-}
+# b*2 --> c
+with_rule(4)
 
-##################
-i = 4
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
+# a, b --> c
+with_rule(5)
 
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
-}
+# a, b*2 --> c
+with_rule(6)
 
-##################
-i = 5
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
+# a, b\*2 --> c\*3
+with_rule(7)
 
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
-}
+# a, b\*2 --> c\*3, d\*4
+with_rule(8)
 
-##################
-i = 6
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
+# a --> lambda
+with_rule(9)
 
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
-}
+# [a [ ]'2 --> [a]'2]'1
+with_rule(1)
 
-##################
-i = 7
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
+# [ [a]'2 --> a [ ]'2]'1
+with_rule(1)
 
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
-}
-
-##################
-i = 8
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
-
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
-}
-
-##################
-i = 9
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
-
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
-}
-
-##################
-i = 10
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
-
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
-}
-
-##################
-i = 11
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
-
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
-}
-
-##################
-i = 12
-##################
-cat("i = ", i )
-RAPS::show_rule(rules[i, ])
-my_new_rap = my_rap %>%
-  apply_rule(rule_id = i) %$%
-  RAP
-
-for (membrane in 1:3) {
-  cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
-  print(my_new_rap$objects[[membrane]])
-  cat("----------------------------------")
-  cat("\n----------------------------------")
-}
+# a --> NEW
+with_rule(1)
