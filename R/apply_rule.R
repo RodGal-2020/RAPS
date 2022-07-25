@@ -145,8 +145,8 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
 
       if (where == "@here") {
         affected_membranes[main_membrane_index, ]$objects[[1]] %<>%
-          dplyr::left_join(rule_info$lhs[[1]], by = "object") %>% # To preserve previous objects
-          dplyr::mutate(multiplicity = multiplicity + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
+          dplyr::full_join(rule_info$rhs[[1]], by = "object") %>%
+          dplyr::mutate(multiplicity = tidyr::replace_na(multiplicity, 0) + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
           dplyr::select(object, multiplicity)
 
         # Some other membrane or "@exists"
@@ -157,8 +157,14 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
       } else {
         # secondary_membrane_index = which(affected_membranes$label == where)
         affected_membranes[secondary_membrane_index, ]$objects[[1]] %<>%
-          dplyr::left_join(rule_info$lhs[[1]], by = "object") %>% # To preserve previous objects
+          dplyr::left_join(rule_info$rhs[[1]], by = "object") %>% # To preserve previous objects
           dplyr::mutate(multiplicity = multiplicity + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
+          dplyr::select(object, multiplicity)
+
+
+        my_tibble %>%
+          dplyr::full_join(rule_info$rhs[[1]], by = "object") %>%
+          dplyr::mutate(multiplicity = tidyr::replace_na(multiplicity, 0) + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
           dplyr::select(object, multiplicity)
       }
     }

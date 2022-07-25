@@ -4,7 +4,7 @@
 \alias{apply_rule}
 \title{Apply a rule to a given rap object}
 \usage{
-apply_rule(rap, rule_id)
+apply_rule(rap, rule_id, verbose = FALSE)
 }
 \arguments{
 \item{rap}{A rap object-}

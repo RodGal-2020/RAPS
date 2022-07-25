@@ -84,6 +84,7 @@ Let's try them one by one:
 
 ```{r}
 mem_1_objects = list()
+rules = my_rap$Rules
 
 for (i in 1:12) {
   objects = my_rap %>%
@@ -101,8 +102,9 @@ Let's give them a look:
 ```{r}
 i = 1
 cat("i = ")
+RAPS::show_rule(rules[i])
 print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
+# print(my_rap$Rules$rhs[[i]])
 
 i %<>% sum(1)
 ```
