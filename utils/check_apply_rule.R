@@ -27,7 +27,7 @@ with_rule = function(index) {
     RAP
 
   for (membrane in 1:3) {
-    cat("\n\nIn a membrane labelled with ", membrane - 1, " we have...\n")
+    cat("\n\nIn a membrane labelled with", membrane - 1, "we have...\n")
     print(my_new_rap$objects[[membrane]])
     cat("----------------------------------")
     cat("\n----------------------------------")
@@ -62,10 +62,10 @@ with_rule(8)
 with_rule(9)
 
 # [a [ ]'2 --> [a]'2]'1
-with_rule(1)
+with_rule(10)
 
 # [ [a]'2 --> a [ ]'2]'1
-with_rule(1)
+with_rule(11)
 
 # a --> NEW
-with_rule(1)
+with_rule(12)
