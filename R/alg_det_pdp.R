@@ -8,20 +8,20 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-alg_det_pdp = function(rap_environment, max_T = 100) {
+alg_det_pdp = function(rap_environment, max_T = 10) {
   cat(crayon::bold("alg_det_pdp() is under development"))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
-  # cat("\nUsing the demo rap...")
-  # rap = RAPS::path2rap(demo = 2)
-  # verbose = 1
-  # debug = TRUE
-  # new_environment = rap$RAP %>%
-  #   dplyr::filter(label == 1) %>%
-  #   dplyr::mutate(environment = 1)
-  # rap$RAP %<>%
-  #   dplyr::bind_rows(new_environment)
-  # rule_id = 1 # To track errors
+  cat("\nUsing the demo rap...")
+  rap_environment = RAPS::path2rap(demo = 2)
+  verbose = 1
+  debug = TRUE
+  new_environment = rap_environment$RAP %>%
+    dplyr::mutate(environment = 1)
+  rap_environment$RAP %<>%
+    dplyr::bind_rows(new_environment)
+  rule_id = 1 # To track errors
+  cat("\nWorking with 2 environments, 0 and 1, with the same objects")
   ###
 
 
@@ -29,82 +29,35 @@ alg_det_pdp = function(rap_environment, max_T = 100) {
   # Gillespie algorithm
   ########################################
   simulation_time = 0
-  prov_RAP = rap$RAP
+  n_envs = length(unique(rap_environment$RAP$environment)) - 1 # Instead of max in order to generalize
+  rules = rap_environment$Rules
+  n_rules = dim(rules)[1]
+  propensities = rules$propensity
 
-  n_envs = prov_RAP %$%
-    environment %>%
-    max()
+  cat("\nUsing concentration_of_reactives = 1:n_rules")
+  concentration_of_reactives = 1:n_rules # It depends on the environment (!)
 
-  # grouped_RAP = prov_RAP %>%
-  #   dplyr::group_by(environment)
+  trinities = list()
+  for (env in 0:n_envs) {
+    # Initialization
+    trinities[[env+1]] = tibble::tibble(i = NULL,
+                                      tau_i = NULL,
+                                      c = NULL)
 
-  gil_exit = tibble::tibble()
+    for (rule in 1:n_rules) {
+      v_r = propensities[rule] * concentration_of_reactives[rule]
 
-  for (i in 0:n_envs) {
-    new_gil_exit = prov_RAP %>%
-      dplyr::filter(environment == i) %>%
-      RAPS::alg_gillespie() %>%
-      dplyr::bind_cols(c = i)
-    gil_exit %<>%
-      dplyr::bind_rows(new_gil_exit) # (j_c, tau_c)
-  }
+      trinities[[env+1]] %<>% dplyr::bind_rows(
+          tibble::tibble(
+            i = rule,
+            tau_i = 1 / v_r,
+            c = env
+        )
+      )
+    }
 
-  ### DELETE THIS DEMO
-  gil_exit[2,] = list(1, 2, 3)
-  ###
-
-  #####################
-  ##### ITERATION #####
-  #####################
-  while (simulation_time < max_T) {
-
-    ## We don't need to arrange this, as we have the dplyr::top_n() function
-    gil_exit %<>%
-      dplyr::arrange(tau_c)
-
-    ## Choose the trinity
-    chosen_trinity = gil_exit[1, ]
-    tau_c_0 = chosen_trinity$tau_c
-    j_c_0 = chosen_trinity$j_c
-    c_0 = chosen_trinity$c
-
-    ## Delete the trinity
-    gil_exit %<>%
-      magrittr::extract(-1, )
-
-    # chosen_trinity = gil_exit %>%
-    #   dplyr::top_n(1, dplyr::desc(tau_c))
-
-    ## Update simulation time
-    simulation_time %<>%
-      sum(tau_c_0)
-
-    ## Update waiting time of other trinities
-    gil_exit %<>%
-      dplyr::mutate(tau_c = tau_c - tau_c_0)
-
-    ## TODO: Apply rule r_j_c_0 ONCE actualizing the affected environments
-    # prov_RAP %<>%
-    #   RAPS::apply_rule()
-
-    ## For each cp affected environment:
-
-    ### Delete trinity (j_cp, tau_cp, cp) from the list
-
-    ### Update propensities
-
-    ### Execute alg_gillespie in cp, obtaining (js_cp, taus_cp, cp) # s for Star
-
-    ### Add the (js_cp, taus_cp, cp) trinity to the list
-    # gil_exit
-
-    ### Order the new list by decreasing tau_c
-    ## We don't need to arrange this, as we have the dplyr::top_n() function
-
-    ########################
-    #####  UPDATE RAP  #####
-    ########################
-    rap$RAP = prov_RAP
+    trinities[[env+1]] %<>%
+      dplyr::arrange(tau_i) # Increasing ordder
   }
 
 
