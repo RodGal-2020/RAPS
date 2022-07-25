@@ -4,18 +4,20 @@
 \alias{apply_rule_pdp}
 \title{Apply a rule to a given rap object}
 \usage{
-apply_rule_pdp(rap, rule_id, membrane_id)
+apply_rule_pdp(rap, rule_id, verbose = FALSE, debug = FALSE)
 }
 \arguments{
-\item{rap}{A rap object-}
+\item{rap}{A rap object.}
 
-\item{rule_id}{The id of the rule to be applied-}
+\item{rule_id}{The id of the rule to be applied.}
+
+\item{...}{Other parameters such as \code{debug} or \code{verbose}.}
 }
 \value{
-A new rap object, the result of applying the given rule-
+A new rap object, the result of applying the given rule.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 TODO

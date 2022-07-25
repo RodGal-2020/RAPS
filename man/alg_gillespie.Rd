@@ -6,9 +6,10 @@
 \usage{
 alg_gillespie(
   rap,
-  max_T = 100,
+  max_T = 10,
   propensity_function = NULL,
-  return_middle_states = TRUE
+  return_middle_states = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{
