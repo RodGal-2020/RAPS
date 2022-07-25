@@ -104,12 +104,32 @@ Let's give them a look:
 
 ```{r}
 i = 1
-cat("i = ")
+cat("i = ", i )
 RAPS::show_rule(rules[i, ])
-print(my_rap %>%
-    apply_rule(rule_id = i) %$% 
-    RAP)
-# print(my_rap$Rules$rhs[[i]])
+my_new_rap = my_rap %>%
+    apply_rule(rule_id = i) %$%
+    RAP
+
+for (i in 1:3) {
+  cat("In membrane with label ", i - 1, " we have..")
+  print(my_new_rap$objects[[1]])
+}
 
 i %<>% sum(1)
 ```
+
+```{r}
+cat("i = ", i )
+RAPS::show_rule(rules[i, ])
+my_new_rap = my_rap %>%
+    apply_rule(rule_id = i) %$%
+    RAP
+
+for (i in 1:3) {
+  cat("In membrane with label ", i - 1, " we have..")
+  print(my_new_rap$objects[[1]])
+}
+
+i %<>% sum(1)
+```
+
