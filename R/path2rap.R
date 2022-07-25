@@ -124,7 +124,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
           tibble::tibble(),
           tibble::tibble(object = c("a", "b", "c", "d"),
                          multiplicity = 1:4),
-          tibble::tibble()
+          tibble::tibble(object = "a", multiplicity = 1)
         ),
         superM = c(NA, 0, 1), # Given by ID # END: We could have more than one parent
 
@@ -157,61 +157,94 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
         dissolves = c(rep(FALSE, 8), TRUE, FALSE, FALSE, FALSE),
         priority = rep("-", 12),
 
-        lhs_membrane_label = rep(1, 12),
+        # lhs_membrane_label = rep(1, 12),
+        main_membrane_label = rep(1, 12),
         lhs = list(
-          tibble::tibble(object = "a",
+          tibble::tibble(where = "@here",
+                         object = "a",
                          multiplicity = 1),
-          tibble::tibble(object = "a",
+          tibble::tibble(where = "@here",
+                         object = "a",
                          multiplicity = 1),
-          tibble::tibble(object = "a",
+          tibble::tibble(where = "@here",
+                         object = "a",
                          multiplicity = 1),
-          tibble::tibble(object = "b",
+          tibble::tibble(where = "@here",
+                         object = "b",
                          multiplicity = 2),
-          tibble::tibble(object = c("a", "b"),
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("a", "b"),
                          multiplicity = c(1,1)),
-          tibble::tibble(object = c("a", "b"),
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("a", "b"),
                          multiplicity = 1:2),
-          tibble::tibble(object = c("a", "b"),
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("a", "b"),
                          multiplicity = 1:2),
-          tibble::tibble(object = c("a", "b"),
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("a", "b"),
                          multiplicity = 1:2),
-          tibble::tibble(object = "a",
+          tibble::tibble(where = "@here",
+                         object = "a",
                          multiplicity = 1),
-          # TODO: 10, 11
-          tibble::tibble(object = "TODO",
+          ## TODO
+          # 10. [a [ ]'2 --> [a]'2]'1
+          tibble::tibble(where = c("@here", "@exists"),
+                         object = c("a", 2),
+                         multiplicity = c(1, 1)),
+          # 11. [ [a]'2 --> a [ ]'2]'1
+          tibble::tibble(where = 2,
+                         object = "a",
                          multiplicity = 1),
-          tibble::tibble(object = "TODO",
-                         multiplicity = 1),
-          tibble::tibble(object = "a",
+
+          tibble::tibble(where = "@here",
+                         object = "a",
                          multiplicity = 1)
         ),
 
-        rhs_membrane_label = rep(1, 12),
+        # rhs_membrane_label = rep(1, 12), # Replaced with main_membrane_label
         rhs = list(
-          tibble::tibble(object = "b",
+          tibble::tibble(where = "@here",
+                         object = "b",
                          multiplicity = 1),
-          tibble::tibble(object = "b",
+          tibble::tibble(where = "@here",
+                         object = "b",
                          multiplicity = 2),
-          tibble::tibble(object = c("b", "c"),
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("b", "c"),
                          multiplicity = c(2,1)),
-          tibble::tibble(object = "c",
+          tibble::tibble(where = "@here",
+                         object = "c",
                          multiplicity = 1),
-          tibble::tibble(object = "c",
+          tibble::tibble(where = "@here",
+                         object = "c",
                          multiplicity = 1),
-          tibble::tibble(object = "c",
+          tibble::tibble(where = "@here",
+                         object = "c",
                          multiplicity = 1),
-          tibble::tibble(object = "c",
+          tibble::tibble(where = "@here",
+                         object = "c",
                          multiplicity = 3),
-          tibble::tibble(object = c("c", "d"),
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("c", "d"),
                          multiplicity = 3:4),
-          tibble::tibble(object = "@lambda",
+          tibble::tibble(where = "@here",
+                         object = "@lambda",
                          multiplicity = 1),
-          # TODO: 10, 11
-          tibble::tibble(object = "TODO",
+
+          ## TODO
+          # 10. [a [ ]'2 --> [a]'2]'1
+          tibble::tibble(where = 2,
+                         object = "a",
                          multiplicity = 1),
-          tibble::tibble(object = "TODO",
+
+          # 11. [ [a]'2 --> a [ ]'2]'1
+          tibble::tibble(where = "@here",
+                         object = "a",
                          multiplicity = 1),
-          tibble::tibble(object = "NEW",
+
+          tibble::tibble(where = "@here",
+                         object = "NEW",
                          multiplicity = 1)
 
         ),
