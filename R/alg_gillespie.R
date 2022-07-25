@@ -8,13 +8,19 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-alg_gillespie = function(rap, max_T = 100, propensity_function = NULL, return_middle_states = TRUE) {
-  cat(crayon::italic("\n\talg_gillepie"), "is under develpment, returning", crayon::italic("(j, tau) = (0,1)"), "by default")
-
+alg_gillespie = function(rap, max_T = 10, propensity_function = NULL, return_middle_states = TRUE, verbose = FALSE) {
   ### DELETE THIS DEMO
-  cat("\nUsing the demo rap...")
-  rap = RAPS::path2rap()
+  # cat("\nUsing the demo rap...")
+  # rap = RAPS::path2rap(demo = 2)
+  # max_T = 10
+  # propensity_function = NULL
+  # return_middle_states = TRUE
+  # verbose = TRUE
   ###
+
+  if (is.null(propensity_function) & verbose){
+    cat("\nUsing constant propensities")
+  }
 
   ##########################
   ##### INICIALIZATION #####
@@ -22,7 +28,7 @@ alg_gillespie = function(rap, max_T = 100, propensity_function = NULL, return_mi
   simulation_time = 0
   rules = rap$Rules
   if (return_middle_states) {
-    raps = list(rap)
+    raps = list(rap$RAP)
   }
 
 
@@ -30,13 +36,6 @@ alg_gillespie = function(rap, max_T = 100, propensity_function = NULL, return_mi
   ##### ITERATION #####
   #####################
   while (simulation_time < max_T) {
-    ## Execute Gillespie algorithm with the new propensities
-    exit_rule = RAPS::alg_gillespie_kernel(rules) # Written as an independent function for clearness
-
-    ## Execute ONCE the given rule r_j_0
-    rap %<>% # rap is modified
-      RAPS::apply_rule(rule_id = exit_rule$j_c, membrane_id = NULL) # TODO: Check membrane_id
-
     ## Update propensities
     if (is.null(propensity_function)) {
       rules$propensity = rules$propensity # WOW
@@ -44,8 +43,21 @@ alg_gillespie = function(rap, max_T = 100, propensity_function = NULL, return_mi
       rules$propensity = propensity_function(rap)
     }
 
+    ## Execute Gillespie algorithm with the new propensities
+    exit_rule = RAPS::alg_gillespie_kernel(rules) # Written as an independent function for clearness
+    if (verbose) {
+      cat("\tThe chosen rule is the one with id =", exit_rule$j_c, "and execution time tau =", exit_rule$tau_c)
+    }
+
+    ## Execute ONCE the given rule r_j_0
+    rap %<>% # rap is modified
+      RAPS::apply_rule(rule_id = exit_rule$j_c) # TODO: Check membrane_id
+
     ## Update simulation_time
     simulation_time %<>% sum(exit_rule$tau_c)
+    if (verbose) {
+      cat("Execution time ", simulation_time, "out of", max_T)
+    }
 
     ## Append new state
     if (return_middle_states) {

@@ -8,18 +8,20 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-simulate_gil = function(rap_environment, max_T = 100) {
-  ### OLD. Deprectad for alg_gillespie_pdp
+alg_gillespie_pdp = function(rap_environment, max_T = 100) {
+  cat(crayon::bold("alg_gillespie_pdp() is under development"))
 
-  ### DELETE THIS DEMO
-  cat("\nUsing the demo rap...")
-  rap = RAPS::path2rap()
-  new_environment = rap$RAP %>%
-    magrittr::extract(1:2, ) %>%
-    dplyr::mutate(environment = 1)
-
-  rap$RAP %<>%
-    dplyr::bind_rows(new_environment)
+  ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
+  # cat("\nUsing the demo rap...")
+  # rap = RAPS::path2rap(demo = 2)
+  # verbose = 1
+  # debug = TRUE
+  # new_environment = rap$RAP %>%
+  #   dplyr::filter(label == 1) %>%
+  #   dplyr::mutate(environment = 1)
+  # rap$RAP %<>%
+  #   dplyr::bind_rows(new_environment)
+  # rule_id = 1 # To track errors
   ###
 
 

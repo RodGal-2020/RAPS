@@ -47,6 +47,11 @@ Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_pa
   - [x] Workflow diagram
   - [x] Functional demos
   - [ ] Simulation of stochastic P systems
+    - [x] Monoenvironmental Gillespie algorithm
+    - [ ] Multienvironmental Gillespie algorithm
+
+- [x] Prepare RAPS object for monoenvironmental P systems
+- [ ] Prepare RAPS object for multienvironmental P systems
 
 - [ ] Adapt parser to P-Lingua 5
 - [ ] Create one or more simulators:
@@ -78,10 +83,9 @@ Might be supported but are nonstandard:
 * Presence of the *residual* of an object: $a^0 \rightarrow b$
 * Crazy multicommunication: $[u_1]_i [u_2]_j [u_3]_k \rightarrow [v_1]_{ip} [v_2]_{jp} [v_3]_{kp}$
 
-## Functions
+# TODO: Check the following sections
 
-Unsupported rules:
-* Division: $[\ [\ ]_j \rightarrow [\ ]_j [\ ]_j]_i$
+## Functions
 
 `R/read_xml_p_system.R`
 - [ ] Check using of `unnest_wider`, `longer` or `auto` to reduce the use of lists

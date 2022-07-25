@@ -14,6 +14,12 @@ alg_gillespie_kernel = function(rules) {
   ##### KERNEL #####
   ##################
 
+  ### DELETE THIS DEMO
+  # cat("\nUsing the demo rap...")
+  # rap = RAPS::path2rap(demo = 2)
+  # rules = rap$Rules
+  ###
+
   p = rules$propensity
   n_rules = dim(rules)[1]
 
