@@ -71,9 +71,11 @@ Will-be-supported rules, by priority:
 1. Charge change: $[u]_i^{\alpha}  \rightarrow [v]_i^{\beta}$
 2. Dissolution: $[u \rightarrow v, \lambda]_i$
 3. Membrane generation: $u \rightarrow [\ ]_i$
+3. Membrane division: $[a]_i \rightarrow [b]_j [c]_k$
 
 Might be supported but are nonstandard:
 * Presence of one or more membranes: $[\ ]_i [\ ]_j \rightarrow a$
+* Presence of the *residual* of an object: $a^0 \rightarrow b$
 * Crazy multicommunication: $[u_1]_i [u_2]_j [u_3]_k \rightarrow [v_1]_{ip} [v_2]_{jp} [v_3]_{kp}$
 
 ## Functions
