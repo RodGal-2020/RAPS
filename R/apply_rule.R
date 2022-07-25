@@ -14,12 +14,15 @@
 apply_rule = function(rap, rule_id, verbose = FALSE) {
 
   ### DELETE THIS DEMO
-  cat("\nUsing the demo rap...")
-  rap = RAPS::path2rap(demo = 2)
-  rule_id = 1
+  # cat("\nUsing the demo rap...")
+  # rap = RAPS::path2rap(demo = 2)
+  # rule_id = 1
   ###
 
   rule_info = rap$Rules[rule_id, ]
+  # To directly avoid duplicates with dplyr
+  colnames(rule_info$lhs[[1]]) = c("where", "object", "rule_multiplicity")
+  colnames(rule_info$rhs[[1]]) = c("where", "object", "rule_multiplicity")
 
   if (verbose) {
     cat("\n\tApplying the rule with id", crayon::bold(rule_id))
@@ -33,20 +36,33 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
   cat("\nWe can't check if the rule could be applied. Let's hope it could :)")
 
 
-  ##############################
-  # Application
-  ##############################
+  ####################################
+  ###### Get affected membranes ######
+  ####################################
+  affected_membranes_labels = c(rule_info$main_membrane_label)
 
-  # NOTES:
-  # rule_info$lhs[[1]] # Demo: a, b*2
-  # rap$RAP %>%
-  #   dplyr::filter(label == rule_info$lhs_membrane_label) %$%
-  #   objects # a*1, b*2; c*3, d*4
+  lhs = rule_info$lhs[[1]]
+  rhs = rule_info$rhs[[1]]
 
-  # To directly avoid duplicates with dplyr
-  colnames(rule_info$lhs[[1]]) = c("where", "object", "rule_multiplicity")
-  colnames(rule_info$rhs[[1]]) = c("where", "object", "rule_multiplicity")
+  lhs_and_rhs_where = c(lhs$where, rhs$where)
+  n_aux = length(lhs_and_rhs_where)
 
+  for (i in 1:n_aux) {
+    m_i = lhs_and_rhs_where[i]
+    if (m_i != "@here" & !m_i %in% affected_membranes_labels) {
+      affected_membranes_labels %<>% c(m_i)
+    }
+  }
+
+  affected_membranes = rap$RAP %>%
+    dplyr::filter(label %in% affected_membranes_labels)
+
+  main_membrane_index = which(affected_membranes$label == rule_info$main_membrane_label)
+
+
+  #########################
+  ###### Application ######
+  #########################
   # Case w/ dissolution
   if (rule_info$dissolves) {
     cat("\nDissolution is yet to be implemented")
@@ -55,30 +71,6 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
 
   # Case w/o dissolution
   } else {
-
-    ####################################
-    ###### Get affected membranes ######
-    ####################################
-    affected_membranes_labels = c(rule_info$main_membrane_label)
-
-    lhs = rule_info$lhs[[1]]
-    rhs = rule_info$rhs[[1]]
-
-    lhs_and_rhs_where = c(lhs$where, rhs$where)
-    n_aux = length(lhs_and_rhs_where)
-
-    for (i in 1:n_aux) {
-      m_i = lhs_and_rhs_where[i]
-      if (m_i != "@here" & !m_i %in% affected_membranes_labels) {
-        affected_membranes_labels %<>% c(m_i)
-      }
-    }
-
-    affected_membranes = rap$RAP %>%
-      dplyr::filter(label %in% affected_membranes_labels)
-
-    main_membrane_index = which(affected_membranes$label == main_membrane_label)
-
 
     ########################
     ###### Remove LHS ######
@@ -155,16 +147,10 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
         stop("ERROR: @exists in RHS. Only correct with membrane creation")
 
       } else {
-        # secondary_membrane_index = which(affected_membranes$label == where)
+        secondary_membrane_index = which(affected_membranes$label == where)
         affected_membranes[secondary_membrane_index, ]$objects[[1]] %<>%
           dplyr::left_join(rule_info$rhs[[1]], by = "object") %>% # To preserve previous objects
           dplyr::mutate(multiplicity = multiplicity + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
-          dplyr::select(object, multiplicity)
-
-
-        my_tibble %>%
-          dplyr::full_join(rule_info$rhs[[1]], by = "object") %>%
-          dplyr::mutate(multiplicity = tidyr::replace_na(multiplicity, 0) + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
           dplyr::select(object, multiplicity)
       }
     }
@@ -175,18 +161,18 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
     #######################
     ###### Add RHS OLD ########
     #######################
-    affected_rhs_membranes = rap$RAP %>%
-      dplyr::filter(label == rule_info$rhs_membrane_label)
-
-    considered_objects = affected_rhs_membranes %$%
-      objects # c*3, d*4; e*5, f*6 modified perhaps by previous rule
-
-    for (i in 1:length(considered_objects)) {
-      affected_rhs_membranes$objects[[i]] %<>%
-        dplyr::full_join(rule_info$rhs[[1]], by = "object") %>%
-        dplyr::mutate(multiplicity = tidyr::replace_na(multiplicity, 0) + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
-        dplyr::select(object, multiplicity)
-    }
+    # affected_rhs_membranes = rap$RAP %>%
+    #   dplyr::filter(label == rule_info$rhs_membrane_label)
+    #
+    # considered_objects = affected_rhs_membranes %$%
+    #   objects # c*3, d*4; e*5, f*6 modified perhaps by previous rule
+    #
+    # for (i in 1:length(considered_objects)) {
+    #   affected_rhs_membranes$objects[[i]] %<>%
+    #     dplyr::full_join(rule_info$rhs[[1]], by = "object") %>%
+    #     dplyr::mutate(multiplicity = tidyr::replace_na(multiplicity, 0) + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
+    #     dplyr::select(object, multiplicity)
+    # }
 
     ##########################
     ###### Update rap ########
@@ -197,6 +183,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
       # dplyr::bind_rows(affected_rhs_membranes) %>%
       dplyr::bind_rows(affected_membranes) %>%
       dplyr::arrange(label) # id could also work
+
   }
 
   return(rap)

@@ -82,11 +82,14 @@ my_rap$Rules
 
 Let's try them one by one:
 
+FIXME: Modify `apply_rule.R` first.
+
 ```{r}
 mem_1_objects = list()
 rules = my_rap$Rules
 
 for (i in 1:12) {
+  print(i)
   objects = my_rap %>%
     apply_rule(rule_id = i) %$% 
     RAP %>% 
@@ -102,105 +105,11 @@ Let's give them a look:
 ```{r}
 i = 1
 cat("i = ")
-RAPS::show_rule(rules[i])
-print(mem_1_objects[[i]])
+RAPS::show_rule(rules[i, ])
+print(my_rap %>%
+    apply_rule(rule_id = i) %$% 
+    RAP)
 # print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
-
-i %<>% sum(1)
-```
-
-```{r}
-cat("i = ", i, "\n")
-print(mem_1_objects[[i]])
-print(my_rap$Rules$rhs[[i]])
 
 i %<>% sum(1)
 ```

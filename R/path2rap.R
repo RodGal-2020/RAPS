@@ -121,7 +121,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
         id = c(0, 1, 2),
         label = c(0, 1, 2), # Both children have the same label
         objects = list(
-          tibble::tibble(),
+          tibble::tibble(object = "@filler", multiplicity = 1),
           tibble::tibble(object = c("a", "b", "c", "d"),
                          multiplicity = 1:4),
           tibble::tibble(object = "a", multiplicity = 1)
