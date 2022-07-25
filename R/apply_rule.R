@@ -11,9 +11,7 @@
 #' #' @section TODO:
 #' * Print the trace of the execution, perhaps with the `RAPS::show_rap()` function.
 #' @export
-apply_rule = function(rap, rule_id) {
-
-  cat("\n\tApplying the rule with id", crayon::bold(rule_id))
+apply_rule = function(rap, rule_id, verbose = FALSE) {
 
   ### DELETE THIS DEMO
   cat("\nUsing the demo rap...")
@@ -21,6 +19,12 @@ apply_rule = function(rap, rule_id) {
   rule_id = 1
   ###
 
+  rule_info = rap$Rules[rule_id, ]
+
+  if (verbose) {
+    cat("\n\tApplying the rule with id", crayon::bold(rule_id))
+    RAPS::show_rule(rule_info)
+  }
 
   ##############################
   # Check if it can be applied
@@ -32,7 +36,6 @@ apply_rule = function(rap, rule_id) {
   ##############################
   # Application
   ##############################
-  rule_info = rap$Rules[rule_id, ]
 
   # NOTES:
   # rule_info$lhs[[1]] # Demo: a, b*2
@@ -138,8 +141,7 @@ apply_rule = function(rap, rule_id) {
 
     for (i in 1:n_objects) {
       where = rhs[i, ]$where
-      # object = lhs[i, ]$object
-      # rule_multiplicity = lhs[i, ]$rule_multiplicity
+      # affected_membrane_index = which(affected_membranes$label == where) # alternative
 
       if (where == "@here") {
         affected_membranes[main_membrane_index, ]$objects[[1]] %<>%
@@ -149,20 +151,14 @@ apply_rule = function(rap, rule_id) {
 
         # Some other membrane or "@exists"
       } else if (where == "@exists"){
-        # In this case we just check that it can be applied
-        n_correct_membranes = sum(affected_membranes$label == lhs[i, ]$object)
-
-        try(
-          if (n_correct_membranes != lhs[i, ]$rule_multiplicity) {
-            stop("ERROR: Trying to apply a rule which can't be applied. Reference: @exists.")
-          }
-        )
+        # This case could create a new membrane. For now, we will just return an error.
+        stop("ERROR: @exists in RHS. Only correct with membrane creation")
 
       } else {
-        secondary_membrane_index = which(affected_membranes$label == where)
+        # secondary_membrane_index = which(affected_membranes$label == where)
         affected_membranes[secondary_membrane_index, ]$objects[[1]] %<>%
           dplyr::left_join(rule_info$lhs[[1]], by = "object") %>% # To preserve previous objects
-          dplyr::mutate(multiplicity = multiplicity - tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
+          dplyr::mutate(multiplicity = multiplicity + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
           dplyr::select(object, multiplicity)
       }
     }
