@@ -16,7 +16,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
   ### DELETE THIS DEMO
   # cat("\nUsing the demo rap...")
   # rap = RAPS::path2rap(demo = 2)
-  # rule_id = 3
+  # rule_id = 5 # To track errors
   ###
 
   rule_info = rap$Rules[rule_id, ]
@@ -85,7 +85,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE) {
 
       if (where == "@here") {
         affected_membranes[main_membrane_index, ]$objects[[1]] %<>%
-          dplyr::left_join(rule_info$lhs[[1]], by = "object") %>% # To preserve previous objects
+          dplyr::left_join(rule_info$lhs[[1]][i, ], by = "object") %>% # To preserve previous objects
           dplyr::mutate(multiplicity = multiplicity - tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
           dplyr::select(object, multiplicity)
 
