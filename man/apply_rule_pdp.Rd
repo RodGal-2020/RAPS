@@ -4,7 +4,13 @@
 \alias{apply_rule_pdp}
 \title{Apply a rule to a given rap object}
 \usage{
-apply_rule_pdp(rap, rule_id, verbose = FALSE, debug = FALSE)
+apply_rule_pdp(
+  rap,
+  rule_id,
+  environment_id = 0,
+  verbose = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{rap}{A rap object.}

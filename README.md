@@ -49,15 +49,13 @@ Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_pa
   - [ ] Simulation of stochastic P systems
     - [x] Monoenvironmental Gillespie algorithm
     - [ ] Multienvironmental Gillespie algorithm
+    - [ ] Multienvironmental deterministic waiting time algorithm
 
 - [x] Prepare RAPS object for monoenvironmental P systems
-- [ ] Prepare RAPS object for multienvironmental P systems
+- [x] Prepare RAPS object for multienvironmental P systems
 
-- [ ] Adapt parser to P-Lingua 5
-- [ ] Create one or more simulators:
-  - [ ] A general simulator
-  - [ ] For P-Lingua 5
-  - [ ] For RAPS' objects
+- [ ] Adapt parser to P-Lingua 5 in function `path2rap()`
+- [x] Create one or more simulators for RAPS' objects
 
 ### **Functions**
 - [x] Organise the main functions in the "Functions" section
