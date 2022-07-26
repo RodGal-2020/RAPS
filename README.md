@@ -6,6 +6,8 @@ Welcome to the repository behind the RAPS package.
 ## Quickstart
 <!-- Help for mermaid: http://mermaid-js.github.io/mermaid/#/ -->
 
+[Check this presentation](https://docs.google.com/presentation/d/1j6y3RAkCeWzvKYxJpqVUsSfh9C7p0uOEtQdWj0bbCUw/edit#slide=id.p)
+
 Run the following to install the package locally, directly from GitHub:
 ```{r}
 devtools::install_github("Xopre/RAPS")
