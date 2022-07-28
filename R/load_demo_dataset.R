@@ -1108,6 +1108,7 @@ load_demo_dataset = function(dataset = NULL) {
                          multiplicity = c(1, 1))
         ),
         propensity = c(
+          ## Actually kinetic constants
           # r1 : FASL[ FASR ]s → [ FASC ]s k1f
           9.09e-5,
           # r2 : [ FASC ]s → FASL[ FASC ]s k1r
