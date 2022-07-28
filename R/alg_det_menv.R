@@ -113,9 +113,9 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
     c_0 = chosen_trinity[[3]]
     if (verbose) {
       cat("\nWe have chosen the rule", crayon::bold(i_0), "with waiting time", tau_i_0, "to be executed in environment", crayon::bold(c_0))
-      rap$Rules %>%
-        dplyr::filter(rule_id == i_0) %>%
-        RAPS::show_rule()
+      # rap$Rules %>%
+      #   dplyr::filter(rule_id == i_0) %>%
+      #   RAPS::show_rule()
     }
 
     ## Delete the chosen trinity from the trinities' list
