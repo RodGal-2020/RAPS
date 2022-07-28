@@ -61,7 +61,7 @@ fas_rap
 
 ```{r}
 fas_rap %>%
-  RAPS::alg_det_menv(max_T = 1, verbose = TRUE, debug = TRUE)
+  RAPS::alg_det_menv(max_T = 1, verbose = TRUE, debug = FALSE)
 
 # DELETE: Debugging section
 # problematic_rule = 91

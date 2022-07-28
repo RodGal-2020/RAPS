@@ -36,6 +36,7 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
   # Deterministic waiting time algorithm
   ########################################
   simulation_time = 0
+  cat(crayon::bold("\nsimulation_time"), simulation_time)
   envs = unique(rap$Configuration$environment) # Instead of max in order to generalize
   rules = rap$Rules
   n_rules = dim(rules)[1]
@@ -123,6 +124,7 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
 
     ## Update simulation time
     simulation_time %<>% sum(tau_i_0)
+    cat(crayon::bold("\nsimulation_time"), simulation_time)
 
     ## Update waiting time in other trinities
     trinities %<>%
@@ -136,7 +138,7 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
     ## For each environment affected by r_i_0
     affected_environments = c(c_0)
     n_affected_environments = length(affected_environments)
-    if (verbose) {
+    if (debug) {
       cat("\nRemember that environmental movement rules are not supported... for now 😈")
     }
 
