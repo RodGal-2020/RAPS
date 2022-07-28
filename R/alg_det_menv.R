@@ -8,17 +8,20 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-alg_det_menv = function(rap, max_T = 10, debug = FALSE) {
+alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
   cat(crayon::bold("alg_det_menv() is under development"))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   ## FAS
-  rap = RAPS::load_demo_dataset("FAS")
+  # rap = RAPS::load_demo_dataset("FAS")
+  # verbose = TRUE
+  # debug = TRUE
+  # max_T = 1
   ## Demo 2
   # cat("\nUsing the demo rap...")
   # rap = RAPS::path2rap(demo = 2)
   # max_T = 10
-  # verbose = 1
+  # verbose = TRUE
   # debug = TRUE
   # new_environment = rap$Configuration %>%
   #   dplyr::mutate(environment = 1)
@@ -33,22 +36,25 @@ alg_det_menv = function(rap, max_T = 10, debug = FALSE) {
   # Deterministic waiting time algorithm
   ########################################
   simulation_time = 0
-  n_envs = length(unique(rap$Configuration$environment)) # Instead of max in order to generalize
+  envs = unique(rap$Configuration$environment) # Instead of max in order to generalize
   rules = rap$Rules
   n_rules = dim(rules)[1]
   propensities = rules$propensity
 
-  cat("\nUsing concentration_of_reactives = 1")
-
+  cat("Computing trinities")
   trinities = tibble::tibble(i = NULL,
                              tau_i = NULL,
                              c = NULL)
-  for (env in 0:n_envs) {
+  for (env in envs) {
     for (rule in 1:n_rules) {
+      if (debug) {
+        cat("\tComputing trinity for rule", rule, "\n")
+        # RAPS::show_rule(rules[rule, ])
+      }
       prod_concentration_of_reactives = 1
       main_membrane_label = rules[rule, ]$main_membrane_label
       lhs = rules[rule, ]$lhs[[1]] %>%
-        dplyr::filter(object != "@exists")
+        dplyr::filter(where != "@exists")
       n_reactives = dim(lhs)[1]
       for (reactive in 1:n_reactives) {
         where = lhs$where[reactive]
@@ -73,14 +79,13 @@ alg_det_menv = function(rap, max_T = 10, debug = FALSE) {
         prod_concentration_of_reactives %<>%
           prod(new_concentration)
       }
-      ## TODO: Get concentration of reactives with dplyr
-      v_r = propensities[rule] * concentration_of_reactives # FAS-style
+      v_r = propensities[rule] * prod_concentration_of_reactives
 
       trinities %<>% dplyr::bind_rows(
-          tibble::tibble(
-            i = rule,
-            tau_i = ifelse(v_r != 0, 1 / v_r, 1e6),
-            c = env
+        tibble::tibble(
+          i = rule,
+          tau_i = ifelse(v_r != 0, 1 / v_r, 1e6),
+          c = env
         )
       )
     }
@@ -105,6 +110,12 @@ alg_det_menv = function(rap, max_T = 10, debug = FALSE) {
     i_0 = chosen_trinity[[1]]
     tau_i_0 = chosen_trinity[[2]]
     c_0 = chosen_trinity[[3]]
+    if (verbose) {
+      cat("\nWe have chosen the rule", crayon::bold(i_0), "with waiting time", tau_i_0, "to be executed in environment", crayon::bold(c_0))
+      rap$Rules %>%
+        dplyr::filter(rule_id == i_0) %>%
+        RAPS::show_rule()
+    }
 
     ## Delete the chosen trinity from the trinities' list
     trinities %<>%
@@ -118,10 +129,9 @@ alg_det_menv = function(rap, max_T = 10, debug = FALSE) {
       dplyr::mutate(tau_i = tau_i - tau_i_0)
 
     ## Apply rule r_i_0 ONCE
-    RAPS::apply_rule_menv(rap,
-                         rule_id = i_0,
-                         environment_id = c_0,
-                         debug)
+    rap %<>% RAPS::apply_rule_menv(rule_id = i_0,
+                                   environment_id = c_0,
+                                   debug)
 
     ## For each environment affected by r_i_0
     affected_environments = c(c_0)
@@ -139,17 +149,49 @@ alg_det_menv = function(rap, max_T = 10, debug = FALSE) {
       # Already done in the "Apply rule" step
 
       ## Compute new waiting times for affected_environment
-      cat("\nUsing concentration_of_reactives = 1:n_rules")
-      concentration_of_reactives = 1:n_rules # It depends on the environment (!)
+      # cat("\nUsing concentration_of_reactives = 1:n_rules")
+      # concentration_of_reactives = 1:n_rules # It depends on the environment (!)
 
       ## Add new trinities for affected_environment
       for (rule in 1:n_rules) {
-        v_r = propensities[rule] * concentration_of_reactives[rule]
+        if (debug) {
+          cat("Re-computing trinity for rule", rule, "for affected_environment", affected_environment, "\n")
+          # RAPS::show_rule(rules[rule, ])
+        }
+        prod_concentration_of_reactives = 1
+        main_membrane_label = rules[rule, ]$main_membrane_label
+        lhs = rules[rule, ]$lhs[[1]] %>%
+          dplyr::filter(where != "@exists")
+        n_reactives = dim(lhs)[1]
+        for (reactive in 1:n_reactives) {
+          where = lhs$where[reactive]
+          if (where == "@here") {
+            new_concentration = rap$Configuration %>%
+              dplyr::filter(id == main_membrane_label) %$%
+              objects %>%
+              magrittr::extract2(1) %>%
+              dplyr::filter(object == lhs$object[reactive]) %$%
+              multiplicity %>%
+              sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
+          } else {
+            # It is in some other membrane "h"
+            new_concentration = rap$Configuration %>%
+              dplyr::filter(id == where) %$%
+              objects %>%
+              magrittr::extract2(1) %>%
+              dplyr::filter(object == lhs$object[reactive]) %$%
+              multiplicity %>%
+              sum(0)
+          }
+          prod_concentration_of_reactives %<>%
+            prod(new_concentration)
+        }
+        v_r = propensities[rule] * prod_concentration_of_reactives
 
         trinities %<>% dplyr::bind_rows(
           tibble::tibble(
             i = rule,
-            tau_i = 1 / v_r,
+            tau_i = ifelse(v_r != 0, 1 / v_r, 1e6),
             c = affected_environment
           )
         )

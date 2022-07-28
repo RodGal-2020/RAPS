@@ -61,18 +61,18 @@ fas_rap
 
 ```{r}
 fas_rap %>%
-  RAPS::alg_det_menv(max_T = 1, debug = TRUE)
+  RAPS::alg_det_menv(max_T = 1, verbose = TRUE, debug = TRUE)
 
-# Debugging section
-problematic_rule = 91
-problematic_env = "e"
-
-fas_rap %>%
-  RAPS::apply_rule_menv(rule_id = problematic_rule,
-                        environment_id = problematic_env,
-                        debug = TRUE)
-
-RAPS::show_rule(fas_rap$Rules[problematic_rule, ])
+# DELETE: Debugging section
+# problematic_rule = 91
+# problematic_env = "e"
+# 
+# fas_rap %>%
+#   RAPS::apply_rule_menv(rule_id = problematic_rule,
+#                         environment_id = problematic_env,
+#                         debug = TRUE)
+# 
+# RAPS::show_rule(fas_rap$Rules[problematic_rule, ])
 ```
 
 

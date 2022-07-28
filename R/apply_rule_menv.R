@@ -14,7 +14,7 @@
 #' @export
 apply_rule_menv = function(rap, rule_id, environment_id = 0, verbose = FALSE, debug = FALSE) {
   # cat(crayon::bold("apply_rule_pdp() is under development"))
-  cat("\nLaunching the rule with id", crayon::bold(rule_id), "in the environment with id", crayon::bold(environment_id))
+  cat("\nLaunching the rule with id", crayon::bold(rule_id), "in the environment with id", crayon::bold(environment_id), "\n")
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   # cat("\nUsing the demo rap...")
@@ -29,9 +29,10 @@ apply_rule_menv = function(rap, rule_id, environment_id = 0, verbose = FALSE, de
   # rule_id = 1 # To track errors
   ###
 
-  affected_rap = rap
-  affected_rap$Configuration = rap$Configuration %>%
-    dplyr::filter(environment == environment_id) %>%
+  affected_rap = rap %>%
+  affected_rap$Configuration %<>% dplyr::filter(environment == environment_id)
+
+  affected_rap %<>%
     RAPS::apply_rule(rule_id, debug)
 
   rap$Configuration %>%

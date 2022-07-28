@@ -1,6 +1,6 @@
 Package: RAPS
 Title: 🎤 RAPS: R Aid for P Systems
-Version: 0.0.2.20220728
+Version: 0.0.3.20220729
 Authors@R: 
     person("Xopre", "-", , "rodgal2020@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5825-2724"))
