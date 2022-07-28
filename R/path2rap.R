@@ -104,6 +104,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
         System = 1,
         PLingua_model = "Transition",
         N_membranes = 4,
+        N_objects = NA,
         N_rules = 11,
         Max_depth_in_rules = 1 # For now at least
       )
@@ -262,7 +263,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
                          object = c("c", "d"),
                          multiplicity = 3:4),
           tibble::tibble(where = "@here",
-                         object = "@lambda",
+                         object = "@delta",
                          multiplicity = 1),
           tibble::tibble(where = 2,
                          object = "a",
@@ -311,6 +312,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
         System = NA,
         PLingua_model = NA,
         N_membranes = 2,
+        N_objects = NA,
         N_rules = NA,
         Max_depth_in_rules = NA # For now at least
       )
