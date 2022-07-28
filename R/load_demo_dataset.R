@@ -1106,13 +1106,216 @@ load_demo_dataset = function(dataset = NULL) {
           tibble::tibble(where = c("@here", "m"),
                          object = c("tBid", "Bcl2"),
                          multiplicity = c(1, 1))
-
-
-
-
-
         ),
-        propensity = seq(1, 1/n_rules, -1/n_rules)
+        propensity = c(
+          # r1 : FASL[ FASR ]s → [ FASC ]s k1f
+          9.09e-5,
+          # r2 : [ FASC ]s → FASL[ FASC ]s k1r
+          1e-4,
+          # r3 : FASC[ FADD ]c → FASC : FADD[ ]c k2f
+          5e-4,
+          # r4 : FASC : FADD[ ]c → FASC[ FADD ]c k2r
+          0.2,
+          # r5 : FASC : FADD[ FADD ]c → FASC : FADD2[ ]c k2f
+          5e-4,
+          # r6 : FASC : FADD2[ ]c → FASC : FADD[ FADD ]c k2r
+          0.2,
+          # r7 : FASC : FADD2[ FADD ]c → FASC : FADD3[ ]c k2f
+          5e-4,
+          # r8 : FASC : FADD3[ ]c → FASC : FADD2[ FADD ]c k2r
+          0.2,
+          # r9 : FASC : FADD2 : CASP8[ FADD ]c → FASC : FADD3 : CASP8[ ]c k2f
+          5e-4,
+          # r10 : FASC : FADD3 : CASP8[ ]c → FASC : FADD2 : CASP8[ FADD ]c k2r
+          0.2,
+          # r11 : FASC : FADD2 : FLIP[ FADD ]c → FASC : FADD3 : FLIP[ ]c k2f
+          5e-4,
+          # r12 : FASC : FADD3 : FLIP[ ]c → FASC : FADD2 : FLIP[ FADD ]c k2r
+          0.2,
+          # r13 : FASC : FADD2 : CASP82[ FADD ]c → FASC : FADD3 : CASP82[ ]c k2f
+          5e-4,
+          # r14 : FASC : FADD3 : CASP82[ ]c → FASC : FADD2 : CASP82[ FADD ]c k2r
+          0.2,
+          # r15 : FASC : FADD2 : CASP8 : FLIP[ FADD ]c → FASC : FADD3 : CASP8 : FLIP[ ]c k2f
+          5e-4,
+          # r16 : FASC : FADD3 : CASP8 : FLIP[ ]c → FASC : FADD2 : CASP8 : FLIP[ FADD ]c k2r
+          0.2,
+          # r17 : FASC : FADD2 : FLIP2[ FADD ]c → FASC : FADD3 : FLIP2[ ]c k2f
+          5e-4,
+          # r18 : FASC : FADD3 : FLIP2[ ]c → FASC : FADD2 : FLIP2[ FADD ]c k2r
+          0.2,
+          # r19 : FASC : FADD : CASP8[ FADD ]c → FASC : FADD2 : CASP8[ ]c k2f
+          5e-4,
+          # r20 : FASC : FADD2 : CASP8[ ]c → FASC : FADD : CASP8[ FADD ]c k2r
+          0.2,
+          # r21 : FASC : FADD : FLIP[ FADD ]c → FASC : FADD2 : FLIP[ ]c k2f
+          5e-4,
+          # r22 : FASC : FADD2 : FLIP[ ]c → FASC : FADD : FLIP[ FADD ]c k2r
+          0.2,
+          # r23 : FASC : FADD3[ CASP8 ]c → FASC : FADD3 : CASP8[ ]c k2f
+          5e-4,
+          # r24 : FASC : FADD3 : CASP8[ ]c → FASC : FADD3[ CASP8 ]c k2r
+          0.2,
+          # r25 : FASC : FADD3[ FLIP ]c → FASC : FADD3 : FLIP[ ]c k3f
+          3.5e-3,
+          # r26 : FASC : FADD3 : FLIP[ ]c → FASC : FADD3[ FLIP ]c k3r
+          0.018,
+          # r27 : FASC : FADD3 : CASP8[ CASP8 ]c → FASC : FADD3 : CASP82[ ]c k3f
+          3.5e-3,
+          # r28 : FASC : FADD3 : CASP82[ ]c → FASC : FADD3 : CASP8[ CASP8 ]c k3r
+          0.018,
+          # r29 : FASC : FADD3 : CASP8[ FLIP ]c → FASC : FADD3 : CASP8 : FLIP[ ]c k3f
+          3.5e-3,
+          # r30 : FASC : FADD3 : CASP8 : FLIP[ ]c → FASC : FADD3 : CASP8[ FLIP ]c k3r
+          0.018,
+          # r31 : FASC : FADD3 : FLIP[ CASP8 ]c → FASC : FADD3 : CASP8 : FLIP[ ]c k3f
+          3.5e-3,
+          # r32 : FASC : FADD3 : CASP8 : FLIP[ ]c → FASC : FADD3 : FLIP[ CASP8 ]c k3r
+          0.018,
+          # r33 : FASC : FADD3 : FLIP[ FLIP ]c → FASC : FADD3 : FLIP2[ ]c k3f
+          3.5e-3,
+          # r34 : FASC : FADD3 : FLIP2[ ]c → FASC : FADD3 : FLIP[ FLIP ]c k3r
+          0.018,
+          # r35 : FASC : FADD3 : CASP82[ CASP8 ]c → FASC : FADD3 : CASP83[ ]c k3f
+          3.5e-3,
+          # r36 : FASC : FADD3 : CASP83[ ]c → FASC : FADD3 : CASP82[ CASP8 ]c k3r
+          0.018,
+          # r37 : FASC : FADD3 : CASP82[ FLIP ]c → FASC : FADD3 : CASP82 : FLIP[ ]c k3f
+          3.5e-3,
+          # r38 : FASC : FADD3 : CASP82 : FLIP[ ]c → FASC : FADD3 : CASP82[ FLIP ]c k3r
+          0.018,
+          # r39 : FASC : FADD3 : CASP8 : FLIP[ CASP8 ]c → FASC : FADD3 : CASP82 : FLIP[ ]c k3f
+          3.5e-3,
+          # r40 : FASC : FADD3 : CASP82 : FLIP[ ]c → FASC : FADD3 : CASP8 : FLIP[ CASP8 ]c k3r
+          0.018,
+          # r41 : FASC : FADD3 : CASP8 : FLIP[ FLIP ]c → FASC : FADD3 : CASP8 : FLIP2[ ]c k3f
+          3.5e-3,
+          # r42 : FASC : FADD3 : CASP8 : FLIP2[ ]c → FASC : FADD3 : CASP8 : FLIP[ FLIP ]c k3r
+          0.018,
+          # r43 : FASC : FADD3 : FLIP2[ CASP8 ]c → FASC : FADD3 : CASP8 : FLIP2[ ]c k3f
+          3.5e-3,
+          # r44 : FASC : FADD3 : CASP8 : FLIP2[ ]c → FASC : FADD3 : FLIP2[ CASP8 ]c k3r
+          0.018,
+          # r45 : FASC : FADD3 : FLIP2[ FLIP ]c → FASC : FADD3 : FLIP3[ ]c k3f
+          3.5e-3,
+          # r46 : FASC : FADD3 : FLIP3[ ]c → FASC : FADD3 : FLIP2[ FLIP ]c k3r
+          0.018,
+          # r47 : FASC : FADD2[ CASP8 ]c → FASC : FADD2 : CASP8[ ]c k3f
+          3.5e-3,
+          # r48 : FASC : FADD2 : CASP8[ ]c → FASC : FADD2[ CASP8 ]c k3r
+          0.018,
+          # r49 : FASC : FADD2[ FLIP ]c → FASC : FADD2 : FLIP[ ]c k3f
+          3.5e-3,
+          # r50 : FASC : FADD2 : FLIP[ ]c → FASC : FADD2[ FLIP ]c k3r
+          0.018,
+          # r51 : FASC : FADD2 : CASP8[ CASP8 ]c → FASC : FADD2 : CASP82[ ]c k3f
+          3.5e-3,
+          # r52 : FASC : FADD2 : CASP82[ ]c → FASC : FADD2 : CASP8[ CASP8 ]c k3r
+          0.018,
+          # r53 : FASC : FADD2 : CASP8[ FLIP ]c → FASC : FADD2 : CASP8 : FLIP[ ]c k3f
+          3.5e-3,
+          # r54 : FASC : FADD2 : CASP8 : FLIP[ ]c → FASC : FADD2 : CASP8[ FLIP ]c k3r
+          0.018,
+          # r55 : FASC : FADD2 : FLIP[ CASP8 ]c → FASC : FADD2 : CASP8 : FLIP[ ]c k3f
+          3.5e-3,
+          # r56 : FASC : FADD2 : CASP8 : FLIP[ ]c → FASC : FADD2 : FLIP[ CASP8 ]c k3r
+          0.018,
+          # r57 : FASC : FADD2 : FLIP[ FLIP ]c → FASC : FADD2 : FLIP2[ ]c k3f
+          3.5e-3,
+          # r58 : FASC : FADD2 : FLIP2[ ]c → FASC : FADD2 : FLIP[ FLIP ]c k3r
+          0.018,
+          # r59 : FASC : FADD[ CASP8 ]c → FASC : FADD : CASP8[ ]c k3f
+          3.5e-3,
+          # r60 : FASC : FADD : CASP8[ ]c → FASC : FADD[ CASP8 ]c k3r
+          0.018,
+          # r61 : FASC : FADD[ FLIP ]c → FASC : FADD : FLIP[ ]c k3f
+          3.5e-3,
+          # r62 : FASC : FADD : FLIP[ ]c → FASC : FADD[ FLIP ]c k3r
+          0.018,
+          # r63 : FASC : FADD2 : CASP82[ ]c → FASC : FADD2[ CASP8P41 2 ]c k4
+          0.3,
+          # r64 : FASC : FADD3 : CASP83[ ]c → FASC : FADD3 : CASP8[ CASP8P41 2 ]c k4
+          0.3,
+          # r65 : FASC : FADD3 : CASP82 : FLIP[ ]c → FASC : FADD3 : FLIP[ CASP8P41 2 ]c k4
+          0.3,
+          # r66 : FASC : FADD3 : CASP82[ ]c → FASC : FADD3[ CASP8P41 2 ]c k4
+          0.3,
+          # EVOLUTION
+          # r67 : [ CASP8P41 2 ]c → [ CASP8∗2 ]c k5
+          0.1,
+          # r68 : [ CASP8∗2 , CASP3 ]c → [ CASP8∗2 : CASP3 ]c k6f
+          1e-5,
+          # r69 : [ CASP8∗2 : CASP3 ]c → [ CASP8∗2 , CASP3 ]c k6r
+          0.06,
+          # r70 : [ CASP8∗2 , CASP3∗ ]c → [ CASP8∗2 : CASP3 ]c k7
+          0.1,
+          # r71 : [ CASP8∗2, Bid ]c → [ CASP8∗2: Bid ]c k8f
+          5e-3,
+          # r72 : [ CASP8∗2: Bid ]c → [ CASP8∗2, Bid ]c k8r
+          0.005,
+          # r73 : [ CASP8∗2, tBid ]c → [ CASP8∗2: Bid ]c k7
+          0.1,
+          # r74 : [ tBid, Bax ]c → [ tBid : Bax ]c k9f
+          2e-4,
+          # r75 : [ tBid : Bax ]c → [ tBid, Bax ]c k9r
+          0.02,
+          # r76 : [ tBid : Bax, Bax ]c → [ tBid : Bax2 ]c k9f
+          2e-4,
+          # r77 : [ tBid : Bax2 ]c → [ tBid : Bax, Bax ]c k9r
+          0.02,
+          ## m
+          # r78 : tBid : Bax2[ Smac ]m → Smac∗[ ]m k10
+          1e-3,
+          # r79 : tBid : Bax2[ Cyto.c ]m → Cyto.c∗[ ]m k10
+          1e-3,
+          ## STANDARD
+          # r80 : [ Smac∗, XIAP ]c → [ Smac∗ : XIAP ]c k11f
+          7e-3,
+          # r81 : [ Smac∗ : XIAP ]c → [ Smac∗, XIAP ]c k11r
+          2.221e-3,
+          # r82 : [ Cyto.c∗, Apaf ]c → [ Cyto.c∗ : Apaf : ATP ]c k12f
+          2.78e-7,
+          # r83 : [ Cyto.c∗ : Apaf : ATP ]c → [ Cyto.c∗, Apaf ]c k12r
+          5.7e-3,
+          # r84 : [ Cyto.c∗ : Apaf : ATP, CASP9 ]c → [ Cyto.c∗ : Apaf : ATP : CASP9 ]c k13f
+          2.84e-4,
+          # r85 : [ Cyto.c∗ : Apaf : ATP : CASP9 ]c → [ Cyto.c∗ : Apaf : ATP, CASP9 ]c k13r
+          0.07493,
+          # r86 : [ Cyto.c∗ : Apaf : ATP : CASP9, CASP9 ]c → [ Cyto.c∗ : Apaf : ATP : CASP92 ]c k14f
+          4.41e-4,
+          # r87 : [ Cyto.c∗ : Apaf : ATP : CASP92 ]c → [ Cyto.c∗ : Apaf : ATP : CASP9, CASP9 ]c k14r
+          0.1,
+          # r88 : [ Cyto.c∗ : Apaf : ATP : CASP92 ]c → [ Cyto.c∗ : Apaf : ATP : CASP9, CASP9∗ ]c k15
+          0.7,
+          # r89 : [ CASP9∗, CASP3 ]c → [ CASP9∗ : CASP3 ]c k16f
+          1.96e-5,
+          # r90 : [ CASP9∗ : CASP3 ]c → [ CASP9∗, CASP3 ]c k16r
+          0.05707,
+          # r91 : [ CASP9∗ : CASP3 ]c → [ CASP9∗, CASP3∗ ]c k17
+          4.8,
+          # r92 : [ CASP9, XIAP ]c → [ CASP9 : XIAP ]c k18f
+          1.06e-4,
+          # r93 : [ CASP9 : XIAP ]c → [ CASP9, XIAP ]c k18r
+          1e-3,
+          # r94 : [ CASP3∗, XIAP ]c → [ CASP3∗ : XIAP ]c k19f
+          2.47e-3,
+          # r95 : [ CASP3∗ : XIAP ]c → [ CASP3∗, XIAP ]c k19r
+          2.4e-3,
+          ## m
+          # r96 : Bax[ Bcl2 ]m → [ Bcl2 : Bax ]m k20f
+          2e-3,
+          # r97 : [ Bcl2 : Bax ]m → Bax[ Bcl2 ]m k20r
+          0.02,
+          # r960 : Bid[ Bcl2 ]m → [ Bcl2 : Bid ]m k20f
+          2e-3,
+          # r970 : [ Bcl2 : Bid ]m → Bid[ Bcl2 ]m k20r
+          0.02,
+          # r9600 : tBid[ Bcl2 ]m → [ Bcl2 : tBid ]m k20f
+          2e-3,
+          # r9700 : [ Bcl2 : tBid ]m → tBid[ Bcl2 ]m k20r
+          0.02
+
+        )
       ),
 
       "Properties" = tibble::tibble(
