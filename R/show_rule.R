@@ -10,6 +10,9 @@
 #' @export
 show_rule = function(rule) {
   cat("\n------------------------------\n")
+  cat(crayon::bold("\n\tmain_membrane_label:"), rule$main_membrane_label)
+
+  cat("\n------------------------------\n")
   crayon::bold("\n\tlhs:")
   print(rule$lhs[[1]])
 

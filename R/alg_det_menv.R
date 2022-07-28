@@ -12,6 +12,9 @@ alg_det_menv = function(rap, max_T = 10, debug = FALSE) {
   cat(crayon::bold("alg_det_menv() is under development"))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
+  ## FAS
+  rap = RAPS::load_demo_dataset("FAS")
+  ## Demo 2
   # cat("\nUsing the demo rap...")
   # rap = RAPS::path2rap(demo = 2)
   # max_T = 10
@@ -30,25 +33,53 @@ alg_det_menv = function(rap, max_T = 10, debug = FALSE) {
   # Deterministic waiting time algorithm
   ########################################
   simulation_time = 0
-  n_envs = length(unique(rap$Configuration$environment)) - 1 # Instead of max in order to generalize
+  n_envs = length(unique(rap$Configuration$environment)) # Instead of max in order to generalize
   rules = rap$Rules
   n_rules = dim(rules)[1]
   propensities = rules$propensity
 
-  cat("\nUsing concentration_of_reactives = 1:n_rules")
-  concentration_of_reactives = 1:n_rules # It depends on the environment (!)
+  cat("\nUsing concentration_of_reactives = 1")
 
   trinities = tibble::tibble(i = NULL,
                              tau_i = NULL,
                              c = NULL)
   for (env in 0:n_envs) {
     for (rule in 1:n_rules) {
-      v_r = propensities[rule] * concentration_of_reactives[rule]
+      prod_concentration_of_reactives = 1
+      main_membrane_label = rules[rule, ]$main_membrane_label
+      lhs = rules[rule, ]$lhs[[1]] %>%
+        dplyr::filter(object != "@exists")
+      n_reactives = dim(lhs)[1]
+      for (reactive in 1:n_reactives) {
+        where = lhs$where[reactive]
+        if (where == "@here") {
+          new_concentration = rap$Configuration %>%
+            dplyr::filter(id == main_membrane_label) %$%
+            objects %>%
+            magrittr::extract2(1) %>%
+            dplyr::filter(object == lhs$object[reactive]) %$%
+            multiplicity %>%
+            sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
+        } else {
+          # It is in some other membrane "h"
+          new_concentration = rap$Configuration %>%
+            dplyr::filter(id == where) %$%
+            objects %>%
+            magrittr::extract2(1) %>%
+            dplyr::filter(object == lhs$object[reactive]) %$%
+            multiplicity %>%
+            sum(0)
+        }
+        prod_concentration_of_reactives %<>%
+          prod(new_concentration)
+      }
+      ## TODO: Get concentration of reactives with dplyr
+      v_r = propensities[rule] * concentration_of_reactives # FAS-style
 
       trinities %<>% dplyr::bind_rows(
           tibble::tibble(
             i = rule,
-            tau_i = 1 / v_r,
+            tau_i = ifelse(v_r != 0, 1 / v_r, 1e6),
             c = env
         )
       )

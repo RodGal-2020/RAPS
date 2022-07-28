@@ -78,7 +78,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
     # rap$Configuration %<>%
     #   dplyr::filter(label != rule_info$rhs_membrane_label) # We delete all the rhs membranes
 
-  # Case w/o dissolution
+    # Case w/o dissolution
   } else {
 
     ########################
@@ -93,12 +93,12 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
 
       if (where == "@here") {
         affected_membranes[main_membrane_index, ]$objects[[1]] %<>%
-        # affected_membranes[main_membrane_index, ]$objects[[1]] %>% # Debugging
+          # affected_membranes[main_membrane_index, ]$objects[[1]] %>% # Debugging
           dplyr::left_join(lhs[i, ], by = "object") %>% # To preserve previous objects
           dplyr::mutate(multiplicity = multiplicity - tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
           dplyr::select(object, multiplicity)
 
-      # Some other membrane or "@exists"
+        # Some other membrane or "@exists"
       } else if (where == "@exists"){
         # In this case we just check that it can be applied
         n_correct_membranes = sum(affected_membranes$label == lhs[i, ]$object)
@@ -112,7 +112,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
       } else {
         secondary_membrane_index = which(affected_membranes$label == where)
         affected_membranes[secondary_membrane_index, ]$objects[[1]] %<>%
-        # affected_membranes[secondary_membrane_index, ]$objects[[1]] %>% # Debugging
+          # affected_membranes[secondary_membrane_index, ]$objects[[1]] %>% # Debugging
           dplyr::left_join(lhs[i, ], by = "object") %>% # To preserve previous objects
           dplyr::mutate(multiplicity = multiplicity - tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
           dplyr::select(object, multiplicity)
@@ -150,7 +150,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
       } else {
         secondary_membrane_index = which(affected_membranes$label == where)
         affected_membranes[secondary_membrane_index, ]$objects[[1]] %<>%
-        # affected_membranes[secondary_membrane_index, ]$objects[[1]] %>% # Debugging
+          # affected_membranes[secondary_membrane_index, ]$objects[[1]] %>% # Debugging
           dplyr::full_join(rhs[i, ], by = "object") %>% # To preserve previous objects
           dplyr::mutate(multiplicity = tidyr::replace_na(multiplicity, 0) + tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
           dplyr::select(object, multiplicity)
