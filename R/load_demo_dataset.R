@@ -403,7 +403,7 @@ load_demo_dataset = function(dataset = NULL) {
                          multiplicity = c(1, 1)),
           # r30 : FASC : FADD3 : CASP8 : FLIP[ ]c → FASC : FADD3 : CASP8[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8", "c"),
+                         object = c("FASC:FADD3:CASP8:FLIP", "c"),
                          multiplicity = c(1, 1)),
           # r31 : FASC : FADD3 : FLIP[ CASP8 ]c → FASC : FADD3 : CASP8 : FLIP[ ]c k3f
           tibble::tibble(where = c("@here", "c"),
@@ -411,7 +411,7 @@ load_demo_dataset = function(dataset = NULL) {
                          multiplicity = c(1, 1)),
           # r32 : FASC : FADD3 : CASP8 : FLIP[ ]c → FASC : FADD3 : FLIP[ CASP8 ]c k3r
           tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8", "c"),
+                         object = c("FASC:FADD3:CASP8:FLIP", "c"),
                          multiplicity = c(1, 1)),
           # r33 : FASC : FADD3 : FLIP[ FLIP ]c → FASC : FADD3 : FLIP2[ ]c k3f
           tibble::tibble(where = c("@here", "c"),
@@ -423,7 +423,7 @@ load_demo_dataset = function(dataset = NULL) {
                          multiplicity = c(1, 1)),
           # r35 : FASC : FADD3 : CASP82[ CASP8 ]c → FASC : FADD3 : CASP83[ ]c k3f
           tibble::tibble(where = c("@here", "c"),
-                         object = c("FASC:FADD3:CASP82", "CASP82"),
+                         object = c("FASC:FADD3:CASP82", "CASP8"),
                          multiplicity = c(1, 1)),
           # r36 : FASC : FADD3 : CASP83[ ]c → FASC : FADD3 : CASP82[ CASP8 ]c k3r
           tibble::tibble(where = c("@here", "@exists"),
@@ -435,7 +435,7 @@ load_demo_dataset = function(dataset = NULL) {
                          multiplicity = c(1, 1)),
           # r38 : FASC : FADD3 : CASP82 : FLIP[ ]c → FASC : FADD3 : CASP82[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP82", "c"),
+                         object = c("FASC:FADD3:CASP82:FLIP", "c"),
                          multiplicity = c(1, 1)),
           # r39 : FASC : FADD3 : CASP8 : FLIP[ CASP8 ]c → FASC : FADD3 : CASP82 : FLIP[ ]c k3f
           tibble::tibble(where = c("@here", "c"),
@@ -451,7 +451,7 @@ load_demo_dataset = function(dataset = NULL) {
                          multiplicity = c(1, 1)),
           # r42 : FASC : FADD3 : CASP8 : FLIP2[ ]c → FASC : FADD3 : CASP8 : FLIP[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8:FLIP", "c"),
+                         object = c("FASC:FADD3:CASP8:FLIP2", "c"),
                          multiplicity = c(1, 1)),
           # r43 : FASC : FADD3 : FLIP2[ CASP8 ]c → FASC : FADD3 : CASP8 : FLIP2[ ]c k3f
           tibble::tibble(where = c("@here", "c"),
@@ -535,7 +535,7 @@ load_demo_dataset = function(dataset = NULL) {
                          multiplicity = c(1, 1)),
           # r63 : FASC : FADD2 : CASP82[ ]c → FASC : FADD2[ CASP8P41 2 ]c k4
           tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD2:CASP8", "c"),
+                         object = c("FASC:FADD2:CASP82", "c"),
                          multiplicity = c(1, 1)),
           # r64 : FASC : FADD3 : CASP83[ ]c → FASC : FADD3 : CASP8[ CASP8P41 2 ]c k4
           tibble::tibble(where = c("@here", "@exists"),
@@ -551,9 +551,9 @@ load_demo_dataset = function(dataset = NULL) {
                          multiplicity = c(1, 1)),
           ## EVOLUTION
           # r67 : [ CASP8P41 2 ]c → [ CASP8∗2 ]c k5
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8:FLIP2", "c"),
-                         multiplicity = c(1, 1)),
+          tibble::tibble(where = c("@here"),
+                         object = c("CASP82P41"),
+                         multiplicity = c(1)),
           # r68 : [ CASP8∗2 , CASP3 ]c → [ CASP8∗2 : CASP3 ]c k6f
           tibble::tibble(where = c("@here", "@here"),
                          object = c("CASP8*2", "CASP3"),
@@ -699,413 +699,413 @@ load_demo_dataset = function(dataset = NULL) {
           # TODO:
 
           # r1 : FASL[ FASR ]s → [ FASC ]s k1f
-          tibble::tibble(where = c("@here", "s"),
-                         object = c("FASL", "FASR"),
-                         multiplicity = c(1, 1)),
-          # r2 : [ FASC ]s → FASL[ FASC ]s k1r
           tibble::tibble(where = c("s"),
                          object = c("FASC"),
-                         multiplicity = c(1)),
+                         multiplicity = c(1),
+          # r2 : [ FASC ]s → FASL[ FASC ]s k1r
+          tibble::tibble(where = c("@here", "s"),
+                         object = c("FASL", "FASC"),
+                         multiplicity = c(1, 1)),
           # r3 : FASC[ FADD ]c → FASC : FADD[ ]c k2f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD"),
+                         multiplicity = c(1, 1)),
+          # r4 : FASC : FADD[ ]c → FASC[ FADD ]c k2r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC", "FADD"),
                          multiplicity = c(1, 1)),
-          # r4 : FASC : FADD[ ]c → FASC[ FADD ]c k2r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD", "c"),
-                         multiplicity = c(1, 1)),
           # r5 : FASC : FADD[ FADD ]c → FASC : FADD2[ ]c k2f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD2"),
+                         multiplicity = c(1)),
+          # r6 : FASC : FADD2[ ]c → FASC : FADD[ FADD ]c k2r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD", "FADD"),
                          multiplicity = c(1, 1)),
-          # r6 : FASC : FADD2[ ]c → FASC : FADD[ FADD ]c k2r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD2", "c"),
-                         multiplicity = c(1, 1)),
           # r7 : FASC : FADD2[ FADD ]c → FASC : FADD3[ ]c k2f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3"),
+                         multiplicity = c(1)),
+          # r8 : FASC : FADD3[ ]c → FASC : FADD2[ FADD ]c k2r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2", "FADD"),
                          multiplicity = c(1, 1)),
-          # r8 : FASC : FADD3[ ]c → FASC : FADD2[ FADD ]c k2r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3", "c"),
-                         multiplicity = c(1, 1)),
           # r9 : FASC : FADD2 : CASP8[ FADD ]c → FASC : FADD3 : CASP8[ ]c k2f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:FADD3:CASP8"),
+                         multiplicity = c(1)),
+          # r10 : FASC : FADD3 : CASP8[ ]c → FASC : FADD2 : CASP8[ FADD ]c k2r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2:CASP8", "FADD"),
                          multiplicity = c(1, 1)),
-          # r10 : FASC : FADD3 : CASP8[ ]c → FASC : FADD2 : CASP8[ FADD ]c k2r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8", "c"),
-                         multiplicity = c(1, 1)),
           # r11 : FASC : FADD2 : FLIP[ FADD ]c → FASC : FADD3 : FLIP[ ]c k2f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:FLIP"),
+                         multiplicity = c(1)),
+          # r12 : FASC : FADD3 : FLIP[ ]c → FASC : FADD2 : FLIP[ FADD ]c k2r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2:FLIP", "FADD"),
                          multiplicity = c(1, 1)),
-          # r12 : FASC : FADD3 : FLIP[ ]c → FASC : FADD2 : FLIP[ FADD ]c k2r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:FLIP", "c"),
-                         multiplicity = c(1, 1)),
           # r13 : FASC : FADD2 : CASP82[ FADD ]c → FASC : FADD3 : CASP82[ ]c k2f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:CASP82"),
+                         multiplicity = c(1)),
+          # r14 : FASC : FADD3 : CASP82[ ]c → FASC : FADD2 : CASP82[ FADD ]c k2r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2:CASP82", "FADD"),
                          multiplicity = c(1, 1)),
-          # r14 : FASC : FADD3 : CASP82[ ]c → FASC : FADD2 : CASP82[ FADD ]c k2r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP82", "c"),
-                         multiplicity = c(1, 1)),
           # r15 : FASC : FADD2 : CASP8 : FLIP[ FADD ]c → FASC : FADD3 : CASP8 : FLIP[ ]c k2f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:CASP8:FLIP"),
+                         multiplicity = c(1)),
+          # r16 : FASC : FADD3 : CASP8 : FLIP[ ]c → FASC : FADD2 : CASP8 : FLIP[ FADD ]c k2r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2:CASP8:FLIP", "FADD"),
                          multiplicity = c(1, 1)),
-          # r16 : FASC : FADD3 : CASP8 : FLIP[ ]c → FASC : FADD2 : CASP8 : FLIP[ FADD ]c k2r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8:FLIP", "c"),
-                         multiplicity = c(1, 1)),
           # r17 : FASC : FADD2 : FLIP2[ FADD ]c → FASC : FADD3 : FLIP2[ ]c k2f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:FLIP2"),
+                         multiplicity = c(1)),
+          # r18 : FASC : FADD3 : FLIP2[ ]c → FASC : FADD2 : FLIP2[ FADD ]c k2r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2:FLIP2", "FADD"),
                          multiplicity = c(1, 1)),
-          # r18 : FASC : FADD3 : FLIP2[ ]c → FASC : FADD2 : FLIP2[ FADD ]c k2r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:FLIP2", "c"),
-                         multiplicity = c(1, 1)),
           # r19 : FASC : FADD : CASP8[ FADD ]c → FASC : FADD2 : CASP8[ ]c k2f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD2:CASP8"),
+                         multiplicity = c(1)),
+          # r20 : FASC : FADD2 : CASP8[ ]c → FASC : FADD : CASP8[ FADD ]c k2r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD:CASP8", "FADD"),
                          multiplicity = c(1, 1)),
-          # r20 : FASC : FADD2 : CASP8[ ]c → FASC : FADD : CASP8[ FADD ]c k2r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD2:CASP8", "c"),
-                         multiplicity = c(1, 1)),
           # r21 : FASC : FADD : FLIP[ FADD ]c → FASC : FADD2 : FLIP[ ]c k2f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD2:FLIP"),
+                         multiplicity = c(1)),
+          # r22 : FASC : FADD2 : FLIP[ ]c → FASC : FADD : FLIP[ FADD ]c k2r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD:FLIP", "FADD"),
                          multiplicity = c(1, 1)),
-          # r22 : FASC : FADD2 : FLIP[ ]c → FASC : FADD : FLIP[ FADD ]c k2r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD2:FLIP", "c"),
-                         multiplicity = c(1, 1)),
           # r23 : FASC : FADD3[ CASP8 ]c → FASC : FADD3 : CASP8[ ]c k2f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:CASP8"),
+                         multiplicity = c(1)),
+          # r24 : FASC : FADD3 : CASP8[ ]c → FASC : FADD3[ CASP8 ]c k2r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD3", "CASP8"),
                          multiplicity = c(1, 1)),
-          # r24 : FASC : FADD3 : CASP8[ ]c → FASC : FADD3[ CASP8 ]c k2r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8", "c"),
-                         multiplicity = c(1, 1)),
           # r25 : FASC : FADD3[ FLIP ]c → FASC : FADD3 : FLIP[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:FLIP"),
+                         multiplicity = c(1)),
+          # r26 : FASC : FADD3 : FLIP[ ]c → FASC : FADD3[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD3", "FLIP"),
                          multiplicity = c(1, 1)),
-          # r26 : FASC : FADD3 : FLIP[ ]c → FASC : FADD3[ FLIP ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:FLIP", "c"),
-                         multiplicity = c(1, 1)),
           # r27 : FASC : FADD3 : CASP8[ CASP8 ]c → FASC : FADD3 : CASP82[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:CASP82"),
+                         multiplicity = c(1)),
+          # r28 : FASC : FADD3 : CASP82[ ]c → FASC : FADD3 : CASP8[ CASP8 ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD3:CASP8", "CASP8"),
                          multiplicity = c(1, 1)),
-          # r28 : FASC : FADD3 : CASP82[ ]c → FASC : FADD3 : CASP8[ CASP8 ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP82", "c"),
-                         multiplicity = c(1, 1)),
           # r29 : FASC : FADD3 : CASP8[ FLIP ]c → FASC : FADD3 : CASP8 : FLIP[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:CASP8:FLIP"),
+                         multiplicity = c(1)),
+          # r30 : FASC : FADD3 : CASP8 : FLIP[ ]c → FASC : FADD3 : CASP8[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD3:CASP8", "FLIP"),
                          multiplicity = c(1, 1)),
-          # r30 : FASC : FADD3 : CASP8 : FLIP[ ]c → FASC : FADD3 : CASP8[ FLIP ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8", "c"),
-                         multiplicity = c(1, 1)),
           # r31 : FASC : FADD3 : FLIP[ CASP8 ]c → FASC : FADD3 : CASP8 : FLIP[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:CASP8:FLIP"),
+                         multiplicity = c(1)),
+          # r32 : FASC : FADD3 : CASP8 : FLIP[ ]c → FASC : FADD3 : FLIP[ CASP8 ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD3:FLIP", "CASP8"),
                          multiplicity = c(1, 1)),
-          # r32 : FASC : FADD3 : CASP8 : FLIP[ ]c → FASC : FADD3 : FLIP[ CASP8 ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8", "c"),
-                         multiplicity = c(1, 1)),
           # r33 : FASC : FADD3 : FLIP[ FLIP ]c → FASC : FADD3 : FLIP2[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:FLI2"),
+                         multiplicity = c(1)),
+          # r34 : FASC : FADD3 : FLIP2[ ]c → FASC : FADD3 : FLIP[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD3:FLIP", "FLIP"),
                          multiplicity = c(1, 1)),
-          # r34 : FASC : FADD3 : FLIP2[ ]c → FASC : FADD3 : FLIP[ FLIP ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:FLIP2", "c"),
-                         multiplicity = c(1, 1)),
           # r35 : FASC : FADD3 : CASP82[ CASP8 ]c → FASC : FADD3 : CASP83[ ]c k3f
-          tibble::tibble(where = c("@here", "c"),
-                         object = c("FASC:FADD3:CASP82", "CASP82"),
-                         multiplicity = c(1, 1)),
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:CASP83"),
+                         multiplicity = c(1)),
           # r36 : FASC : FADD3 : CASP83[ ]c → FASC : FADD3 : CASP82[ CASP8 ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP83", "c"),
+          tibble::tibble(where = c("@here", "c"),
+                         object = c("FASC:FADD3:CASP82", "CASP8"),
                          multiplicity = c(1, 1)),
           # r37 : FASC : FADD3 : CASP82[ FLIP ]c → FASC : FADD3 : CASP82 : FLIP[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:CASP82:FLIP"),
+                         multiplicity = c(1)),
+          # r38 : FASC : FADD3 : CASP82 : FLIP[ ]c → FASC : FADD3 : CASP82[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD3:CASP82", "FLIP"),
                          multiplicity = c(1, 1)),
-          # r38 : FASC : FADD3 : CASP82 : FLIP[ ]c → FASC : FADD3 : CASP82[ FLIP ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP82", "c"),
-                         multiplicity = c(1, 1)),
           # r39 : FASC : FADD3 : CASP8 : FLIP[ CASP8 ]c → FASC : FADD3 : CASP82 : FLIP[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:CASP82:FLIP"),
+                         multiplicity = c(1)),
+          # r40 : FASC : FADD3 : CASP82 : FLIP[ ]c → FASC : FADD3 : CASP8 : FLIP[ CASP8 ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD3:CASP8:FLIP", "CASP8"),
                          multiplicity = c(1, 1)),
-          # r40 : FASC : FADD3 : CASP82 : FLIP[ ]c → FASC : FADD3 : CASP8 : FLIP[ CASP8 ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP82:FLIP", "c"),
-                         multiplicity = c(1, 1)),
           # r41 : FASC : FADD3 : CASP8 : FLIP[ FLIP ]c → FASC : FADD3 : CASP8 : FLIP2[ ]c k3f
-          tibble::tibble(where = c("@here", "c"),
-                         object = c("FASC:FADD3:CASP82:FLIP", "FLIP"),
-                         multiplicity = c(1, 1)),
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:CASP82:FLIP2"),
+                         multiplicity = c(1)),
           # r42 : FASC : FADD3 : CASP8 : FLIP2[ ]c → FASC : FADD3 : CASP8 : FLIP[ FLIP ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8:FLIP", "c"),
+          tibble::tibble(where = c("@here", "c"),
+                         object = c("FASC:FADD3:CASP8:FLIP", "FLIP"),
                          multiplicity = c(1, 1)),
           # r43 : FASC : FADD3 : FLIP2[ CASP8 ]c → FASC : FADD3 : CASP8 : FLIP2[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:CASP8:FLIP2"),
+                         multiplicity = c(1)),
+          # r44 : FASC : FADD3 : CASP8 : FLIP2[ ]c → FASC : FADD3 : FLIP2[ CASP8 ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD3:FLIP2", "CASP8"),
                          multiplicity = c(1, 1)),
-          # r44 : FASC : FADD3 : CASP8 : FLIP2[ ]c → FASC : FADD3 : FLIP2[ CASP8 ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8:FLIP2", "c"),
-                         multiplicity = c(1, 1)),
           # r45 : FASC : FADD3 : FLIP2[ FLIP ]c → FASC : FADD3 : FLIP3[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD3:FLIP3"),
+                         multiplicity = c(1)),
+          # r46 : FASC : FADD3 : FLIP3[ ]c → FASC : FADD3 : FLIP2[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD3:FLIP2", "FLIP"),
                          multiplicity = c(1, 1)),
-          # r46 : FASC : FADD3 : FLIP3[ ]c → FASC : FADD3 : FLIP2[ FLIP ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:FLIP3", "c"),
-                         multiplicity = c(1, 1)),
           # r47 : FASC : FADD2[ CASP8 ]c → FASC : FADD2 : CASP8[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD2:CASP8"),
+                         multiplicity = c(1)),
+          # r48 : FASC : FADD2 : CASP8[ ]c → FASC : FADD2[ CASP8 ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2", "CASP8"),
                          multiplicity = c(1, 1)),
-          # r48 : FASC : FADD2 : CASP8[ ]c → FASC : FADD2[ CASP8 ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD2:CASP8", "c"),
-                         multiplicity = c(1, 1)),
           # r49 : FASC : FADD2[ FLIP ]c → FASC : FADD2 : FLIP[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD2:FLIP"),
+                         multiplicity = c(1)),
+          # r50 : FASC : FADD2 : FLIP[ ]c → FASC : FADD2[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2", "FLIP"),
                          multiplicity = c(1, 1)),
-          # r50 : FASC : FADD2 : FLIP[ ]c → FASC : FADD2[ FLIP ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD2:FLIP", "c"),
-                         multiplicity = c(1, 1)),
           # r51 : FASC : FADD2 : CASP8[ CASP8 ]c → FASC : FADD2 : CASP82[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD2:CASP82"),
+                         multiplicity = c(1)),
+          # r52 : FASC : FADD2 : CASP82[ ]c → FASC : FADD2 : CASP8[ CASP8 ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2:CASP8", "CASP8"),
                          multiplicity = c(1, 1)),
-          # r52 : FASC : FADD2 : CASP82[ ]c → FASC : FADD2 : CASP8[ CASP8 ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD2:CASP82", "c"),
-                         multiplicity = c(1, 1)),
           # r53 : FASC : FADD2 : CASP8[ FLIP ]c → FASC : FADD2 : CASP8 : FLIP[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD2:CASP8:FLIP"),
+                         multiplicity = c(1)),
+          # r54 : FASC : FADD2 : CASP8 : FLIP[ ]c → FASC : FADD2 : CASP8[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2:CASP8", "FLIP"),
                          multiplicity = c(1, 1)),
-          # r54 : FASC : FADD2 : CASP8 : FLIP[ ]c → FASC : FADD2 : CASP8[ FLIP ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD2:CASP8:FLIP", "c"),
-                         multiplicity = c(1, 1)),
           # r55 : FASC : FADD2 : FLIP[ CASP8 ]c → FASC : FADD2 : CASP8 : FLIP[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD2:CASP8:FLIP"),
+                         multiplicity = c(1)),
+          # r56 : FASC : FADD2 : CASP8 : FLIP[ ]c → FASC : FADD2 : FLIP[ CASP8 ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2:FLIP", "CASP8"),
                          multiplicity = c(1, 1)),
-          # r56 : FASC : FADD2 : CASP8 : FLIP[ ]c → FASC : FADD2 : FLIP[ CASP8 ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD2:CASP8:FLIP", "c"),
-                         multiplicity = c(1, 1)),
           # r57 : FASC : FADD2 : FLIP[ FLIP ]c → FASC : FADD2 : FLIP2[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD2:FLIP2"),
+                         multiplicity = c(1)),
+          # r58 : FASC : FADD2 : FLIP2[ ]c → FASC : FADD2 : FLIP[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD2:FLIP", "FLIP"),
                          multiplicity = c(1, 1)),
-          # r58 : FASC : FADD2 : FLIP2[ ]c → FASC : FADD2 : FLIP[ FLIP ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD2:FLIP2", "c"),
-                         multiplicity = c(1, 1)),
           # r59 : FASC : FADD[ CASP8 ]c → FASC : FADD : CASP8[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD:CASP8"),
+                         multiplicity = c(1)),
+          # r60 : FASC : FADD : CASP8[ ]c → FASC : FADD[ CASP8 ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD", "CASP8"),
                          multiplicity = c(1, 1)),
-          # r60 : FASC : FADD : CASP8[ ]c → FASC : FADD[ CASP8 ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD:CASP8", "c"),
-                         multiplicity = c(1, 1)),
           # r61 : FASC : FADD[ FLIP ]c → FASC : FADD : FLIP[ ]c k3f
+          tibble::tibble(where = c("@here"),
+                         object = c("FASC:FADD:FLIP"),
+                         multiplicity = c(1)),
+          # r62 : FASC : FADD : FLIP[ ]c → FASC : FADD[ FLIP ]c k3r
           tibble::tibble(where = c("@here", "c"),
                          object = c("FASC:FADD", "FLIP"),
                          multiplicity = c(1, 1)),
-          # r62 : FASC : FADD : FLIP[ ]c → FASC : FADD[ FLIP ]c k3r
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD:FLIP", "c"),
-                         multiplicity = c(1, 1)),
           # r63 : FASC : FADD2 : CASP82[ ]c → FASC : FADD2[ CASP8P41 2 ]c k4
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD2:CASP8", "c"),
+          tibble::tibble(where = c("@here", "c"),
+                         object = c("FASC:FADD2", "CASP82P41"),
                          multiplicity = c(1, 1)),
           # r64 : FASC : FADD3 : CASP83[ ]c → FASC : FADD3 : CASP8[ CASP8P41 2 ]c k4
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP83", "c"),
+          tibble::tibble(where = c("@here", "c"),
+                         object = c("FASC:FADD3:CASP8", "CASP82P41"),
                          multiplicity = c(1, 1)),
           # r65 : FASC : FADD3 : CASP82 : FLIP[ ]c → FASC : FADD3 : FLIP[ CASP8P41 2 ]c k4
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP82:FLIP", "c"),
+          tibble::tibble(where = c("@here", "c"),
+                         object = c("FASC:FADD3:FLIP", "CASP82P41"),
                          multiplicity = c(1, 1)),
           # r66 : FASC : FADD3 : CASP82[ ]c → FASC : FADD3[ CASP8P41 2 ]c k4
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP82", "c"),
+          tibble::tibble(where = c("@here", "c"),
+                         object = c("FASC:FADD3", "CASP82P41"),
                          multiplicity = c(1, 1)),
           ## EVOLUTION
           # r67 : [ CASP8P41 2 ]c → [ CASP8∗2 ]c k5
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("FASC:FADD3:CASP8:FLIP2", "c"),
-                         multiplicity = c(1, 1)),
+          tibble::tibble(where = c("@here"),
+                         object = c("CASP8*2"),
+                         multiplicity = c(1)),
           # r68 : [ CASP8∗2 , CASP3 ]c → [ CASP8∗2 : CASP3 ]c k6f
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("CASP8*2", "CASP3"),
-                         multiplicity = c(1, 1)),
-          # r69 : [ CASP8∗2 : CASP3 ]c → [ CASP8∗2 , CASP3 ]c k6r
           tibble::tibble(where = c("@here"),
                          object = c("CASP8*2:CASP3"),
                          multiplicity = c(1)),
-          # r70 : [ CASP8∗2 , CASP3∗ ]c → [ CASP8∗2 : CASP3 ]c k7
+          # r69 : [ CASP8∗2 : CASP3 ]c → [ CASP8∗2 , CASP3 ]c k6r
           tibble::tibble(where = c("@here", "@here"),
                          object = c("CASP8*2", "CASP3"),
                          multiplicity = c(1, 1)),
+          # r70 : [ CASP8∗2 , CASP3∗ ]c → [ CASP8∗2 : CASP3 ]c k7
+          tibble::tibble(where = c("@here"),
+                         object = c("CASP8*2:CASP3"),
+                         multiplicity = c(1)),
           # r71 : [ CASP8∗2, Bid ]c → [ CASP8∗2: Bid ]c k8f
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("CASP8*2", "Bid"),
-                         multiplicity = c(1, 1)),
-          # r72 : [ CASP8∗2: Bid ]c → [ CASP8∗2, Bid ]c k8r
           tibble::tibble(where = c("@here"),
                          object = c("CASP8*2:Bid"),
                          multiplicity = c(1)),
+          # r72 : [ CASP8∗2: Bid ]c → [ CASP8∗2, Bid ]c k8r
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("CASP8*2", "Bid"),
+                         multiplicity = c(1, 1)),
           # r73 : [ CASP8∗2, tBid ]c → [ CASP8∗2: Bid ]c k7
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("CASP8*2", "tBid"),
-                         multiplicity = c(1, 1)),
+          tibble::tibble(where = c("@here"),
+                         object = c("CASP8*2:tBid"), ##### STRANGE "t"
+                         multiplicity = c(1)),
           # r74 : [ tBid, Bax ]c → [ tBid : Bax ]c k9f
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("tBid", "Bax"),
-                         multiplicity = c(1, 1)),
-          # r75 : [ tBid : Bax ]c → [ tBid, Bax ]c k9r
           tibble::tibble(where = c("@here"),
                          object = c("tBid:Bax"),
                          multiplicity = c(1)),
-          # r76 : [ tBid : Bax, Bax ]c → [ tBid : Bax2 ]c k9f
+          # r75 : [ tBid : Bax ]c → [ tBid, Bax ]c k9r
           tibble::tibble(where = c("@here", "@here"),
-                         object = c("tBid:Bax", "Bax"),
+                         object = c("tBid", "Bax"),
                          multiplicity = c(1, 1)),
-          # r77 : [ tBid : Bax2 ]c → [ tBid : Bax, Bax ]c k9r
+          # r76 : [ tBid : Bax, Bax ]c → [ tBid : Bax2 ]c k9f
           tibble::tibble(where = c("@here"),
                          object = c("tBid:Bax2"),
                          multiplicity = c(1)),
+          # r77 : [ tBid : Bax2 ]c → [ tBid : Bax, Bax ]c k9r
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("tBid:Bax", "Bax"),
+                         multiplicity = c(1, 1)),
           ## m
           # r78 : tBid : Bax2[ Smac ]m → Smac∗[ ]m k10
-          tibble::tibble(where = c("@here", "m"),
-                         object = c("tBid:Bax2", "Smac"),
-                         multiplicity = c(1, 1)),
+          tibble::tibble(where = c("@here"),
+                         object = c("Smac*"),
+                         multiplicity = c(1)),
           # r79 : tBid : Bax2[ Cyto.c ]m → Cyto.c∗[ ]m k10
-          tibble::tibble(where = c("@here", "m"),
-                         object = c("tBid:Bax2", "Cyto.c"),
-                         multiplicity = c(1, 1)),
+          tibble::tibble(where = c("@here"),
+                         object = c("Cyto.c*"),
+                         multiplicity = c(1)),
           ## STANDARD
           # r80 : [ Smac∗, XIAP ]c → [ Smac∗ : XIAP ]c k11f
+          tibble::tibble(where = c("@here"),
+                         object = c("Smac*:XIAP"),
+                         multiplicity = c(1)),
+          # r81 : [ Smac∗ : XIAP ]c → [ Smac∗, XIAP ]c k11r
           tibble::tibble(where = c("@here", "@here"),
                          object = c("Smac*", "XIAP"),
                          multiplicity = c(1, 1)),
-          # r81 : [ Smac∗ : XIAP ]c → [ Smac∗, XIAP ]c k11r
-          tibble::tibble(where = c("@here"),
-                         object = c("Smac:XIAP"),
-                         multiplicity = c(1)),
           # r82 : [ Cyto.c∗, Apaf ]c → [ Cyto.c∗ : Apaf : ATP ]c k12f
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("Cyto.c*", "Apaf"),
-                         multiplicity = c(1, 1)),
-          # r83 : [ Cyto.c∗ : Apaf : ATP ]c → [ Cyto.c∗, Apaf ]c k12r
           tibble::tibble(where = c("@here"),
                          object = c("Cyto.c*:Apaf:ATP"),
                          multiplicity = c(1)),
-          # r84 : [ Cyto.c∗ : Apaf : ATP, CASP9 ]c → [ Cyto.c∗ : Apaf : ATP : CASP9 ]c k13f
+          # r83 : [ Cyto.c∗ : Apaf : ATP ]c → [ Cyto.c∗, Apaf ]c k12r
           tibble::tibble(where = c("@here", "@here"),
-                         object = c("Cyto.c*:Apaf:ATP", "CASP9"),
+                         object = c("Cyto.c*", "Apaf"),
                          multiplicity = c(1, 1)),
-          # r85 : [ Cyto.c∗ : Apaf : ATP : CASP9 ]c → [ Cyto.c∗ : Apaf : ATP, CASP9 ]c k13r
+          # r84 : [ Cyto.c∗ : Apaf : ATP, CASP9 ]c → [ Cyto.c∗ : Apaf : ATP : CASP9 ]c k13f
           tibble::tibble(where = c("@here"),
                          object = c("Cyto.c*:Apaf:ATP:CASP9"),
                          multiplicity = c(1)),
+          # r85 : [ Cyto.c∗ : Apaf : ATP : CASP9 ]c → [ Cyto.c∗ : Apaf : ATP, CASP9 ]c k13r
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("Cyto.c*:Apaf:ATP", "CASP9"),
+                         multiplicity = c(1, 1)),
           # r86 : [ Cyto.c∗ : Apaf : ATP : CASP9, CASP9 ]c → [ Cyto.c∗ : Apaf : ATP : CASP92 ]c k14f
+          tibble::tibble(where = c("@here"),
+                         object = c("Cyto.c*:Apaf:ATP:CASP92"),
+                         multiplicity = c(1)),
+          # r87 : [ Cyto.c∗ : Apaf : ATP : CASP92 ]c → [ Cyto.c∗ : Apaf : ATP : CASP9, CASP9 ]c k14r
           tibble::tibble(where = c("@here", "@here"),
                          object = c("Cyto.c*:Apaf:ATP:CASP9", "CASP9"),
                          multiplicity = c(1, 1)),
-          # r87 : [ Cyto.c∗ : Apaf : ATP : CASP92 ]c → [ Cyto.c∗ : Apaf : ATP : CASP9, CASP9 ]c k14r
-          tibble::tibble(where = c("@here"),
-                         object = c("Cyto.c*:Apaf:ATP:CASP92"),
-                         multiplicity = c(1)),
           # r88 : [ Cyto.c∗ : Apaf : ATP : CASP92 ]c → [ Cyto.c∗ : Apaf : ATP : CASP9, CASP9∗ ]c k15
-          tibble::tibble(where = c("@here"),
-                         object = c("Cyto.c*:Apaf:ATP:CASP92"),
-                         multiplicity = c(1)),
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("Cyto.c*:Apaf:ATP:CASP9", "CASP9*"),
+                         multiplicity = c(1, 1)),
           # r89 : [ CASP9∗, CASP3 ]c → [ CASP9∗ : CASP3 ]c k16f
+          tibble::tibble(where = c("@here"),
+                         object = c("CASP9*:CASP3"),
+                         multiplicity = c(1)),
+          # r90 : [ CASP9∗ : CASP3 ]c → [ CASP9∗, CASP3 ]c k16r
           tibble::tibble(where = c("@here", "@here"),
                          object = c("CASP9*", "CASP3"),
                          multiplicity = c(1, 1)),
-          # r90 : [ CASP9∗ : CASP3 ]c → [ CASP9∗, CASP3 ]c k16r
-          tibble::tibble(where = c("@here"),
-                         object = c("CASP9*:CASP3"),
-                         multiplicity = c(1)),
           # r91 : [ CASP9∗ : CASP3 ]c → [ CASP9∗, CASP3∗ ]c k17
-          tibble::tibble(where = c("@here"),
-                         object = c("CASP9*:CASP3"),
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("CASP9*", "CASP3*"),
                          multiplicity = c(1)),
           # r92 : [ CASP9, XIAP ]c → [ CASP9 : XIAP ]c k18f
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("CASP9", "XIAP"),
-                         multiplicity = c(1, 1)),
-          # r93 : [ CASP9 : XIAP ]c → [ CASP9, XIAP ]c k18r
           tibble::tibble(where = c("@here"),
                          object = c("CASP9:XIAP"),
                          multiplicity = c(1)),
-          # r94 : [ CASP3∗, XIAP ]c → [ CASP3∗ : XIAP ]c k19f
+          # r93 : [ CASP9 : XIAP ]c → [ CASP9, XIAP ]c k18r
           tibble::tibble(where = c("@here", "@here"),
-                         object = c("CASP3*", "XIAP"),
+                         object = c("CASP9", "XIAP"),
                          multiplicity = c(1, 1)),
-          # r95 : [ CASP3∗ : XIAP ]c → [ CASP3∗, XIAP ]c k19r
+          # r94 : [ CASP3∗, XIAP ]c → [ CASP3∗ : XIAP ]c k19f
           tibble::tibble(where = c("@here"),
                          object = c("CASP3*:XIAP"),
                          multiplicity = c(1)),
+          # r95 : [ CASP3∗ : XIAP ]c → [ CASP3∗, XIAP ]c k19r
+          tibble::tibble(where = c("@here", "@here"),
+                         object = c("CASP3*", "XIAP"),
+                         multiplicity = c(1, 1)),
           ## m
           # r96 : Bax[ Bcl2 ]m → [ Bcl2 : Bax ]m k20f
+          tibble::tibble(where = c("m"),
+                         object = c("Bcl2:Bax"),
+                         multiplicity = c(1)),
+          # r97 : [ Bcl2 : Bax ]m → Bax[ Bcl2 ]m k20r
           tibble::tibble(where = c("@here", "m"),
                          object = c("Bax", "Bcl2"),
                          multiplicity = c(1, 1)),
-          # r97 : [ Bcl2 : Bax ]m → Bax[ Bcl2 ]m k20r
-          tibble::tibble(where = c("@here"),
-                         object = c("Bcl2:Bax"),
-                         multiplicity = c(1)),
           # r960 : Bid[ Bcl2 ]m → [ Bcl2 : Bid ]m k20f
+          tibble::tibble(where = c("m"),
+                         object = c("Bcl2:Bid"),
+                         multiplicity = c(1)),
+          # r970 : [ Bcl2 : Bid ]m → Bid[ Bcl2 ]m k20r
           tibble::tibble(where = c("@here", "m"),
                          object = c("Bid", "Bcl2"),
                          multiplicity = c(1, 1)),
-          # r970 : [ Bcl2 : Bid ]m → Bid[ Bcl2 ]m k20r
-          tibble::tibble(where = c("@here"),
-                         object = c("Bcl2:Bid"),
-                         multiplicity = c(1)),
           # r9600 : tBid[ Bcl2 ]m → [ Bcl2 : tBid ]m k20f
+          tibble::tibble(where = c("m"),
+                         object = c("Bcl2:tBid"),
+                         multiplicity = c(1)),
+          # r9700 : [ Bcl2 : tBid ]m → tBid[ Bcl2 ]m k20r
           tibble::tibble(where = c("@here", "m"),
                          object = c("tBid", "Bcl2"),
-                         multiplicity = c(1, 1)),
-          # r9700 : [ Bcl2 : tBid ]m → tBid[ Bcl2 ]m k20r
-          tibble::tibble(where = c("@here"),
-                         object = c("Bcl2:tBid"),
-                         multiplicity = c(1))
+                         multiplicity = c(1, 1))
 
 
 
