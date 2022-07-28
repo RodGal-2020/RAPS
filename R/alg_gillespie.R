@@ -28,7 +28,7 @@ alg_gillespie = function(rap, max_T = 10, propensity_function = NULL, return_mid
   simulation_time = 0
   rules = rap$Rules
   if (return_middle_states) {
-    raps = list(rap$RAP)
+    raps = list(rap$Configuration)
   }
 
 

@@ -13,11 +13,11 @@ choose_rule = function(rap, semantics = "GIL") {
   ### DELETE THIS DEMO
   cat("\nUsing the demo rap...")
   rap = RAPS::path2rap()
-  new_environment = rap$RAP %>%
+  new_environment = rap$Configuration %>%
     magrittr::extract(1:2, ) %>%
     dplyr::mutate(environment = 1)
 
-  rap$RAP %<>%
+  rap$Configuration %<>%
     dplyr::bind_rows(new_environment)
   ###
 
@@ -51,7 +51,7 @@ choose_rule = function(rap, semantics = "GIL") {
     # Gillespie algorithm
     ########################################
     simulation_time = 0
-    prov_RAP = rap$RAP
+    prov_RAP = rap$Configuration
 
     n_envs = prov_RAP %$%
       environment %>%

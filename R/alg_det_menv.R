@@ -8,7 +8,7 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-alg_det_pdp = function(rap, max_T = 10) {
+alg_det_menv = function(rap, max_T = 10) {
   cat(crayon::bold("alg_det_pdp() is under development"))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
@@ -17,9 +17,9 @@ alg_det_pdp = function(rap, max_T = 10) {
   max_T = 10
   verbose = 1
   debug = TRUE
-  new_environment = rap$RAP %>%
+  new_environment = rap$Configuration %>%
     dplyr::mutate(environment = 1)
-  rap$RAP %<>%
+  rap$Configuration %<>%
     dplyr::bind_rows(new_environment)
   rule_id = 1 # To track errors
   cat("\nWorking with 2 environments, 0 and 1, with the same objects")
@@ -30,7 +30,7 @@ alg_det_pdp = function(rap, max_T = 10) {
   # Deterministic waiting time algorithm
   ########################################
   simulation_time = 0
-  n_envs = length(unique(rap$RAP$environment)) - 1 # Instead of max in order to generalize
+  n_envs = length(unique(rap$Configuration$environment)) - 1 # Instead of max in order to generalize
   rules = rap$Rules
   n_rules = dim(rules)[1]
   propensities = rules$propensity

@@ -8,7 +8,10 @@
 #' @section TODO:
 #' * Improve visualization.
 #' @export
-show_rap = function(rap) {
-  cat("Function under development, returning the default R visualization")
-  rap
+show_rap = function(rap, focus_on = NULL) {
+  if (is.null(focus_on)) {
+    cat("Function under development, returning the default R visualization")
+    rap
+  }
+
 }

@@ -21,22 +21,22 @@ apply_rule_pdp = function(rap, rule_id, environment_id = 0, verbose = FALSE, deb
   # rap = RAPS::path2rap(demo = 2)
   # verbose = 1
   # debug = TRUE
-  # new_environment = rap$RAP %>%
+  # new_environment = rap$Configuration %>%
   #   dplyr::filter(label == 1) %>%
   #   dplyr::mutate(environment = 1)
-  # rap$RAP %<>%
+  # rap$Configuration %<>%
   #   dplyr::bind_rows(new_environment)
   # rule_id = 1 # To track errors
   ###
 
   affected_rap = rap
-  affected_rap$RAP = rap$RAP %>%
+  affected_rap$Configuration = rap$Configuration %>%
     dplyr::filter(environment == environment_id) %>%
     RAPS::apply_rule(rule_id)
 
-  rap$RAP %>%
+  rap$Configuration %>%
     dplyr::filter(environment != environment_id) %>%
-    dplyr::bind_rows(affected_rap$RAP)
+    dplyr::bind_rows(affected_rap$Configuration)
 
   return(rap)
 }

@@ -27,7 +27,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
 
     expected_exit = list(
 
-      "RAP" = tibble::tibble(
+      "Configuration" = tibble::tibble(
         environment = c(0, 0, 0, 0),
         id = c(0, 1, 2, 3),
         label = c(0, 1, 1, 2), # Both children have the same label
@@ -116,7 +116,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
 
     expected_exit = list(
 
-      "RAP" = tibble::tibble(
+      "Configuration" = tibble::tibble(
         environment = c(0, 0, 0),
         id = c(0, 1, 2),
         label = c(0, 1, 2), # Both children have the same label

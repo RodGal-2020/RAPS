@@ -58,7 +58,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
     }
   }
 
-  affected_membranes = rap$RAP %>%
+  affected_membranes = rap$Configuration %>%
     dplyr::filter(label %in% affected_membranes_labels)
 
   main_membrane_index = which(affected_membranes$label == rule_info$main_membrane_label)
@@ -75,7 +75,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
   # Case w/ dissolution
   if (rule_info$dissolves) {
     cat("\nDissolution is yet to be implemented")
-    # rap$RAP %<>%
+    # rap$Configuration %<>%
     #   dplyr::filter(label != rule_info$rhs_membrane_label) # We delete all the rhs membranes
 
   # Case w/o dissolution
@@ -167,7 +167,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
     ##########################
     ###### Update rap ########
     ##########################
-    rap$RAP %<>%
+    rap$Configuration %<>%
       # dplyr::filter(label != rule_info$rhs_membrane_label) %>% # Untouched ones
       dplyr::filter(!label %in% affected_membranes_labels) %>%
       # dplyr::bind_rows(affected_rhs_membranes) %>%
@@ -185,7 +185,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
   l_objects = length(objects)
 
   for (i in 1:l_objects) {
-    rap$RAP$objects[[i]] %<>%
+    rap$Configuration$objects[[i]] %<>%
       dplyr::filter(multiplicity != 0)
   }
 

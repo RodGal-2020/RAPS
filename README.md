@@ -36,10 +36,18 @@ Main workflow with `RAPS`:
 
 In `RAPS` we use the `rap` (Representing A P system) objects, which have the following aspect:
 
+$Configuration
+
 Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_params | 
 ------------|----|-------|-----------------|----------|------|--------|--------------|
 1           | 1  | 1     | [(a, 1)]        | 0 (skin) | 2    |     -1 | NULL         |
 1           | 2  | 2     | [(b, 2), (c,3)] | 1        | NULL |     +1 | NULL         |
+
+$Rules
+TODO:
+
+$Properties
+TODO:
 
 ## Status
 

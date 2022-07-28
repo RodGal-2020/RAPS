@@ -8,7 +8,7 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-alg_gillespie_pdp = function(rap_environment, max_T = 10) {
+alg_gillespie_menv = function(rap_environment, max_T = 10) {
   cat(crayon::bold("alg_gillespie_pdp() is under development"))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
