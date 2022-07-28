@@ -38,7 +38,7 @@ load_demo_dataset = function(dataset = NULL) {
     cat(crayon::bold("Returning fas_rap"))
     cat("\nBased on", crayon::italic("Simulating FAS-Induced Apoptosis by Using P Systems"), "by Smitha Cheruku, Andrei Păun, Francisco J. Romero-Campero, Mario J. Pérez-Jiménez, and Oscar H. Ibarra")
 
-    n_rules = 99
+    n_rules = 101
 
     fas_rap = list(
 
@@ -701,7 +701,7 @@ load_demo_dataset = function(dataset = NULL) {
           # r1 : FASL[ FASR ]s → [ FASC ]s k1f
           tibble::tibble(where = c("s"),
                          object = c("FASC"),
-                         multiplicity = c(1),
+                         multiplicity = c(1)),
           # r2 : [ FASC ]s → FASL[ FASC ]s k1r
           tibble::tibble(where = c("@here", "s"),
                          object = c("FASL", "FASC"),
@@ -1320,12 +1320,13 @@ load_demo_dataset = function(dataset = NULL) {
       ),
 
       "Properties" = tibble::tibble(
-        System = NA,
-        PLingua_model = NA,
-        N_membranes = NA,
+        System = "FAS",
+        PLingua_model = "Stochastic",
+        N_membranes = 4,
+        N_environments = 1,
         N_objects = 53,
         N_rules = 99,
-        Max_depth_in_rules = NA # For now at least
+        Max_depth_in_rules = NaN # For now at least
       )
     )
     return(fas_rap)
