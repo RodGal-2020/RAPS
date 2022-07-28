@@ -4,7 +4,7 @@
 \alias{alg_det_menv}
 \title{Template for new functions}
 \usage{
-alg_det_menv(rap, max_T = 10)
+alg_det_menv(rap, max_T = 10, debug = FALSE)
 }
 \arguments{
 \item{my_param}{Yep, it's a parameter.}

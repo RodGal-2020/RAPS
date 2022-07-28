@@ -8,21 +8,21 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-alg_det_menv = function(rap, max_T = 10) {
-  cat(crayon::bold("alg_det_pdp() is under development"))
+alg_det_menv = function(rap, max_T = 10, debug = FALSE) {
+  cat(crayon::bold("alg_det_menv() is under development"))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
-  cat("\nUsing the demo rap...")
-  rap = RAPS::path2rap(demo = 2)
-  max_T = 10
-  verbose = 1
-  debug = TRUE
-  new_environment = rap$Configuration %>%
-    dplyr::mutate(environment = 1)
-  rap$Configuration %<>%
-    dplyr::bind_rows(new_environment)
-  rule_id = 1 # To track errors
-  cat("\nWorking with 2 environments, 0 and 1, with the same objects")
+  # cat("\nUsing the demo rap...")
+  # rap = RAPS::path2rap(demo = 2)
+  # max_T = 10
+  # verbose = 1
+  # debug = TRUE
+  # new_environment = rap$Configuration %>%
+  #   dplyr::mutate(environment = 1)
+  # rap$Configuration %<>%
+  #   dplyr::bind_rows(new_environment)
+  # rule_id = 1 # To track errors
+  # cat("\nWorking with 2 environments, 0 and 1, with the same objects")
   ###
 
 
@@ -87,9 +87,10 @@ alg_det_menv = function(rap, max_T = 10) {
       dplyr::mutate(tau_i = tau_i - tau_i_0)
 
     ## Apply rule r_i_0 ONCE
-    RAPS::apply_rule_pdp(rap,
+    RAPS::apply_rule_menv(rap,
                          rule_id = i_0,
-                         environment_id = c_0)
+                         environment_id = c_0,
+                         debug)
 
     ## For each environment affected by r_i_0
     affected_environments = c(c_0)

@@ -51,18 +51,17 @@ If RAPS is not installed, uncomment the following:
 # devtools::install_github("Xopre/RAPS")
 ```
 
-```{r}
-library(RAPS)
-```
 
 # FAS
 ```{r}
+library(RAPS)
 fas_rap = RAPS::load_demo_dataset("FAS")
+fas_rap
 ```
 
 ```{r}
 fas_rap %>%
-  RAPS::alg_det_menv(max_T = 1)
+  RAPS::alg_det_menv(max_T = 1, debug = TRUE)
 ```
 
 
