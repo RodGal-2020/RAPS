@@ -18,11 +18,13 @@ path2rap = function(path = NULL, verbose = 5, demo = 1) {
 
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
-  path = NULL
-  demo = NULL
-  verbose = TRUE
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_001_model_001."
+  # format = "xml"
+  # path %<>% paste0(format)
+  # demo = NULL
+  # verbose = TRUE
   ## FAS
-  rap_reference = RAPS::load_demo_dataset("FAS")
+  # rap_reference = RAPS::load_demo_dataset("FAS")
   ###
 
 
