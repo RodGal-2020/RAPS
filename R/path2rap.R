@@ -13,8 +13,18 @@
 #' @section Future work:
 #' - Include different formats for inputs, like JSON or even the `.pli` itself.
 #' @export
-path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
+path2rap = function(path = NULL, verbose = 5, demo = 1) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
+
+
+  ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
+  path = NULL
+  demo = NULL
+  verbose = TRUE
+  ## FAS
+  rap_reference = RAPS::load_demo_dataset("FAS")
+  ###
+
 
   ######################################
   # DEMO
@@ -322,15 +332,6 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
   if (!is.null(demo)) {
     return(expected_exit)
   }
-
-  ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
-  ## FAS
-  rap_reference = RAPS::load_demo_dataset("FAS")
-  verbose = TRUE
-  # debug = TRUE
-  # environment_id = "e"
-  ###
-
 
 
   ######################################
