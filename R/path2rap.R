@@ -319,9 +319,17 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, max_depth = 3) {
     )
   }
 
-  if (demo) {
+  if (!is.null(demo)) {
     return(expected_exit)
   }
+
+  ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
+  ## FAS
+  rap_reference = RAPS::load_demo_dataset("FAS")
+  verbose = TRUE
+  # debug = TRUE
+  # environment_id = "e"
+  ###
 
 
 
