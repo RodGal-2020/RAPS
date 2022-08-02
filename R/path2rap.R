@@ -13,18 +13,19 @@
 #' @section Future work:
 #' - Include different formats for inputs, like JSON or even the `.pli` itself.
 #' @export
-path2rap = function(path = NULL, verbose = 5, demo = 1) {
+path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_001_model_001."
-  # format = "xml"
-  # path %<>% paste0(format)
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
   # demo = NULL
   # verbose = TRUE
-  ## FAS
+  # debug = TRUE
   # rap_reference = RAPS::load_demo_dataset("FAS")
+  ##
+  # TODO: Add this demo to the demo section
+  ## demo_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_001_model_001."
   ###
 
 
