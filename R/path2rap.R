@@ -354,21 +354,6 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   # verbose_print(cat("Hola!"), 2)
 
 
-
-  ### if(is.na or is.null) {exit} else {var}
-  ## TODO: Substitute with tidyr::replace_na(var, new_element = "-"), which is compatible w/ mutate & friends
-  substitute_if_empty = function(var, new_element = "-") {
-    if (is.na(var) || is.null(var)) {
-      return(new_element)
-    } else {
-      return(var)
-    }
-  }
-  ## Examples
-  # substitute_if_empty(NA)
-  # substitute_if_empty("+1")
-  # substitute_if_empty(NA, new_element = "0")
-
   ### is.empty?
   is_empty = function(var) {
     return(length(var) == 0)
@@ -379,6 +364,20 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   # is_empty(NULL)
   # is_empty(tibble())
 
+
+  ### if(is.na or is.null) {exit} else {var}
+  ## TODO: Substitute with tidyr::replace_na(var, new_element = "-"), which is compatible w/ mutate & friends
+  substitute_if_empty = function(var, new_element = "-") {
+    if (is.na(var) || is.null(var) || is_empty(var)) {
+      return(new_element)
+    } else {
+      return(var)
+    }
+  }
+  ## Examples
+  # substitute_if_empty(NA)
+  # substitute_if_empty("+1")
+  # substitute_if_empty(NA, new_element = "0")
 
 
   ######################################
@@ -568,13 +567,27 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     magrittr::extract(3) %>%
     xml2::xml_children() # One or more value_i > charge, label, children
 
+  ## subM
+  verbose_print(cat("\n", crayon::bold("subM"), " is under development", sep = ""))
+  subM = children %>%
+    xml2::xml_find_first("label")
+  if (length(subM) == 0) {
+    subM = NA
+  } else {
+    subM %<>%
+      xml2::xml_children() %>%
+      # xml2::xml_children() %>%
+      xml2::xml_text()
+  }
+
+
   configuration_tibble = tibble::tibble(
     environment = NA,
     id = NA,
     label,
     objects = NA,
-    superM = NA,
-    subM = children %>% xml2::xml_find_first("label") %>% xml2::xml_child(1) %>% xml2::xml_text(),
+    superM = list(NA),
+    subM,
     charge,
     other_params = NA
   )
@@ -609,6 +622,19 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
         magrittr::extract(3) %>%
         xml2::xml_children() # One or more value_i > charge, label, children
 
+      ## subM
+      verbose_print(cat("\n", crayon::bold("subM"), " is under development", sep = ""))
+      subM = children %>%
+        xml2::xml_find_first("label")
+      if (length(subM) == 0) {
+        subM = NA
+      } else {
+        subM %<>%
+          xml2::xml_children() %>%
+          # xml2::xml_children() %>%
+          xml2::xml_text()
+      }
+
       configuration_tibble %<>%
         dplyr::bind_rows(
           tibble::tibble(
@@ -616,48 +642,31 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
             label,
             objects = NA,
             superM = NA,
-            subM = children %>% xml2::xml_find_first("label") %>% xml2::xml_child(1) %>% xml2::xml_text(),
+            subM,
             charge,
             other_params = NA
           )
         )
 
-      new_environment = NA
+      n_children = length(children)
+    }
+  }
 
-      new_id = new_row_xml_i %>%
-        magrittr::extract(2) %>%
-        xml2::xml_find_first(".//id") %>%
-        xml2::xml_integer()
+  ### Update superM
+  n_membranes = dim(configuration_tibble)[1]
+  verbose_print(cat("\n", crayon::bold("superM"), " is under development", sep = ""))
+  for (row in 1:n_membranes) {
+    subM = configuration_tibble[[row, "subM"]]
 
-      new_label = new_row_xml_i %>%
-        magrittr::extract(2) %>%
-        xml2::xml_find_first(".//id") %>%
-        xml2::xml_integer()
-
-      new_objects = NA
-
-      new_superM = NA
-
-      new_subM = NA
-
-      new_charge = 0
-
-      new_other_params = NA
-
-      configuration_tibble %<>%
-        dplyr::bind_rows(
-          tibble::tibble(
-            environment = new_environment,
-            id = new_id,
-            label = new_label,
-            objects = new_objects,
-            superM = new_superM,
-            subM = new_subM,
-            charge = new_charge,
-            other_params = new_other_params
-          )
-        )
-
+    if (!is.na(subM)) {
+      for (subM_i in subM) {
+        configuration_tibble %>%
+          dplyr::filter(label == subM_i) %>%
+          dplyr::mutate(superM =
+                          ifelse(is.na(superM),
+                                 subM_i,
+                                 c(superM, subM_i)))
+      }
     }
   }
 
