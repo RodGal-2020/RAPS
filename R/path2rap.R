@@ -18,6 +18,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
+  # library(RAPS)
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
   # demo = NULL
   # verbose = TRUE
@@ -351,12 +352,11 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   # cat(verbose)
   # verbose_print(cat("Hola!"))
   # verbose_print(cat("Hola!"), 2)
-  # verbose_print(cat("Hola!"), 2)
 
 
-  ### TODO: Substitute with tidyr::replace_na(var, new_element = "-"), which is compatible w/ mutate & friends
 
   ### if(is.na or is.null) {exit} else {var}
+  ## TODO: Substitute with tidyr::replace_na(var, new_element = "-"), which is compatible w/ mutate & friends
   substitute_if_empty = function(var, new_element = "-") {
     if (is.na(var) || is.null(var)) {
       return(new_element)
