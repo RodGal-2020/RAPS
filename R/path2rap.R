@@ -384,10 +384,11 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ######################################
   # Exit parameters
   ######################################
-  exit = list("Rules" = tibble::tibble(),
-              "RAP" = tibble::tibble(),
-              # "Initial_config" = tibble::tibble(), # Included in RAP
-              "Properties" = tibble::tibble(System = 1, Note = "System ID included for generalisation"))
+  exit = list(
+    "Configuration" = tibble::tibble(),
+    # "Initial_config" = tibble::tibble(), # Included in Configuration
+    "Rules" = tibble::tibble(),
+    "Properties" = tibble::tibble(System = 1, Note = "System ID included for generalisation"))
 
 
   ######################################
@@ -408,102 +409,124 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   #
   #   cat("Using the following demo directory:", dir, "\n") %>% verbose_print
   # } else {
-    if(missing(path)) {
-      stop("Path required")
-    }
+  if(missing(path)) {
+    stop("Path required")
+  }
   # cat("Using the following directory:", case, "\n") %>% verbose_print
   # }
 
   data_xml = xml2::read_xml(path) %>%
     xml2::xml_children() %>%
-    xml2::xml_children()
+    xml2::xml_children() # Omitting cereal>file
 
   ######################################
   # Model info & properties
   ######################################
   properties = list()
 
-  ## Property: PLingua version
-  properties$version = data_xml %>%
+  ## Property: PLingua output version
+  properties$output_version = data_xml %>%
     xml2::xml_find_all('//version') %>%
-    xml2::xml_contents() %>%
     xml2::xml_text()
 
   # Keep only the psystem info
   data_xml %<>%
-    magrittr::extract(3) %>%
+    magrittr::extract(3) %>% # psystem node
     xml2::xml_children()
+  ## In the psystem node we have:
+  # objects
+  # labels
+  # features
+  # strings
+  # max_multiplicity
+  # model>id
+  # semantics
+  # structure
+  # multisets
+  # rules
+  # features
 
   ## Property: Objects used in the PS
-  properties$objects = data_xml %>%
-    xml2::xml_find_all("//objects") %>%
+  objects_node = data_xml %>%
+    xml2::xml_find_all("./objects")
+
+  properties$objects = objects_node %>%
     xml2::xml_children() %>%
     xml2::xml_contents() %>%
     xml2::xml_text()
 
   ## Property: Labels used in the membrane structure
-  properties$labels = data_xml %>%
-    xml2::xml_find_all("//labels") %>%
+  labels_node = data_xml %>%
+    xml2::xml_find_all("./labels")
+
+  properties$labels = labels_node %>%
     xml2::xml_children() %>%
     xml2::xml_text() # May not be numbers
 
   ## Property: Features
-  properties$features = data_xml %>%
-    xml2::xml_find_all("//features") %>%
+  features_node = data_xml %>%
+    xml2::xml_find_all("./features")
+
+  properties$features = features_node %>%
     magrittr::extract(1) %>%
     xml2::xml_children() %>%
     xml2::xml_text()
 
   ## Property: Strings
-  properties$strings = data_xml %>%
-    xml2::xml_find_all("//strings") %>%
+  strings_node = data_xml %>%
+    xml2::xml_find_all("./strings")
+
+  properties$strings = strings_node %>%
     xml2::xml_children() %>%
     xml2::xml_text()
 
   ## Property: Max multiplicity
-  properties$max_multiplicity = data_xml %>%
-    xml2::xml_find_all("//max_multiplicity") %>%
+  max_multiplicity_node = data_xml %>%
+    xml2::xml_find_all("./max_multiplicity")
+
+  properties$max_multiplicity = max_multiplicity_node %>%
     xml2::xml_integer()
 
   ## Property: Model id
-  properties$model_id = data_xml %>%
-    xml2::xml_find_all("//model") %>%
+  model_id_node = data_xml %>%
+    xml2::xml_find_all("./model")
+
+  properties$model_id = model_id_node %>%
     xml2::xml_text()
 
-  ## Property: Semantics
+  ## TODO: Property: Semantics (rule information)
   semantics = list()
-  semantics_aux = data_xml %>%
-    xml2::xml_find_all("//semantics") %>%
+  semantics_node_children = data_xml %>%
+    xml2::xml_find_all("./semantics") %>%
     xml2::xml_children()
-  semantics$value = semantics_aux %>% magrittr::extract(1) %>% xml2::xml_integer()
-  semantics$inf = semantics_aux %>% magrittr::extract(2) %>% xml2::xml_text()
-  if (semantics$inf == "true") {
-    semantics$inf = TRUE
-  } else {
-    semantics$inf = FALSE
-  }
-  semantics$patterns = "TODO"
-  semantics$children_size = semantics_aux %>% magrittr::extract(4) %>% xml2::xml_attr("size")
+  # semantics$value = semantics_aux %>% magrittr::extract(1) %>% xml2::xml_integer()
+  # semantics$inf = semantics_aux %>% magrittr::extract(2) %>% xml2::xml_text()
+  # if (semantics$inf == "true") {
+  #   semantics$inf = TRUE
+  # } else {
+  #   semantics$inf = FALSE
+  # }
+  # semantics$patterns = "TODO"
+  # semantics$children_size = semantics_aux %>% magrittr::extract(4) %>% xml2::xml_attr("size")
 
-  properties$semantics = semantics
-
-  ## TODO: Delete if useless
-  exit$Properties %<>%
-    # dplyr::mutate("PLingua_Model_type" = model_type)
+  # properties$semantics = semantics
+  verbose_print(cat("\n", crayon::bold("Semantics"), " (rule information) not supported yet", sep = ""))
+  properties$semantics = semantics_node_children # Semantics not supported for now
 
   ######################################
   exit$Properties = properties
   ######################################
 
   ######################################
-  # RAP
+  # Configuration
   ######################################
   # Expected result (caso [[b*2, c*3]+'2 a]-'1)
-  #   Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_params |
+  #   environment | id | label | objects         | superM   | subM | charge | other_params |
   #   ------------|----|-------|-----------------|----------|------|--------|--------------|
   #   1           | 1  | 1     | [(a, 1)]        | 0 (skin) | 2    |     -1 | NULL         |
   #   1           | 2  | 2     | [(b, 2), (c,3)] | 1        | NULL |     +1 | NULL         |
 
+  ## xml outline
   # children >
   #             charge
   #             label > value0 > id
@@ -517,88 +540,130 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   #                                   label > value0 > id
   #                                   children > ...
 
-  rap = tibble(
-    environment = 0,
-    id = 0,
-    label = 0,
-    objects = NA,
-    superM = NA,
-    subM = NA,
-    charge = 0, # Could be other
-    other_params = NA
-  )
+  #######################
+  ### do-while-like chunk
+  #######################
 
-  structure = data_xml %>%
-    xml2::xml_find_all("//structure") %>%
+  level = 0
+
+  structure_node_children = data_xml %>%
+    xml2::xml_find_all("./structure") %>%
     xml2::xml_children()
-  # charge, label, size
+  # charge, label, children
 
-  children = structure %>%
+  ## charge
+  charge = structure_node_children %>%
+    # xml2::xml_find_all("./charge")
+    magrittr::extract(1) %>%
+    xml2::xml_text()
+
+  ## label
+  label = structure_node_children %>%
+    # xml2::xml_find_all("./label")
+    magrittr::extract(2) %>%
+    xml2::xml_text()
+
+  ## children
+  children = structure_node_children %>%
     magrittr::extract(3) %>%
     xml2::xml_children() # One or more value_i > charge, label, children
 
+  configuration_tibble = tibble::tibble(
+    environment = NA,
+    id = NA,
+    label,
+    objects = NA,
+    superM = NA,
+    subM = children %>% xml2::xml_find_first("label") %>% xml2::xml_child(1) %>% xml2::xml_text(),
+    charge,
+    other_params = NA
+  )
+
   n_children = length(children)
 
-  ######################################
-  # Structure
+  level %<>% sum(1)
 
-  if (n_children != 0) {
-    for (level in 1:max_depth) {
-      cat("\tChecking level", level)
-      ### TODO: Complete taking into account the previous part
+  while(n_children > 0) {
+    cat("\tChecking level", level)
 
-      for (branch in 1:n_children) {
-        new_row_xml_i = children %>%
-          magrittr::extract(branch) %>%
-          xml2::xml_children()
+    for (branch in 1:n_children) {
+      new_structure_node_children = children %>%
+        magrittr::extract(branch) %>%
+        xml2::xml_children()
 
-        new_environment = 0
+      # charge, label, children
+      ## charge
+      charge = new_structure_node_children %>%
+        # xml2::xml_find_all("./charge")
+        magrittr::extract(1) %>%
+        xml2::xml_text()
 
-        new_id = new_row_xml_i %>%
-          magrittr::extract(2) %>%
-          xml2::xml_find_first(".//id") %>%
-          xml2::xml_integer()
+      ## label
+      label = new_structure_node_children %>%
+        # xml2::xml_find_all("./label")
+        magrittr::extract(2) %>%
+        xml2::xml_text()
 
-        new_label = new_row_xml_i %>%
-          magrittr::extract(2) %>%
-          xml2::xml_find_first(".//id") %>%
-          xml2::xml_integer()
+      ## children
+      children = new_structure_node_children %<>%
+        magrittr::extract(3) %>%
+        xml2::xml_children() # One or more value_i > charge, label, children
 
-        new_objects = NA
-
-        new_superM = NA
-
-        new_subM = NA
-
-        new_charge = 0
-
-        new_other_params = NA
-
-        rap %<>%
-          dplyr::bind_rows(
-            tibble::tibble(
-              environment = new_environment,
-              id = new_id,
-              label = new_label,
-              objects = new_objects,
-              superM = new_superM,
-              subM = new_subM,
-              charge = new_charge,
-              other_params = new_other_params
-            )
+      configuration_tibble %<>%
+        dplyr::bind_rows(
+          tibble::tibble(
+            id = NA,
+            label,
+            objects = NA,
+            superM = NA,
+            subM = children %>% xml2::xml_find_first("label") %>% xml2::xml_child(1) %>% xml2::xml_text(),
+            charge,
+            other_params = NA
           )
+        )
 
-      }
+      new_environment = NA
+
+      new_id = new_row_xml_i %>%
+        magrittr::extract(2) %>%
+        xml2::xml_find_first(".//id") %>%
+        xml2::xml_integer()
+
+      new_label = new_row_xml_i %>%
+        magrittr::extract(2) %>%
+        xml2::xml_find_first(".//id") %>%
+        xml2::xml_integer()
+
+      new_objects = NA
+
+      new_superM = NA
+
+      new_subM = NA
+
+      new_charge = 0
+
+      new_other_params = NA
+
+      configuration_tibble %<>%
+        dplyr::bind_rows(
+          tibble::tibble(
+            environment = new_environment,
+            id = new_id,
+            label = new_label,
+            objects = new_objects,
+            superM = new_superM,
+            subM = new_subM,
+            charge = new_charge,
+            other_params = new_other_params
+          )
+        )
+
     }
-  } else {
-    cat("Unexpected structure size. Empty P system?")
   }
 
-  ######################################
-  # Initial configuration
 
   ######################################
-  exit$RAP = rap
+  exit$Configuration = configuration_tibble
   ######################################
 
 
