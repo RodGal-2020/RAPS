@@ -62,21 +62,24 @@ n_rules = 3
 
 small_rap = list(
   Configuration = tibble::tibble(
-    environment = c("env_1", "env_1", "env_1"),
-    id = c("id_1", "id_2", "id_3"),
-    label = c("label_1", "label_2", "label_3"),
+    environment = c("env_1", "env_1", "env_1", "env_1"),
+    id = c("skin", "id_1", "id_2", "id_3"),
+    label = c("skin_label", "label_1", "label_2", "label_3"),
     objects = list(
+          tibble::tibble(object = "@filler", multiplicity = 1),
           tibble::tibble(object = c("object_1", "object_999"), multiplicity = c(1, 999)),
           tibble::tibble(object = c("object_2"), multiplicity = c(2)),
           tibble::tibble(object = "object_n", multiplicity = 6023)
         ),
-        superM = c(NA, "id_1", "id_2"), # Given by ID
+        superM = c(NA, "skin", "id_1", "id_2"), # Given by ID
         subM = list(
+          tibble::tibble(children = "id_1"),
           tibble::tibble(children = "id_2"),
           tibble::tibble(children = "id_3"),
-          tibble::tibble(children = NA)),
-        charge = c("-", "-", "-"),
-        other_params = c(NA, NA, NA)
+          tibble::tibble(children = NA)
+          ),
+        charge = c("-", "-", "-", "-"),
+        other_params = c(NA, NA, NA, NA)
       ),
   Rules = tibble::tibble(
     rule_id = 1:n_rules,
@@ -84,7 +87,7 @@ small_rap = list(
         priority = rep("-", n_rules),
 
         main_membrane_label = c(
-          "id_1", "id_1", "id_2"
+          "skin", "skin", "id_1"
         ),
         lhs = list(
               tibble::tibble(where = c("@here"),
@@ -112,13 +115,9 @@ small_rap = list(
   ),
   Properties = NA
 )
-```
 
-Let's take a quick look at the generated P system:
-```{r}
 RAPS::show_rap(small_rap)
 ```
-
 
 Now the simulation:
 ```{r}

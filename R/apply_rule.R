@@ -64,7 +64,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
   main_membrane_index = which(affected_membranes$label == rule_info$main_membrane_label)
 
   if (debug) {
-    cat("affected_membranes$objects before anythin = \n")
+    cat("\n\tDebug: affected_membranes$objects before anythin = \n")
     print(affected_membranes$objects)
     RAPS::show_rule(rule_info)
   }
@@ -122,8 +122,8 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
 
 
     if (debug) {
-      cat("\nAfter LHS\n")
-      cat("affected_membranes$objects = \n")
+      cat("\n\tDebug: After LHS\n")
+      cat("\n\tDebug: affected_membranes$objects = \n")
       print(affected_membranes$objects)
     }
 

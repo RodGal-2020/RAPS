@@ -42,7 +42,7 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
   n_rules = dim(rules)[1]
   propensities = rules$propensity
 
-  cat("Computing trinities")
+  cat("\nComputing trinities")
   trinities = tibble::tibble(i = NULL,
                              tau_i = NULL,
                              c = NULL)
@@ -139,7 +139,7 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
     affected_environments = c(c_0)
     n_affected_environments = length(affected_environments)
     if (debug) {
-      cat("\nRemember that environmental movement rules are not supported... for now 😈")
+      cat("\n\tDebug: Remember that environmental movement rules are not supported... for now 😈")
     }
 
     for (affected_environment in affected_environments) {
@@ -157,7 +157,7 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
       ## Add new trinities for affected_environment
       for (rule in 1:n_rules) {
         if (debug) {
-          cat("Re-computing trinity for rule", rule, "for affected_environment", affected_environment, "\n")
+          cat("\n\tDebug: Re-computing trinity for rule", rule, "for affected_environment", affected_environment, "\n")
           # RAPS::show_rule(rules[rule, ])
         }
         prod_concentration_of_reactives = 1
