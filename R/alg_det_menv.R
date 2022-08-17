@@ -49,7 +49,7 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
   for (env in envs) {
     for (rule in 1:n_rules) {
       if (debug) {
-        cat("\tComputing trinity for rule", rule, "\n")
+        cat("\n\tComputing trinity for rule", rule, "\n")
         # RAPS::show_rule(rules[rule, ])
       }
       prod_concentration_of_reactives = 1

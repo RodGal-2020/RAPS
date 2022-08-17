@@ -10,10 +10,10 @@
 #' @export
 show_rap = function(rap, focus_on = NULL) {
   if (is.null(focus_on)) {
-    cat("Function under development, returning the default R visualization")
+    cat("Function under development, returning the default R visualization\n")
     rap
   } else {
-    cat("Function under development, returning the default R visualization")
+    cat("Function under development, returning the default R visualization\n")
     rap
   }
 }

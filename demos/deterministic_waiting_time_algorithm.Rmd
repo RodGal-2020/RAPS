@@ -51,10 +51,84 @@ If RAPS is not installed, uncomment the following:
 # devtools::install_github("Xopre/RAPS")
 ```
 
+```{r}
+library(RAPS)
+```
+
+
+# Small stochastic P system
+```{r}
+n_rules = 3
+
+small_rap = list(
+  Configuration = tibble::tibble(
+    environment = c("env_1", "env_1", "env_1"),
+    id = c("id_1", "id_2", "id_3"),
+    label = c("label_1", "label_2", "label_3"),
+    objects = list(
+          tibble::tibble(object = c("object_1", "object_999"), multiplicity = c(1, 999)),
+          tibble::tibble(object = c("object_2"), multiplicity = c(2)),
+          tibble::tibble(object = "object_n", multiplicity = 6023)
+        ),
+        superM = c(NA, "id_1", "id_2"), # Given by ID
+        subM = list(
+          tibble::tibble(children = "id_2"),
+          tibble::tibble(children = "id_3"),
+          tibble::tibble(children = NA)),
+        charge = c("-", "-", "-"),
+        other_params = c(NA, NA, NA)
+      ),
+  Rules = tibble::tibble(
+    rule_id = 1:n_rules,
+        dissolves = c(rep(FALSE, n_rules)),
+        priority = rep("-", n_rules),
+
+        main_membrane_label = c(
+          "id_1", "id_1", "id_2"
+        ),
+        lhs = list(
+              tibble::tibble(where = c("@here"),
+                             object = c("object_1"),
+                             multiplicity = c(1)),
+              tibble::tibble(where = c("@here", "@exists"),
+               object = c("object_999", "id_2"),
+               multiplicity = c(1, 1)),
+              tibble::tibble(where = c("@here"),
+                             object = c("object_2"),
+                             multiplicity = c(1))
+        ),
+        rhs = list(
+              tibble::tibble(where = c("@here"),
+                             object = c("rule_1_executed"),
+                             multiplicity = c(1)),
+              tibble::tibble(where = c("@here"),
+                             object = c("rule_2_executed"),
+                             multiplicity = c(1)),
+              tibble::tibble(where = c("@here"),
+                             object = c("rule_3_executed"),
+                             multiplicity = c(1))
+        ),
+         propensity = c(1:n_rules)
+  ),
+  Properties = NA
+)
+```
+
+Let's take a quick look at the generated P system:
+```{r}
+RAPS::show_rap(small_rap)
+```
+
+
+Now the simulation:
+```{r}
+small_rap %>%
+  RAPS::alg_det_menv(max_T = 1e-4, verbose = TRUE, debug = FALSE)
+```
+
 
 # FAS
 ```{r}
-library(RAPS)
 fas_rap = RAPS::load_demo_dataset("FAS")
 fas_rap
 ```

@@ -19,11 +19,21 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   # library(RAPS)
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
-  # demo = NULL
-  # verbose = TRUE
-  # debug = TRUE
-  # rap_reference = RAPS::load_demo_dataset("FAS")
+  load("~/GitHub/RAPS/RData/path2rap.RData")
+
+  online = FALSE
+  if (online) {
+    path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
+  } else {
+    # path = ".//example-psystems/plingua5/RAPS/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
+    path = ".//.//stochastic_model_001_RAPS_like_evolution.xml"
+    cat(crayon::bold("CAUTION:"), "Using a downloaded version of the xml.")
+  }
+  demo = NULL
+  verbose = TRUE
+  debug = TRUE
+  rap_reference = RAPS::load_demo_dataset("FAS")
+  cat(crayon::bold("CAUTION:", "USING DEMO MODE"))
   ##
   # TODO: Add this demo to the demo section
   ## demo_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_001_model_001."
@@ -33,307 +43,307 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ######################################
   # DEMO
   ######################################
-  if (demo == 1) {
-    ##################
-    ##### Demo 1 #####
-    ##################
-    cat("Using the demo 1\n")
-
-    expected_exit = list(
-
-      "Configuration" = tibble::tibble(
-        environment = c(0, 0, 0, 0),
-        id = c(0, 1, 2, 3),
-        label = c(0, 1, 1, 2), # Both children have the same label
-        objects = list(
-          tibble::tibble(),
-          tibble::tibble(object = c("a", "b"),
-                         multiplicity = 1:2),
-          tibble::tibble(object = c("c", "d"),
-                         multiplicity = 3:4),
-          tibble::tibble(object = c("e", "f"),
-                         multiplicity = 5:6)
-          ),
-        superM = c(NA, 0, 0, 2), # Given by ID # END: We could have more than one parent
-
-        subM = list(
-          tibble::tibble(children = c(1, 2)),
-          tibble::tibble(children = NA),
-          tibble::tibble(children = 3),
-          tibble::tibble(children = NA)),
-        charge = c(0, 1, -1, 0),
-        other_params = c(NA, NA, NA, NA)
-      ),
-
-      "Rules" = tibble::tibble(
-        rule_id = 1:2,
-        dissolves = c(FALSE, TRUE),
-        priority = c("-", "1"),
-
-        lhs_membrane_label = c(1,1),
-        lhs = list(
-          tibble::tibble(object = c("a", "b"),
-                         multiplicity = 1:2),
-          tibble::tibble(object = c("c", "d"),
-                         multiplicity = 3:4)
-        ),
-
-        # THE FOLLOWING VS CONSIDERING A NEW LABEL FOR THE MEMBRANE, LIKE:
-        # MAIN MEMBRANE 0
-
-        # LHS
-        # membrane | object | multiplicity
-        # 0 | z | 1
-        # 1 | a | 1
-        # 2 | b | 2
-
-        # RHS
-        # membrane | object | multiplicity
-        # 0 | zp | 1
-        # 1 | ap | 1
-        # 2 | bp | 2
-
-        # FOR THE RULE WITH  [ z [a]'1 [b*2]'2 --> zp [ap]'1 [bp*2]'2]'0
-        # GIVEN THE CLASSICAL EVOLUTIONAL INTERPRETATION
-
-        # lhs_membranes = list(
-        #   tibble::tibble(membrane_id = c(2, 2),
-        #                  object = c("a", "b"),
-        #                  multiplicity = 1:2)),
-        #   tibble::tibble(object = c("c", "d"),
-        #                  multiplicity = 3:4)
-        # ),
-
-        rhs_membrane_label = c(1,1),
-        rhs = list(
-          tibble::tibble(object = c("a", "b", "ap", "bp"),
-                         multiplicity = 1:4),
-          tibble::tibble(object = c("c", "d"),
-                         multiplicity = 3:4)
-        ),
-        propensity = c(0.4, 0.7)
-      ),
-
-      "Properties" = tibble::tibble(
-        System = 1,
-        PLingua_model = "Transition",
-        N_membranes = 4,
-        N_objects = NA,
-        N_rules = 11,
-        Max_depth_in_rules = 1 # For now at least
-      )
-    )
-  } else if (demo == 2) {
-    ##################
-    ##### Demo 2 #####
-    ##################
-    cat("Using the demo 2\n")
-
-    expected_exit = list(
-
-      "Configuration" = tibble::tibble(
-        environment = c(0, 0, 0),
-        id = c(0, 1, 2),
-        label = c(0, 1, 2), # Both children have the same label
-        objects = list(
-          tibble::tibble(object = "@filler", multiplicity = 1),
-          tibble::tibble(object = c("a", "b", "c", "d"),
-                         multiplicity = 1:4),
-          tibble::tibble(object = c("a", "b"), multiplicity = 1:2)
-        ),
-        superM = c(NA, 0, 1), # Given by ID # END: We could have more than one parent
-
-        subM = list(
-          tibble::tibble(children = 1),
-          tibble::tibble(children = 2),
-          tibble::tibble(children = NA)),
-        charge = c(0, 1, -1),
-        other_params = c(NA, NA, NA)
-      ),
-
-      "Rules" = tibble::tibble(
-        # Rules:
-        # 1. a --> b
-        # 2. a --> b*2
-        # 3. a --> b*2, c
-        # 4. b*2 --> c
-        # 5. a, b --> c
-        # 6. a, b*2 --> c
-        # 7. a, b*2 --> c*3
-        # 8. a, b*2 --> c*3, d*4
-        # 9. a --> lambda
-        # 10. [a [ ]'2 --> [a]'2]'1
-        # 11. [ [a]'2 --> a [ ]'2]'1
-        # 12. a --> NEW
-        # 13. [a [a]'2  -> [b]'2]'1
-        # 14. [a,b []'2 -> [b]'2]'1
-        # 15. [a []'2  -> b [c]'2]'1
-        # 16. [b*2 []'2  -> [c*3]'2]'1
-        # 17. [ [a,b]'2  -> b [c]'2]'1
-        # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
-
-        # Propensity = (11 - Rule number) / 11
-
-        rule_id = 1:18,
-        dissolves = c(rep(FALSE, 8), TRUE, rep(FALSE, 9)),
-        priority = rep("-", 18),
-
-        # lhs_membrane_label = rep(1, 12),
-        main_membrane_label = rep(1, 18),
-        lhs = list(
-          tibble::tibble(where = "@here",
-                         object = "a",
-                         multiplicity = 1),
-          tibble::tibble(where = "@here",
-                         object = "a",
-                         multiplicity = 1),
-          tibble::tibble(where = "@here",
-                         object = "a",
-                         multiplicity = 1),
-          tibble::tibble(where = "@here",
-                         object = "b",
-                         multiplicity = 2),
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("a", "b"),
-                         multiplicity = c(1,1)),
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("a", "b"),
-                         multiplicity = 1:2),
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("a", "b"),
-                         multiplicity = 1:2),
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("a", "b"),
-                         multiplicity = 1:2),
-          tibble::tibble(where = "@here",
-                         object = "a",
-                         multiplicity = 1),
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("a", 2),
-                         multiplicity = c(1, 1)),
-          tibble::tibble(where = 2,
-                         object = "a",
-                         multiplicity = 1),
-          tibble::tibble(where = "@here",
-                         object = "a",
-                         multiplicity = 1),
-
-          ## TODO
-          # 13. [a [a]'2  -> [b]'2]'1
-          tibble::tibble(where = c("@here", 2),
-                         object = c("a", "a"),
-                         multiplicity = c(1, 1)),
-
-          # 14. [a,b []'2 -> [b]'2]'1
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("a", "b"),
-                         multiplicity = c(1, 1)),
-
-          # 15. [a []'2  -> b [c]'2]'1
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("a", 2),
-                         multiplicity = c(1, 1)),
-
-          # 16. [b*2 []'2  -> [c*3]'2]'1
-          tibble::tibble(where = c("@here", "@exists"),
-                         object = c("b", 2),
-                         multiplicity = c(2, 1)),
-
-          # 17. [ [a,b]'2  -> b [c]'2]'1
-          tibble::tibble(where = c(2, 2),
-                         object = c("a", "b"),
-                         multiplicity = c(1, 1)),
-
-          # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
-          tibble::tibble(where = c(2, 2),
-                         object = c("a", "b"),
-                         multiplicity = c(1, 2))
-        ),
-
-        # rhs_membrane_label = rep(1, 12), # Replaced with main_membrane_label
-        rhs = list(
-          tibble::tibble(where = "@here",
-                         object = "b",
-                         multiplicity = 1),
-          tibble::tibble(where = "@here",
-                         object = "b",
-                         multiplicity = 2),
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("b", "c"),
-                         multiplicity = c(2,1)),
-          tibble::tibble(where = "@here",
-                         object = "c",
-                         multiplicity = 1),
-          tibble::tibble(where = "@here",
-                         object = "c",
-                         multiplicity = 1),
-          tibble::tibble(where = "@here",
-                         object = "c",
-                         multiplicity = 1),
-          tibble::tibble(where = "@here",
-                         object = "c",
-                         multiplicity = 3),
-          tibble::tibble(where = c("@here", "@here"),
-                         object = c("c", "d"),
-                         multiplicity = 3:4),
-          tibble::tibble(where = "@here",
-                         object = "@delta",
-                         multiplicity = 1),
-          tibble::tibble(where = 2,
-                         object = "a",
-                         multiplicity = 1),
-          tibble::tibble(where = "@here",
-                         object = "a",
-                         multiplicity = 1),
-          tibble::tibble(where = "@here",
-                         object = "NEW",
-                         multiplicity = 1),
-
-          # 13. [a [a]'2  -> [b]'2]'1
-          tibble::tibble(where = 2,
-                         object = "b",
-                         multiplicity = 1),
-
-          # 14. [a,b []'2 -> [b]'2]'1
-          tibble::tibble(where = 2,
-                         object = "b",
-                         multiplicity = 1),
-
-          # 15. [a []'2  -> b [c]'2]'1
-          tibble::tibble(where = c("@here", 2),
-                         object = c("b", "c"),
-                         multiplicity = c(1, 1)),
-
-          # 16. [b*2 []'2  -> [c*3]'2]'1
-          tibble::tibble(where = 2,
-                         object = "c",
-                         multiplicity = 3),
-
-          # 17. [ [a,b]'2  -> b [c]'2]'1
-          tibble::tibble(where = c("@here", 2),
-                         object = c("b", "c"),
-                         multiplicity = c(1, 1)),
-
-          # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
-          tibble::tibble(where = c(2, 2),
-                         object = c("c", "d"),
-                         multiplicity = 3:4)
-        ),
-        propensity = seq(1, 1/18, -1/18)
-      ),
-
-      "Properties" = tibble::tibble(
-        System = NA,
-        PLingua_model = NA,
-        N_membranes = 2,
-        N_objects = NA,
-        N_rules = NA,
-        Max_depth_in_rules = NA # For now at least
-      )
-    )
-  }
-
   if (!is.null(demo)) {
+    if (demo == 1) {
+      ##################
+      ##### Demo 1 #####
+      ##################
+      cat("Using the demo 1\n")
+
+      expected_exit = list(
+
+        "Configuration" = tibble::tibble(
+          environment = c(0, 0, 0, 0),
+          id = c(0, 1, 2, 3),
+          label = c(0, 1, 1, 2), # Both children have the same label
+          objects = list(
+            tibble::tibble(),
+            tibble::tibble(object = c("a", "b"),
+                           multiplicity = 1:2),
+            tibble::tibble(object = c("c", "d"),
+                           multiplicity = 3:4),
+            tibble::tibble(object = c("e", "f"),
+                           multiplicity = 5:6)
+          ),
+          superM = c(NA, 0, 0, 2), # Given by ID # END: We could have more than one parent
+
+          subM = list(
+            tibble::tibble(children = c(1, 2)),
+            tibble::tibble(children = NA),
+            tibble::tibble(children = 3),
+            tibble::tibble(children = NA)),
+          charge = c(0, 1, -1, 0),
+          other_params = c(NA, NA, NA, NA)
+        ),
+
+        "Rules" = tibble::tibble(
+          rule_id = 1:2,
+          dissolves = c(FALSE, TRUE),
+          priority = c("-", "1"),
+
+          lhs_membrane_label = c(1,1),
+          lhs = list(
+            tibble::tibble(object = c("a", "b"),
+                           multiplicity = 1:2),
+            tibble::tibble(object = c("c", "d"),
+                           multiplicity = 3:4)
+          ),
+
+          # THE FOLLOWING VS CONSIDERING A NEW LABEL FOR THE MEMBRANE, LIKE:
+          # MAIN MEMBRANE 0
+
+          # LHS
+          # membrane | object | multiplicity
+          # 0 | z | 1
+          # 1 | a | 1
+          # 2 | b | 2
+
+          # RHS
+          # membrane | object | multiplicity
+          # 0 | zp | 1
+          # 1 | ap | 1
+          # 2 | bp | 2
+
+          # FOR THE RULE WITH  [ z [a]'1 [b*2]'2 --> zp [ap]'1 [bp*2]'2]'0
+          # GIVEN THE CLASSICAL EVOLUTIONAL INTERPRETATION
+
+          # lhs_membranes = list(
+          #   tibble::tibble(membrane_id = c(2, 2),
+          #                  object = c("a", "b"),
+          #                  multiplicity = 1:2)),
+          #   tibble::tibble(object = c("c", "d"),
+          #                  multiplicity = 3:4)
+          # ),
+
+          rhs_membrane_label = c(1,1),
+          rhs = list(
+            tibble::tibble(object = c("a", "b", "ap", "bp"),
+                           multiplicity = 1:4),
+            tibble::tibble(object = c("c", "d"),
+                           multiplicity = 3:4)
+          ),
+          propensity = c(0.4, 0.7)
+        ),
+
+        "Properties" = tibble::tibble(
+          System = 1,
+          PLingua_model = "Transition",
+          N_membranes = 4,
+          N_objects = NA,
+          N_rules = 11,
+          Max_depth_in_rules = 1 # For now at least
+        )
+      )
+    } else if (demo == 2) {
+      ##################
+      ##### Demo 2 #####
+      ##################
+      cat("Using the demo 2\n")
+
+      expected_exit = list(
+
+        "Configuration" = tibble::tibble(
+          environment = c(0, 0, 0),
+          id = c(0, 1, 2),
+          label = c(0, 1, 2), # Both children have the same label
+          objects = list(
+            tibble::tibble(object = "@filler", multiplicity = 1),
+            tibble::tibble(object = c("a", "b", "c", "d"),
+                           multiplicity = 1:4),
+            tibble::tibble(object = c("a", "b"), multiplicity = 1:2)
+          ),
+          superM = c(NA, 0, 1), # Given by ID # END: We could have more than one parent
+
+          subM = list(
+            tibble::tibble(children = 1),
+            tibble::tibble(children = 2),
+            tibble::tibble(children = NA)),
+          charge = c(0, 1, -1),
+          other_params = c(NA, NA, NA)
+        ),
+
+        "Rules" = tibble::tibble(
+          # Rules:
+          # 1. a --> b
+          # 2. a --> b*2
+          # 3. a --> b*2, c
+          # 4. b*2 --> c
+          # 5. a, b --> c
+          # 6. a, b*2 --> c
+          # 7. a, b*2 --> c*3
+          # 8. a, b*2 --> c*3, d*4
+          # 9. a --> lambda
+          # 10. [a [ ]'2 --> [a]'2]'1
+          # 11. [ [a]'2 --> a [ ]'2]'1
+          # 12. a --> NEW
+          # 13. [a [a]'2  -> [b]'2]'1
+          # 14. [a,b []'2 -> [b]'2]'1
+          # 15. [a []'2  -> b [c]'2]'1
+          # 16. [b*2 []'2  -> [c*3]'2]'1
+          # 17. [ [a,b]'2  -> b [c]'2]'1
+          # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
+
+          # Propensity = (11 - Rule number) / 11
+
+          rule_id = 1:18,
+          dissolves = c(rep(FALSE, 8), TRUE, rep(FALSE, 9)),
+          priority = rep("-", 18),
+
+          # lhs_membrane_label = rep(1, 12),
+          main_membrane_label = rep(1, 18),
+          lhs = list(
+            tibble::tibble(where = "@here",
+                           object = "a",
+                           multiplicity = 1),
+            tibble::tibble(where = "@here",
+                           object = "a",
+                           multiplicity = 1),
+            tibble::tibble(where = "@here",
+                           object = "a",
+                           multiplicity = 1),
+            tibble::tibble(where = "@here",
+                           object = "b",
+                           multiplicity = 2),
+            tibble::tibble(where = c("@here", "@here"),
+                           object = c("a", "b"),
+                           multiplicity = c(1,1)),
+            tibble::tibble(where = c("@here", "@here"),
+                           object = c("a", "b"),
+                           multiplicity = 1:2),
+            tibble::tibble(where = c("@here", "@here"),
+                           object = c("a", "b"),
+                           multiplicity = 1:2),
+            tibble::tibble(where = c("@here", "@here"),
+                           object = c("a", "b"),
+                           multiplicity = 1:2),
+            tibble::tibble(where = "@here",
+                           object = "a",
+                           multiplicity = 1),
+            tibble::tibble(where = c("@here", "@exists"),
+                           object = c("a", 2),
+                           multiplicity = c(1, 1)),
+            tibble::tibble(where = 2,
+                           object = "a",
+                           multiplicity = 1),
+            tibble::tibble(where = "@here",
+                           object = "a",
+                           multiplicity = 1),
+
+            ## TODO
+            # 13. [a [a]'2  -> [b]'2]'1
+            tibble::tibble(where = c("@here", 2),
+                           object = c("a", "a"),
+                           multiplicity = c(1, 1)),
+
+            # 14. [a,b []'2 -> [b]'2]'1
+            tibble::tibble(where = c("@here", "@here"),
+                           object = c("a", "b"),
+                           multiplicity = c(1, 1)),
+
+            # 15. [a []'2  -> b [c]'2]'1
+            tibble::tibble(where = c("@here", "@exists"),
+                           object = c("a", 2),
+                           multiplicity = c(1, 1)),
+
+            # 16. [b*2 []'2  -> [c*3]'2]'1
+            tibble::tibble(where = c("@here", "@exists"),
+                           object = c("b", 2),
+                           multiplicity = c(2, 1)),
+
+            # 17. [ [a,b]'2  -> b [c]'2]'1
+            tibble::tibble(where = c(2, 2),
+                           object = c("a", "b"),
+                           multiplicity = c(1, 1)),
+
+            # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
+            tibble::tibble(where = c(2, 2),
+                           object = c("a", "b"),
+                           multiplicity = c(1, 2))
+          ),
+
+          # rhs_membrane_label = rep(1, 12), # Replaced with main_membrane_label
+          rhs = list(
+            tibble::tibble(where = "@here",
+                           object = "b",
+                           multiplicity = 1),
+            tibble::tibble(where = "@here",
+                           object = "b",
+                           multiplicity = 2),
+            tibble::tibble(where = c("@here", "@here"),
+                           object = c("b", "c"),
+                           multiplicity = c(2,1)),
+            tibble::tibble(where = "@here",
+                           object = "c",
+                           multiplicity = 1),
+            tibble::tibble(where = "@here",
+                           object = "c",
+                           multiplicity = 1),
+            tibble::tibble(where = "@here",
+                           object = "c",
+                           multiplicity = 1),
+            tibble::tibble(where = "@here",
+                           object = "c",
+                           multiplicity = 3),
+            tibble::tibble(where = c("@here", "@here"),
+                           object = c("c", "d"),
+                           multiplicity = 3:4),
+            tibble::tibble(where = "@here",
+                           object = "@delta",
+                           multiplicity = 1),
+            tibble::tibble(where = 2,
+                           object = "a",
+                           multiplicity = 1),
+            tibble::tibble(where = "@here",
+                           object = "a",
+                           multiplicity = 1),
+            tibble::tibble(where = "@here",
+                           object = "NEW",
+                           multiplicity = 1),
+
+            # 13. [a [a]'2  -> [b]'2]'1
+            tibble::tibble(where = 2,
+                           object = "b",
+                           multiplicity = 1),
+
+            # 14. [a,b []'2 -> [b]'2]'1
+            tibble::tibble(where = 2,
+                           object = "b",
+                           multiplicity = 1),
+
+            # 15. [a []'2  -> b [c]'2]'1
+            tibble::tibble(where = c("@here", 2),
+                           object = c("b", "c"),
+                           multiplicity = c(1, 1)),
+
+            # 16. [b*2 []'2  -> [c*3]'2]'1
+            tibble::tibble(where = 2,
+                           object = "c",
+                           multiplicity = 3),
+
+            # 17. [ [a,b]'2  -> b [c]'2]'1
+            tibble::tibble(where = c("@here", 2),
+                           object = c("b", "c"),
+                           multiplicity = c(1, 1)),
+
+            # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
+            tibble::tibble(where = c(2, 2),
+                           object = c("c", "d"),
+                           multiplicity = 3:4)
+          ),
+          propensity = seq(1, 1/18, -1/18)
+        ),
+
+        "Properties" = tibble::tibble(
+          System = NA,
+          PLingua_model = NA,
+          N_membranes = 2,
+          N_objects = NA,
+          N_rules = NA,
+          Max_depth_in_rules = NA # For now at least
+        )
+      )
+    }
+
     return(expected_exit)
   }
 
@@ -447,7 +457,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
   ## Property: Objects used in the PS
   objects_node = data_xml %>%
-    xml2::xml_find_all("./objects")
+    xml2::xml_find_all("//objects")
 
   properties$objects = objects_node %>%
     xml2::xml_children() %>%
@@ -456,7 +466,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
   ## Property: Labels used in the membrane structure
   labels_node = data_xml %>%
-    xml2::xml_find_all("./labels")
+    xml2::xml_find_all("//labels")
 
   properties$labels = labels_node %>%
     xml2::xml_children() %>%
@@ -464,7 +474,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
   ## Property: Features
   features_node = data_xml %>%
-    xml2::xml_find_all("./features")
+    xml2::xml_find_all("//features")
 
   properties$features = features_node %>%
     magrittr::extract(1) %>%
@@ -473,7 +483,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
   ## Property: Strings
   strings_node = data_xml %>%
-    xml2::xml_find_all("./strings")
+    xml2::xml_find_all("//strings")
 
   properties$strings = strings_node %>%
     xml2::xml_children() %>%
@@ -481,14 +491,14 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
   ## Property: Max multiplicity
   max_multiplicity_node = data_xml %>%
-    xml2::xml_find_all("./max_multiplicity")
+    xml2::xml_find_all("//max_multiplicity")
 
   properties$max_multiplicity = max_multiplicity_node %>%
     xml2::xml_integer()
 
   ## Property: Model id
   model_id_node = data_xml %>%
-    xml2::xml_find_all("./model")
+    xml2::xml_find_all("//model")
 
   properties$model_id = model_id_node %>%
     xml2::xml_text()
@@ -496,7 +506,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ## TODO: Property: Semantics (rule information)
   semantics = list()
   semantics_node_children = data_xml %>%
-    xml2::xml_find_all("./semantics") %>%
+    xml2::xml_find_all("//semantics") %>%
     xml2::xml_children()
   # semantics$value = semantics_aux %>% magrittr::extract(1) %>% xml2::xml_integer()
   # semantics$inf = semantics_aux %>% magrittr::extract(2) %>% xml2::xml_text()
@@ -540,25 +550,121 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   #                                   children > ...
 
   #######################
+  ### Membrane structure
+  #######################
+
+
+  ##########################################
+  ##########################################
+  ##########################################
+  ##########################################
+  ##########################################
+  ### IDEA!!!!
+  ##########################################
+  ##########################################
+  ##########################################
+  ##########################################
+  ##########################################
+  my_tibble = tibble::tibble(xml = structure_node %>%
+                               xml2::xml_children() %>%
+                               xml2::as_list())
+
+  my_tibble %>%
+    # tidyr::unnest_wider(xml) %>%
+    # tidyr::unnest_wider(xml) %>%
+    tidyr::unnest_wider(xml) %>%
+    tidyr::unnest_wider(1)
+
+  ##########################################
+  ##########################################
+  ##########################################
+  ##########################################
+  ##########################################
+  ### IDEA!!!! Look up there
+  ##########################################
+  ##########################################
+  ##########################################
+  ##########################################
+  ##########################################
+
+  ### subM & superM mainly
+  structure_node = data_xml %>%
+    xml2::xml_find_all("//structure")
+
+  # initial_level = structure_node %>%
+  initial_level = structure_node %>%
+    xml2::xml_children() %>%
+    magrittr::extract(2) %>%
+    xml2::xml_find_all(".//id") %>%
+    xml2::xml_text()
+
+  cat("\nAssuming that only a root node exists") # Assuming or assumming or asumming?
+
+  if (is_empty(initial_level)) {
+    cat("\nInitial level not found, returning 0 status.")
+    return(0)
+  } else {
+    initial_structure = list(initial_level) # Variable in which the initial structure will be saved. Used in order to avoid repetition while checking the initial configuration
+    level = 1
+  }
+
+  children = structure_node %>%
+    xml2::xml_children() %>%
+    magrittr::extract(3)
+
+  has_children = children %>%
+    is_empty() %>%
+    magrittr::not()
+
+  while (has_children) {
+    children %<>%
+      xml2::xml_children()
+  }
+
+  children %>%
+    xml2::xml_children()
+
+
+
+  # focus_node = structure_node %>%
+  new_son =  NA
+    magrittr::extract(3) %>%
+    # xml2::xml_find_all("//value*")
+    is_empty() %>%
+    magrittr::not()
+
+  if (new_son) {
+    initial_structure[[level]] %<>%
+      append(branch)
+  }
+
+
+
+
+  structure_node %>% xml2::as_list() %>% View
+
+
+  #######################
   ### do-while-like chunk
   #######################
 
+  ## Compare with "Membrane structure" section
   level = 0
 
   structure_node_children = data_xml %>%
-    xml2::xml_find_all("./structure") %>%
+    xml2::xml_find_all("//structure") %>%
     xml2::xml_children()
   # charge, label, children
 
   ## charge
   charge = structure_node_children %>%
-    # xml2::xml_find_all("./charge")
+    # xml2::xml_find_all("//charge")
     magrittr::extract(1) %>%
     xml2::xml_text()
 
   ## label
   label = structure_node_children %>%
-    # xml2::xml_find_all("./label")
+    # xml2::xml_find_all("//label")
     magrittr::extract(2) %>%
     xml2::xml_text()
 
@@ -607,13 +713,13 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
       # charge, label, children
       ## charge
       charge = new_structure_node_children %>%
-        # xml2::xml_find_all("./charge")
+        # xml2::xml_find_all("//charge")
         magrittr::extract(1) %>%
         xml2::xml_text()
 
       ## label
       label = new_structure_node_children %>%
-        # xml2::xml_find_all("./label")
+        # xml2::xml_find_all("//label")
         magrittr::extract(2) %>%
         xml2::xml_text()
 

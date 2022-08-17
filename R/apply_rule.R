@@ -101,6 +101,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
         # Some other membrane or "@exists"
       } else if (where == "@exists"){
         # In this case we just check that it can be applied
+        cat("Checking existance within labels, without using subM or superM")
         n_correct_membranes = sum(affected_membranes$label == lhs[i, ]$object)
 
         try(
