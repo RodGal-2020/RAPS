@@ -618,6 +618,10 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ##############################################################################
   ##############################################################################
 
+  ##############################################################################
+  ## structure
+  ##############################################################################
+
   structure_node = data_xml %>%
     xml2::xml_find_all("//structure")
 
@@ -627,21 +631,6 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   #                      > charge, label
   #                      > children
 
-
-  ## TYDYR APPROACH
-  # my_tibble = tibble::tibble(xml = structure_node %>%
-  #                              xml2::xml_children() %>%
-  #                              xml2::as_list())
-  #
-  # my_tibble %>%
-  #   # tidyr::unnest_wider(xml) %>%
-  #   # tidyr::unnest_wider(xml) %>%
-  #   tidyr::unnest_wider(xml) %>%
-  #   tidyr::unnest_wider(1)
-
-  ##############################################################################
-  ## DPLYR APPROACH
-  ##############################################################################
   get_name_from_value = function(value) {
     return(value %>%
       xml2::xml_children() %>%
@@ -695,7 +684,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   configuration = tibble::tibble(
     id = skin_id,
     subM = my_subM,
-    superM = NA
+    superM = list(NULL)
   )
 
   while (!is_empty(children_value)) {
@@ -743,7 +732,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
       new_row = tibble::tibble(
         id = new_id,
         subM = new_subM,
-        superM = NA # We will include those later
+        superM = list(NULL) # We will include those later
       )
 
       configuration %<>%
@@ -753,8 +742,8 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   }
 
   ### Update superM
-  n_membranes = dim(configuration)[1]
-  verbose_print(cat("\n", crayon::bold("superM"), " is under development", sep = ""))
+  # configuration_failsafe = configuration
+  # configuration = configuration_failsafe
   for (mem_id in configuration$id) {
     subM = configuration %>%
       dplyr::filter(id == mem_id) %$%
@@ -767,9 +756,10 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
         aux_configuration %<>%
           dplyr::mutate(superM =
-                          ifelse(is.na(superM),
+                          ifelse(is_empty(superM[[1]]),
                                  list(subM_i),
-                                 list(superM[[1]], subM_i)))
+                                 list(superM[[1]], subM_i))) # FIXME: With append()
+
         configuration %<>%
           dplyr::filter(id != subM_i) %>%
           dplyr::bind_rows(aux_configuration)
@@ -777,10 +767,32 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     }
   }
 
+  ## We consider only one parent for each one
+  only_one_parent = TRUE
+  if (only_one_parent) {
+    configuration %<>%
+      tidyr::unnest_longer(superM)
+  }
 
+  ##############################################################################
+  ## multisets
+  ##############################################################################
+  initial_values = data_xml %>%
+    xml2::xml_find_all("//multisets") %>%
+    xml2::xml_children()
+
+  n_values = length(initial_values)
+
+  for (value in 1:n_values) {
+    # value = 1 # Debugging
+    initial_values_children = initial_values[value] %>%
+      xml2::xml_children()
+    key_node = initial_values_children[1]
+    value_node = initial_values_children[2]
+  }
 
   ######################################
-  exit$Configuration = configuration_tibble
+  exit$Configuration = configuration
   ######################################
 
 
