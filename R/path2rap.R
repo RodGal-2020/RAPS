@@ -642,6 +642,32 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ##############################################################################
   ## DPLYR APPROACH
   ##############################################################################
+  get_children_names = function(children) {
+    l_children = length(children)
+
+    children_names = c()
+
+    for (child in 1:l_children) {
+      son = children[child] %>%
+        xml2::xml_children() %>%
+        magrittr::extract(2) %>%
+        xml2::xml_text()
+      children_names %<>% c(son)
+    }
+
+    children_names %<>% list()
+
+    return(children_names)
+  }
+
+  get_children = function(node) {
+    return(node %>%
+      xml2::xml_children() %>%
+      magrittr::extract(3) %>%
+      xml2::xml_children())
+  }
+
+
   skin_id = structure_node %>%
     xml2::xml_children() %>%
     magrittr::extract(2) %>%
@@ -649,27 +675,14 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     xml2::xml_children() %>%
     xml2::xml_text()
 
-  children = structure_node %>%
-    xml2::xml_children() %>%
-    magrittr::extract(3) %>%
-    xml2::xml_children() %>%
-    xml2::xml_children() %>%
-    xml2::xml_children() %>%
-    xml2::xml_text()
-  ## Debugging
-  children = c("1", "2")
-  children = character()
+  children = get_children(structure_node)
 
   if (is_empty(children)) {
     my_SubM = NA
-    next_level = TRUE
+    next_level = FALSE
   } else {
-    my_SubM = list(children)
-    next_level = TRUE
-
-    children = structure_node %>%
-      xml2::xml_children() %>%
-      magrittr::extract(3)
+    l_children = length(children)
+    my_SubM = get_children_names(children)
   }
 
   configuration = tibble::tibble(
@@ -678,14 +691,37 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     SuperM = NA
   )
 
-  while (next_level) {
-    configuration %>%
+  while (!is_empty(children)) {
+    l_children = length(children)
+
+    new_row = tibble::tibble(
+      id = NA,
+      SubM = NA,
+      SuperM = NA
+    )
+
+    ### TODO: Complete me
+
+    for (child in 1:l_children) {
+      new_SubM = get_children_names(children)
+    }
+    # new_ids = children %>%
+    children %>%
+      xml2::xml_find_all("/id")
+
+    xml2::xml_children() %>%
+      xml
+      magrittr::extract(2) %>%
+      xml2::xml_children() %>%
+      xml2::xml_children() %>%
+      xml2::xml_text()
+
+    children %<>% get_children_names()
+    next_level = TRUE
+
+    configuration %<>%
       dplyr::bind_rows(
-        tibble::tibble(
-          id = NA,
-          SubM = NA,
-          SuperM = NA
-        )
+        new_row
       )
 
     next_level = FALSE
