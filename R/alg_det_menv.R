@@ -1,6 +1,7 @@
 #' Template for new functions
 #'
 #' This is a template.
+#' `r lifecycle::badge("experimental")`
 #' @param my_param Yep, it's a parameter.
 #' @return It returns...
 #' @examples
@@ -8,7 +9,7 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
+alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE, random_trinity_selection = FALSE) {
   cat(crayon::bold("alg_det_menv() is under development\n"))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
@@ -17,15 +18,14 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
   verbose = TRUE
   debug = TRUE
   max_T = 1
+  random_trinity_selection = FALSE
   #############################################
   #############################################
   ###### FAS
   # rap = RAPS::load_demo_dataset("FAS")
   # cat(crayon::bold("Working with FAS in demo mode\n"))
   ###### demo 1 from path2rap
-  # rap = RAPS::path2rap(demo = 1)
-  ###### demo "small" from path2rap
-  rap = RAPS::path2rap(demo = "small")
+  rap = RAPS::path2rap(demo = 1)
   #############################################
 
 
@@ -44,35 +44,58 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
                              tau_i = NULL,
                              c = NULL)
   for (env in envs) {
+    chosen_env = rap$Configuration %>%
+      dplyr::filter(environment == env)
+
+    if (debug) {
+      cat("\n\n", rep("-", 50), sep = "")
+      cat("\n\tDebug: Focusing on env", crayon::bold(env), "\n")
+      cat(rep("-", 50), "\n", sep = "")
+    }
+
     for (rule in 1:n_rules) {
       if (debug) {
-        cat("\n\tDebug: Computing trinity for rule", rule, "\n")
+        cat("\n\tDebug: Computing trinity for rule", rule, "with id =", rules[rule, ]$rule_id)
         # RAPS::show_rule(rules[rule, ])
       }
       prod_concentration_of_reactives = 1
       main_membrane_label = rules[rule, ]$main_membrane_label
       lhs = rules[rule, ]$lhs[[1]] %>%
         dplyr::filter(where != "@exists")
+        # Membranes' concentration is not considered
       n_reactives = dim(lhs)[1]
       for (reactive in 1:n_reactives) {
         where = lhs$where[reactive]
         if (where == "@here") {
-          old_concentration = rap$Configuration %>%
+          chosen_objects = chosen_env %>%
             dplyr::filter(id == main_membrane_label) %$%
-            objects %>%
-            magrittr::extract2(1) %>%
-            dplyr::filter(object == lhs$object[reactive]) %$%
-            multiplicity %>%
-            sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
+            objects
+
+          if (length(chosen_objects) != 0) {
+            old_concentration = chosen_objects %>%
+              magrittr::extract2(1) %>%
+              dplyr::filter(object == lhs$object[reactive]) %$%
+              multiplicity %>%
+              sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
+          } else {
+            old_concentration = 0
+          }
+
         } else {
           # It is in some other membrane "h"
-          old_concentration = rap$Configuration %>%
+          chosen_objects = chosen_env %>%
             dplyr::filter(id == where) %$%
-            objects %>%
-            magrittr::extract2(1) %>%
-            dplyr::filter(object == lhs$object[reactive]) %$%
-            multiplicity %>%
-            sum(0)
+            objects
+
+          if (length(chosen_objects) != 0) {
+            old_concentration = chosen_objects %>%
+              magrittr::extract2(1) %>%
+              dplyr::filter(object == lhs$object[reactive]) %$%
+              multiplicity %>%
+              sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
+          } else {
+            old_concentration = 0
+          }
         }
         prod_concentration_of_reactives %<>%
           prod(old_concentration)
@@ -81,22 +104,23 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
 
       trinities %<>% dplyr::bind_rows(
         tibble::tibble(
-          i = rule,
-          tau_i = ifelse(v_r != 0, 1 / v_r, 1e-6),
+          i = rules[rule, ]$rule_id,
+          tau_i = ifelse(v_r != 0, 1 / v_r, Inf),
           c = env
         )
       )
     }
   }
 
+  ## Order by increasing tau_i
+  trinities %<>%
+    dplyr::arrange(tau_i) # Increasing order
+
   if (debug) {
     cat("\n\tDebug: Generated trinities:\n")
     print(trinities)
   }
 
-  ## Order by increasing tau_i
-  # trinities %<>%
-  #   dplyr::arrange(tau_i) # Increasing order
 
 
 
@@ -106,16 +130,22 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE) {
   while (simulation_time < max_T) {
 
     ## Get the first trinity
-    chosen_trinity = trinities %>%
-      dplyr::top_n(tau_i, n = -1) %>%
-      # dplyr::sample_n(1) # Random alternative
-      magrittr::extract(1, )
+    if (random_trinity_selection) {
+      chosen_trinity = trinities %>%
+        dplyr::sample_n(1)
+        magrittr::extract(1, )
+    } else {
+      chosen_trinity = trinities %>%
+        dplyr::top_n(tau_i, n = -1) %>%
+        magrittr::extract(1, )
+    }
 
     i_0 = chosen_trinity[[1]]
     tau_i_0 = chosen_trinity[[2]]
     c_0 = chosen_trinity[[3]]
     if (verbose) {
       cat("\nWe have chosen the rule", crayon::bold(i_0), "with waiting time", tau_i_0, "to be executed in environment", crayon::bold(c_0))
+      ## Alternative with RAPS::show_rule()
       # rap$Rules %>%
       #   dplyr::filter(rule_id == i_0) %>%
       #   RAPS::show_rule()

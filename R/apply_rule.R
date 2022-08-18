@@ -16,13 +16,14 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   # cat("\nUsing the demo rap...")
-  # rap = RAPS::path2rap(demo = 2)
+  # rap = RAPS::path2rap(demo = 1)
   # verbose = 1
   # debug = TRUE
   # rule_id = 15 # To track errors
   ###
 
-  rule_info = rap$Rules[rule_id, ]
+  rule_info = rap$Rules %>%
+    dplyr::filter(rule_id == rule_id)
   # To directly avoid duplicates with dplyr
   colnames(rule_info$lhs[[1]]) = c("where", "object", "rule_multiplicity")
   colnames(rule_info$rhs[[1]]) = c("where", "object", "rule_multiplicity")

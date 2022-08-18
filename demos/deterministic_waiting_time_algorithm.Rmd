@@ -58,71 +58,14 @@ library(RAPS)
 
 # Small stochastic P system
 ```{r}
-n_rules = 3
-
-small_rap = list(
-  Configuration = tibble::tibble(
-    environment = c("env_1", "env_1", "env_1", "env_1"),
-    id = c("skin", "id_1", "id_2", "id_3"),
-    label = c("skin_label", "label_1", "label_2", "label_3"),
-    objects = list(
-          tibble::tibble(object = "@filler", multiplicity = 1),
-          tibble::tibble(object = c("object_1", "object_999"), multiplicity = c(1, 999)),
-          tibble::tibble(object = c("object_2"), multiplicity = c(2)),
-          tibble::tibble(object = "object_n", multiplicity = 6023)
-        ),
-        superM = c(NA, "skin", "id_1", "id_2"), # Given by ID
-        subM = list(
-          tibble::tibble(children = "id_1"),
-          tibble::tibble(children = "id_2"),
-          tibble::tibble(children = "id_3"),
-          tibble::tibble(children = NA)
-          ),
-        charge = c("-", "-", "-", "-"),
-        other_params = c(NA, NA, NA, NA)
-      ),
-  Rules = tibble::tibble(
-    rule_id = 1:n_rules,
-        dissolves = c(rep(FALSE, n_rules)),
-        priority = rep("-", n_rules),
-
-        main_membrane_label = c(
-          "skin", "skin", "id_1"
-        ),
-        lhs = list(
-              tibble::tibble(where = c("@here"),
-                             object = c("object_1"),
-                             multiplicity = c(1)),
-              tibble::tibble(where = c("@here", "@exists"),
-               object = c("object_999", "id_2"),
-               multiplicity = c(1, 1)),
-              tibble::tibble(where = c("@here"),
-                             object = c("object_2"),
-                             multiplicity = c(1))
-        ),
-        rhs = list(
-              tibble::tibble(where = c("@here"),
-                             object = c("rule_1_executed"),
-                             multiplicity = c(1)),
-              tibble::tibble(where = c("@here"),
-                             object = c("rule_2_executed"),
-                             multiplicity = c(1)),
-              tibble::tibble(where = c("@here"),
-                             object = c("rule_3_executed"),
-                             multiplicity = c(1))
-        ),
-         propensity = c(1:n_rules)
-  ),
-  Properties = NA
-)
-
-RAPS::show_rap(small_rap)
+my_rap = path2rap(demo = 1)
+RAPS::show_rap(my_rap)
 ```
 
 Now the simulation:
 ```{r}
-small_rap %>%
-  RAPS::alg_det_menv(max_T = 1e-4, verbose = TRUE, debug = FALSE)
+my_rap %>%
+  RAPS::alg_det_menv(max_T = 1e-4, verbose = TRUE, debug = TRUE)
 ```
 
 

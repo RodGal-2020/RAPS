@@ -17,27 +17,28 @@ apply_rule_menv = function(rap, rule_id, environment_id = 0, verbose = FALSE, de
   cat("\nLaunching the rule with id", crayon::bold(rule_id), "in the environment with id", crayon::bold(environment_id), "\n")
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
-  ## FAS
+  #############################################
+  cat(crayon::bold("Using demo mode\n"))
+  verbose = TRUE
+  debug = TRUE
+  #############################################
+  #############################################
+  ###### FAS
   # rap = RAPS::load_demo_dataset("FAS")
-  # verbose = TRUE
-  # debug = TRUE
   # environment_id = "e"
   # rule_id = 96
-  ## Demo 2
-  # cat("\nUsing the demo rap...")
-  # rap = RAPS::path2rap(demo = 2)
-  # verbose = 1
-  # debug = TRUE
-  # new_environment = rap$Configuration %>%
-  #   dplyr::filter(label == 1) %>%
-  #   dplyr::mutate(environment = 1)
-  # rap$Configuration %<>%
-  #   dplyr::bind_rows(new_environment)
-  # rule_id = 1 # To track errors
-  ###
+  # cat(crayon::bold("Working with FAS in demo mode\n"))
+  ###### demo 1 from path2rap
+  rap = RAPS::path2rap(demo = 1)
+  environment_id = "0"
+  rule_id = "In-out"
+  #############################################
 
   affected_rap = rap
   affected_rap$Configuration %<>% dplyr::filter(environment == environment_id)
+
+  affected_rap %>% # Debugging
+    RAPS::apply_rule(rule_id, debug)
 
   affected_rap %<>%
     RAPS::apply_rule(rule_id, debug)

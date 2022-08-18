@@ -4,7 +4,13 @@
 \alias{alg_det_menv}
 \title{Template for new functions}
 \usage{
-alg_det_menv(rap, max_T = 10, verbose = TRUE, debug = FALSE)
+alg_det_menv(
+  rap,
+  max_T = 10,
+  verbose = TRUE,
+  debug = FALSE,
+  random_trinity_selection = FALSE
+)
 }
 \arguments{
 \item{my_param}{Yep, it's a parameter.}
@@ -14,6 +20,7 @@ It returns...
 }
 \description{
 This is a template.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \section{Warning}{
 
