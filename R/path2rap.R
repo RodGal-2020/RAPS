@@ -642,17 +642,28 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ##############################################################################
   ## DPLYR APPROACH
   ##############################################################################
-  get_children_names = function(children) {
-    l_children = length(children)
+  get_name_from_value = function(value) {
+    return(value %>%
+      xml2::xml_children() %>%
+      magrittr::extract(2) %>%
+      xml2::xml_children() %>%
+      xml2::xml_text()
+    )
+  }
+
+  get_children_names_from_values = function(nodes) {
+    l_nodes = length(nodes)
 
     children_names = c()
 
-    for (child in 1:l_children) {
-      son = children[child] %>%
-        xml2::xml_children() %>%
-        magrittr::extract(2) %>%
-        xml2::xml_text()
-      children_names %<>% c(son)
+    for (child in 1:l_nodes) {
+      # son = children[child] %>%
+      #   xml2::xml_children() %>%
+      #   magrittr::extract(2) %>%
+      #   xml2::xml_text()
+      children_names %<>% c(
+        get_name_from_value(nodes[child])
+        )
     }
 
     children_names %<>% list()
@@ -660,303 +671,112 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     return(children_names)
   }
 
-  get_children = function(node) {
+  get_children_from_value = function(node) {
     return(node %>%
       xml2::xml_children() %>%
       magrittr::extract(3) %>%
       xml2::xml_children())
   }
 
-
+  cat("\nAssuming that only a root/skin node exists")
   skin_id = structure_node %>%
-    xml2::xml_children() %>%
-    magrittr::extract(2) %>%
-    xml2::xml_children() %>%
-    xml2::xml_children() %>%
-    xml2::xml_text()
+    get_name_from_value()
 
-  children = get_children(structure_node)
+  children_value = structure_node %>%
+    get_children_from_value()
 
-  if (is_empty(children)) {
-    my_SubM = NA
-    next_level = FALSE
+  if (is_empty(children_value)) {
+    my_subM = NA
   } else {
-    l_children = length(children)
-    my_SubM = get_children_names(children)
+    children_names = get_children_names_from_values(children_value)
+    my_subM = children_names
   }
 
   configuration = tibble::tibble(
     id = skin_id,
-    SubM = my_SubM,
-    SuperM = NA
+    subM = my_subM,
+    superM = NA
   )
 
-  while (!is_empty(children)) {
-    l_children = length(children)
+  while (!is_empty(children_value)) {
+    l_children = length(children_value)
 
-    new_row = tibble::tibble(
-      id = NA,
-      SubM = NA,
-      SuperM = NA
-    )
-
-    ### TODO: Complete me
+    aux_children_value = children_value[1] # Only the first, to initialize the variable
+    new_element = 2
 
     for (child in 1:l_children) {
-      new_SubM = get_children_names(children)
-    }
-    # new_ids = children %>%
-    children %>%
-      xml2::xml_find_all("/id")
+      child_value = children_value[child]
 
-    xml2::xml_children() %>%
-      xml
-      magrittr::extract(2) %>%
-      xml2::xml_children() %>%
-      xml2::xml_children() %>%
-      xml2::xml_text()
+      new_id = child_value %>%
+        get_name_from_value()
 
-    children %<>% get_children_names()
-    next_level = TRUE
+      child_children_value = child_value %>%
+        get_children_from_value() # FIXME: With child = 2
+      # structure_node %>%
+      #   xml2::xml_children() %>%
+      #   magrittr::extract(3) %>%
+      #   xml2::xml_children() %>%
+      #   magrittr::extract(2) %>%
+      #   xml2::xml_children() %>%
+      #   magrittr::extract(3) %>%
+      #   xml2::xml_children()
 
-    configuration %<>%
-      dplyr::bind_rows(
-        new_row
-      )
-
-    next_level = FALSE
-  }
-
-  ## HANDMADE APPROACH
-  # level = 1
-  # skin_id = structure_node %>%
-  #   xml2::xml_children() %>%
-  #   magrittr::extract(2) %>%
-  #   xml2::xml_children() %>%
-  #   xml2::xml_children() %>%
-  #   xml2::xml_text()
-  #
-  # ## Debugging
-  # # children = c("1", "2")
-  # children = structure_node %>%
-  #   xml2::xml_children() %>%
-  #   magrittr::extract(3) %>%
-  #   xml2::xml_children() %>%
-  #   xml2::xml_children() %>%
-  #   xml2::xml_children() %>%
-  #   xml2::xml_text()
-  #
-  # if (is_empty(children)) {
-  #   structure = list(skin_id)
-  # } else {
-  #   structure = list()
-  #   structure[[skin_id]] = children
-  # }
-
-
-
-
-
-  ##########################################
-  ##########################################
-  ##########################################
-  ##########################################
-  ##########################################
-  ### IDEA!!!! Look up there
-  ##########################################
-  ##########################################
-  ##########################################
-  ##########################################
-  ##########################################
-
-  ### subM & superM mainly
-  structure_node = data_xml %>%
-    xml2::xml_find_all("//structure")
-
-  # initial_level = structure_node %>%
-  initial_level = structure_node %>%
-    xml2::xml_children() %>%
-    magrittr::extract(2) %>%
-    xml2::xml_find_all(".//id") %>%
-    xml2::xml_text()
-
-  cat("\nAssuming that only a root node exists") # Assuming or assumming or asumming?
-
-  if (is_empty(initial_level)) {
-    cat("\nInitial level not found, returning 0 status.")
-    return(0)
-  } else {
-    initial_structure = list(initial_level) # Variable in which the initial structure will be saved. Used in order to avoid repetition while checking the initial configuration
-    level = 1
-  }
-
-  children = structure_node %>%
-    xml2::xml_children() %>%
-    magrittr::extract(3)
-
-  has_children = children %>%
-    is_empty() %>%
-    magrittr::not()
-
-  while (has_children) {
-    children %<>%
-      xml2::xml_children()
-  }
-
-  children %>%
-    xml2::xml_children()
-
-
-
-  # focus_node = structure_node %>%
-  new_son =  NA
-    magrittr::extract(3) %>%
-    # xml2::xml_find_all("//value*")
-    is_empty() %>%
-    magrittr::not()
-
-  if (new_son) {
-    initial_structure[[level]] %<>%
-      append(branch)
-  }
-
-
-
-
-  structure_node %>% xml2::as_list() %>% View
-
-
-  #######################
-  ### do-while-like chunk
-  #######################
-
-  ## Compare with "Membrane structure" section
-  level = 0
-
-  structure_node_children = data_xml %>%
-    xml2::xml_find_all("//structure") %>%
-    xml2::xml_children()
-  # charge, label, children
-
-  ## charge
-  charge = structure_node_children %>%
-    # xml2::xml_find_all("//charge")
-    magrittr::extract(1) %>%
-    xml2::xml_text()
-
-  ## label
-  label = structure_node_children %>%
-    # xml2::xml_find_all("//label")
-    magrittr::extract(2) %>%
-    xml2::xml_text()
-
-  ## children
-  children = structure_node_children %>%
-    magrittr::extract(3) %>%
-    xml2::xml_children() # One or more value_i > charge, label, children
-
-  ## subM
-  verbose_print(cat("\n", crayon::bold("subM"), " is under development", sep = ""))
-  subM = children %>%
-    xml2::xml_find_first("label")
-  if (length(subM) == 0) {
-    subM = NA
-  } else {
-    subM %<>%
-      xml2::xml_children() %>%
-      # xml2::xml_children() %>%
-      xml2::xml_text()
-  }
-
-
-  configuration_tibble = tibble::tibble(
-    environment = NA,
-    id = NA,
-    label,
-    objects = NA,
-    superM = list(NA),
-    subM,
-    charge,
-    other_params = NA
-  )
-
-  n_children = length(children)
-
-  level %<>% sum(1)
-
-  while(n_children > 0) {
-    cat("\tChecking level", level)
-
-    for (branch in 1:n_children) {
-      new_structure_node_children = children %>%
-        magrittr::extract(branch) %>%
-        xml2::xml_children()
-
-      # charge, label, children
-      ## charge
-      charge = new_structure_node_children %>%
-        # xml2::xml_find_all("//charge")
-        magrittr::extract(1) %>%
-        xml2::xml_text()
-
-      ## label
-      label = new_structure_node_children %>%
-        # xml2::xml_find_all("//label")
-        magrittr::extract(2) %>%
-        xml2::xml_text()
-
-      ## children
-      children = new_structure_node_children %<>%
-        magrittr::extract(3) %>%
-        xml2::xml_children() # One or more value_i > charge, label, children
-
-      ## subM
-      verbose_print(cat("\n", crayon::bold("subM"), " is under development", sep = ""))
-      subM = children %>%
-        xml2::xml_find_first("label")
-      if (length(subM) == 0) {
-        subM = NA
+      if (is_empty(child_children_value)) {
+        new_subM = NA
       } else {
-        subM %<>%
-          xml2::xml_children() %>%
-          # xml2::xml_children() %>%
-          xml2::xml_text()
+        # If it has children we had them to the list
+        children_names = get_children_names_from_values(child_children_value)
+        new_subM = children_names
+
+        n_children = length(child_children_value)
+
+        if (n_children > 0) {
+          # aux_aux_children_value = children_value[1] # Only the first, to initialize the variable
+
+          for (i in 1:n_children) {
+            aux_children_value[new_element] = child_children_value[i]
+            new_element %<>% sum(1)
+          }
+        }
       }
 
-      configuration_tibble %<>%
-        dplyr::bind_rows(
-          tibble::tibble(
-            id = NA,
-            label,
-            objects = NA,
-            superM = NA,
-            subM,
-            charge,
-            other_params = NA
-          )
-        )
+      new_row = tibble::tibble(
+        id = new_id,
+        subM = new_subM,
+        superM = NA # We will include those later
+      )
 
-      n_children = length(children)
+      configuration %<>%
+        dplyr::bind_rows(new_row)
     }
+    children_value = aux_children_value[-1]
   }
 
   ### Update superM
-  n_membranes = dim(configuration_tibble)[1]
+  n_membranes = dim(configuration)[1]
   verbose_print(cat("\n", crayon::bold("superM"), " is under development", sep = ""))
-  for (row in 1:n_membranes) {
-    subM = configuration_tibble[[row, "subM"]]
+  for (mem_id in configuration$id) {
+    subM = configuration %>%
+      dplyr::filter(id == mem_id) %$%
+      subM
 
-    if (!is.na(subM)) {
-      for (subM_i in subM) {
-        configuration_tibble %>%
-          dplyr::filter(label == subM_i) %>%
+    if (!is_empty(subM)) {
+      for (subM_i in subM[[1]]) {
+        aux_configuration = configuration %>%
+          dplyr::filter(id == subM_i)
+
+        aux_configuration %<>%
           dplyr::mutate(superM =
                           ifelse(is.na(superM),
-                                 subM_i,
-                                 c(superM, subM_i)))
+                                 list(subM_i),
+                                 list(superM[[1]], subM_i)))
+        configuration %<>%
+          dplyr::filter(id != subM_i) %>%
+          dplyr::bind_rows(aux_configuration)
       }
     }
   }
+
 
 
   ######################################
