@@ -23,13 +23,13 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   # library(RAPS)
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
   # demo = NULL
-  # verbose = TRUE
+  # verbose = 5
   # debug = TRUE
   # rap_reference = RAPS::load_demo_dataset("FAS")
   # cat(crayon::bold("CAUTION:", "USING DEMO MODE"))
   ####################################################
-  # TODO: Add this demo to the demo section
-  ## demo_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_001_model_001."
+  ### TODO: Add this demo to the demo section
+  # demo_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_001_model_001."
   ####################################################
 
 
@@ -781,7 +781,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     xml2::xml_find_all("//multisets") %>%
     xml2::xml_children()
 
-  multisets_info = tibble::tibble(
+  multisets_aux = tibble::tibble(
     id = configuration$id,
     objects = list(tibble::tibble(
       object = "@filler",
@@ -789,11 +789,33 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     ))
   )
 
-  n_values = length(initial_values)
+  get_objects_from_value = function(value) {
+    value_children = value %>%
+      xml2::xml_children()
 
-  get_object_and_ma_from_value = function(value) {
-    return(0) # TODO: Complete me
+    n_children = length(value_children) # > 1 by definition of the valuei fields
+
+    object = c()
+    multiplicity = c()
+
+    for (child in 1:n_children) {
+      aux_children = value_children[child] %>%
+        xml2::xml_children()
+
+      new_object = aux_children[1] %>%
+        xml2::xml_text() # Can be more than one
+
+      new_multiplicity = aux_children[2] %>%
+        xml2::xml_text()
+
+      object %<>% c(new_object)
+      multiplicity %<>% c(new_multiplicity)
+    }
+
+    return(tibble::tibble(object, multiplicity)) # TODO: Complete me
   }
+
+  n_values = length(initial_values)
 
   for (value in 1:n_values) {
     # value = 1 # Debugging
@@ -803,15 +825,45 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     mem_id = initial_values_children[1] %>%
       xml2::xml_text()
 
-    # value_node = initial_values_children[2]
-    initial_values_children[2] %>%
-      xml2::xml_children()
+    value_node = initial_values_children[2]
 
-    multisets_info %>%
+    old_multisets_aux = multisets_aux
+
+    multisets_aux %<>%
       dplyr::filter(id == mem_id)
 
+    multisets_aux$objects[[1]] = get_objects_from_value(value_node)
 
+    multisets_aux = old_multisets_aux %>%
+      dplyr::filter(id != mem_id) %>%
+      dplyr::bind_rows(multisets_aux)
+
+    # For the following steps
+    # ! Perhaps there are not
+    # value_children = value_node %>%
+    #   xml2::xml_children()
   }
+
+  configuration %<>%
+    dplyr::left_join(multisets_aux, by = "id")
+
+  ######################################
+  # labels
+  ######################################
+  verbose_print(cat(crayon::bold("labels"), "are not supported yet"), 2)
+  configuration$labels = configuration$id
+
+  ######################################
+  # charge
+  ######################################
+  verbose_print(cat(crayon::bold("charge"), "is not supported yet"), 2)
+  configuration$charge = "-"
+
+  ######################################
+  # other_params
+  ######################################
+  verbose_print(cat(crayon::bold("other_params"), "are not supported yet"), 2)
+  configuration$other_params = NA
 
   ######################################
   exit$Configuration = configuration
