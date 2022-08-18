@@ -18,27 +18,19 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
 
+  ####################################################
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   # library(RAPS)
-  # load("~/GitHub/RAPS/RData/path2rap.RData")
-  #
-  # online = FALSE
-  # if (online) {
-  #   path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
-  # } else {
-  #   # path = ".//example-psystems/plingua5/RAPS/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
-  #   path = ".//.//stochastic_model_001_RAPS_like_evolution.xml"
-  #   cat(crayon::bold("CAUTION:"), "Using a downloaded version of the xml.")
-  # }
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
   # demo = NULL
   # verbose = TRUE
   # debug = TRUE
   # rap_reference = RAPS::load_demo_dataset("FAS")
   # cat(crayon::bold("CAUTION:", "USING DEMO MODE"))
-  ##
+  ####################################################
   # TODO: Add this demo to the demo section
   ## demo_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_001_model_001."
-  ###
+  ####################################################
 
 
   ######################################
@@ -157,7 +149,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
       ##################
       ##### Demo 2 #####
       ##################
-      cat("Using the demo 2\n")
+      cat("Using the", crayon::bold("complex-enough"), "demo 2\n")
 
       expected_exit = list(
 
@@ -365,7 +357,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
       ########################
       ##### Demo "small" #####
       ########################
-      cat("Using the demo 'small'\n")
+      cat("Using the", crayon::bold("OUTDATED"), "demo \"small\"\n")
       n_rules = 3
 
       expected_exit = list(
@@ -510,8 +502,30 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     xml2::xml_children() # Omitting cereal>file
 
   ######################################
-  # Model info & properties
+  # Handout of the xml structure
+  # cereal > file
+  #               > header $Properties
+  #               > version $Properties
+  #               > psystem
+  #                         > objects $Properties
+  #                         > labels $RAP (bound to structure)
+  #                         > features (?)
+  #                         > strings $Properties
+  #                         > max_multiplicity $Properties
+  #                         > model > id $Properties
+  #                         > semantics $RAP
+  #                         > structure $RAP (bound to labels)
+  #                         > multisets $RAP
+  #                         > rules > left_hand_rule, arrow, right_hand_rule $Rules
+  #                         > features (again) $Properties
   ######################################
+
+
+  ##############################################################################
+  ##############################################################################
+  ################################ Properties ##################################
+  ##############################################################################
+  ##############################################################################
   properties = list()
 
   ## Property: PLingua output version
@@ -523,18 +537,6 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   data_xml %<>%
     magrittr::extract(3) %>% # psystem node
     xml2::xml_children()
-  ## In the psystem node we have:
-  # objects
-  # labels
-  # features
-  # strings
-  # max_multiplicity
-  # model>id
-  # semantics
-  # structure
-  # multisets
-  # rules
-  # features
 
   ## Property: Objects used in the PS
   objects_node = data_xml %>%
@@ -549,46 +551,48 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   labels_node = data_xml %>%
     xml2::xml_find_all("//labels")
 
-  properties$labels = labels_node %>%
+  codification = labels_node %>%
+    xml2::xml_children() %>%
+    xml2::xml_name()
+
+  real_value = labels_node %>%
     xml2::xml_children() %>%
     xml2::xml_text() # May not be numbers
 
-  ## Property: Features
-  features_node = data_xml %>%
-    xml2::xml_find_all("//features")
+  properties$labels_dictionary = tibble::tibble(codification, real_value)
 
-  properties$features = features_node %>%
-    magrittr::extract(1) %>%
-    xml2::xml_children() %>%
-    xml2::xml_text()
+  ## Property: Features
+  properties$features = NA
+  # features_node = data_xml %>%
+  #   xml2::xml_find_all("//features")
+  #
+  # properties$features = features_node %>%
+  #   magrittr::extract(1) %>%
+  #   xml2::xml_children() %>%
+  #   xml2::xml_text()
 
   ## Property: Strings
-  strings_node = data_xml %>%
-    xml2::xml_find_all("//strings")
-
-  properties$strings = strings_node %>%
+  properties$strings_or_model_rules_names = data_xml %>%
+    xml2::xml_find_all("//strings") %>%
     xml2::xml_children() %>%
     xml2::xml_text()
 
   ## Property: Max multiplicity
-  max_multiplicity_node = data_xml %>%
-    xml2::xml_find_all("//max_multiplicity")
-
-  properties$max_multiplicity = max_multiplicity_node %>%
+  properties$max_multiplicity = data_xml %>%
+    xml2::xml_find_all("//max_multiplicity") %>%
     xml2::xml_integer()
 
   ## Property: Model id
-  model_id_node = data_xml %>%
-    xml2::xml_find_all("//model")
-
-  properties$model_id = model_id_node %>%
+  properties$model_id = data_xml %>%
+    xml2::xml_find_all("//model") %>%
     xml2::xml_text()
 
   ## TODO: Property: Semantics (rule information)
-  semantics = list()
-  semantics_node_children = data_xml %>%
-    xml2::xml_find_all("//semantics") %>%
-    xml2::xml_children()
+  properties$semantics = NA
+  # semantics = list()
+  # semantics_node_children = data_xml %>%
+  #   xml2::xml_find_all("//semantics") %>%
+  #   xml2::xml_children()
   # semantics$value = semantics_aux %>% magrittr::extract(1) %>% xml2::xml_integer()
   # semantics$inf = semantics_aux %>% magrittr::extract(2) %>% xml2::xml_text()
   # if (semantics$inf == "true") {
@@ -600,61 +604,122 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   # semantics$children_size = semantics_aux %>% magrittr::extract(4) %>% xml2::xml_attr("size")
 
   # properties$semantics = semantics
-  verbose_print(cat("\n", crayon::bold("Semantics"), " (rule information) not supported yet", sep = ""))
-  properties$semantics = semantics_node_children # Semantics not supported for now
+  # verbose_print(cat("\n", crayon::bold("Semantics"), " (rule information) not supported yet", sep = ""))
 
   ######################################
   exit$Properties = properties
   ######################################
 
-  ######################################
-  # Configuration
-  ######################################
-  # Expected result (caso [[b*2, c*3]+'2 a]-'1)
-  #   environment | id | label | objects         | superM   | subM | charge | other_params |
-  #   ------------|----|-------|-----------------|----------|------|--------|--------------|
-  #   1           | 1  | 1     | [(a, 1)]        | 0 (skin) | 2    |     -1 | NULL         |
-  #   1           | 2  | 2     | [(b, 2), (c,3)] | 1        | NULL |     +1 | NULL         |
-
-  ## xml outline
-  # children >
-  #             charge
-  #             label > value0 > id
-  #             children >
-  #                         value0 >
-  #                                   charge
-  #                                   label > value0 > id
-  #                                   children > ...
-  #                         value1 >
-  #                                   charge
-  #                                   label > value0 > id
-  #                                   children > ...
-
-  #######################
-  ### Membrane structure
-  #######################
 
 
-  ##########################################
-  ##########################################
-  ##########################################
-  ##########################################
-  ##########################################
-  ### IDEA!!!!
-  ##########################################
-  ##########################################
-  ##########################################
-  ##########################################
-  ##########################################
-  my_tibble = tibble::tibble(xml = structure_node %>%
-                               xml2::xml_children() %>%
-                               xml2::as_list())
+  ##############################################################################
+  ##############################################################################
+  ################################ Configuration ###############################
+  ##############################################################################
+  ##############################################################################
 
-  my_tibble %>%
-    # tidyr::unnest_wider(xml) %>%
-    # tidyr::unnest_wider(xml) %>%
-    tidyr::unnest_wider(xml) %>%
-    tidyr::unnest_wider(1)
+  structure_node = data_xml %>%
+    xml2::xml_find_all("//structure")
+
+  ## Handout of the structure node
+  # structure > charge, label
+  #           > children
+  #                      > charge, label
+  #                      > children
+
+
+  ## TYDYR APPROACH
+  # my_tibble = tibble::tibble(xml = structure_node %>%
+  #                              xml2::xml_children() %>%
+  #                              xml2::as_list())
+  #
+  # my_tibble %>%
+  #   # tidyr::unnest_wider(xml) %>%
+  #   # tidyr::unnest_wider(xml) %>%
+  #   tidyr::unnest_wider(xml) %>%
+  #   tidyr::unnest_wider(1)
+
+  ##############################################################################
+  ## DPLYR APPROACH
+  ##############################################################################
+  skin_id = structure_node %>%
+    xml2::xml_children() %>%
+    magrittr::extract(2) %>%
+    xml2::xml_children() %>%
+    xml2::xml_children() %>%
+    xml2::xml_text()
+
+  children = structure_node %>%
+    xml2::xml_children() %>%
+    magrittr::extract(3) %>%
+    xml2::xml_children() %>%
+    xml2::xml_children() %>%
+    xml2::xml_children() %>%
+    xml2::xml_text()
+  ## Debugging
+  children = c("1", "2")
+  children = character()
+
+  if (is_empty(children)) {
+    my_SubM = NA
+    next_level = TRUE
+  } else {
+    my_SubM = list(children)
+    next_level = TRUE
+
+    children = structure_node %>%
+      xml2::xml_children() %>%
+      magrittr::extract(3)
+  }
+
+  configuration = tibble::tibble(
+    id = skin_id,
+    SubM = my_SubM,
+    SuperM = NA
+  )
+
+  while (next_level) {
+    configuration %>%
+      dplyr::bind_rows(
+        tibble::tibble(
+          id = NA,
+          SubM = NA,
+          SuperM = NA
+        )
+      )
+
+    next_level = FALSE
+  }
+
+  ## HANDMADE APPROACH
+  # level = 1
+  # skin_id = structure_node %>%
+  #   xml2::xml_children() %>%
+  #   magrittr::extract(2) %>%
+  #   xml2::xml_children() %>%
+  #   xml2::xml_children() %>%
+  #   xml2::xml_text()
+  #
+  # ## Debugging
+  # # children = c("1", "2")
+  # children = structure_node %>%
+  #   xml2::xml_children() %>%
+  #   magrittr::extract(3) %>%
+  #   xml2::xml_children() %>%
+  #   xml2::xml_children() %>%
+  #   xml2::xml_children() %>%
+  #   xml2::xml_text()
+  #
+  # if (is_empty(children)) {
+  #   structure = list(skin_id)
+  # } else {
+  #   structure = list()
+  #   structure[[skin_id]] = children
+  # }
+
+
+
+
 
   ##########################################
   ##########################################
@@ -863,9 +928,11 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ######################################
 
 
-  ######################################
-  # Rules
-  ######################################
+  ##############################################################################
+  ##############################################################################
+  ################################ Rules #######################################
+  ##############################################################################
+  ##############################################################################
   rules_xml_nodeset = "TODO"
   n_rules = length(rules_xml_nodeset)
   exit$Properties %<>%
