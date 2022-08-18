@@ -781,14 +781,36 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     xml2::xml_find_all("//multisets") %>%
     xml2::xml_children()
 
+  multisets_info = tibble::tibble(
+    id = configuration$id,
+    objects = list(tibble::tibble(
+      object = "@filler",
+      multiplicity = 1
+    ))
+  )
+
   n_values = length(initial_values)
+
+  get_object_and_ma_from_value = function(value) {
+    return(0) # TODO: Complete me
+  }
 
   for (value in 1:n_values) {
     # value = 1 # Debugging
     initial_values_children = initial_values[value] %>%
       xml2::xml_children()
-    key_node = initial_values_children[1]
-    value_node = initial_values_children[2]
+
+    mem_id = initial_values_children[1] %>%
+      xml2::xml_text()
+
+    # value_node = initial_values_children[2]
+    initial_values_children[2] %>%
+      xml2::xml_children()
+
+    multisets_info %>%
+      dplyr::filter(id == mem_id)
+
+
   }
 
   ######################################
