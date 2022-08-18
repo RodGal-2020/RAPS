@@ -14,18 +14,18 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE, random_t
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   #############################################
-  cat(crayon::bold("Using demo mode\n"))
-  verbose = TRUE
-  debug = TRUE
-  max_T = 1
-  random_trinity_selection = FALSE
+  # cat(crayon::bold("Using demo mode\n"))
+  # verbose = TRUE
+  # debug = TRUE
+  # max_T = 1
+  # random_trinity_selection = FALSE
   #############################################
   #############################################
   ###### FAS
   # rap = RAPS::load_demo_dataset("FAS")
   # cat(crayon::bold("Working with FAS in demo mode\n"))
   ###### demo 1 from path2rap
-  rap = RAPS::path2rap(demo = 1)
+  # rap = RAPS::path2rap(demo = 1)
   #############################################
 
 
@@ -164,6 +164,9 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE, random_t
       dplyr::mutate(tau_i = tau_i - tau_i_0)
 
     ## Apply rule r_i_0 ONCE
+    # rap %>% RAPS::apply_rule_menv(rule_id = i_0, # Debugging
+    #                                environment_id = c_0,
+    #                                debug)
     rap %<>% RAPS::apply_rule_menv(rule_id = i_0,
                                    environment_id = c_0,
                                    debug)

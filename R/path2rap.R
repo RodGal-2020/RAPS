@@ -1,6 +1,7 @@
 #' Load a P System given as a path/URL to a XML/JSON file
 #'
 #' This is the basic function of the package, and allows us to read a given P system, turning it into a rap object.
+#' `r lifecycle::badge("experimental")`
 #' @param path Path/URL to the input file.
 #' @param verbose Level of verbosity, between 0 and 5.
 #' @param demo To execute as a demo.
@@ -19,21 +20,21 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   # library(RAPS)
-  load("~/GitHub/RAPS/RData/path2rap.RData")
-
-  online = FALSE
-  if (online) {
-    path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
-  } else {
-    # path = ".//example-psystems/plingua5/RAPS/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
-    path = ".//.//stochastic_model_001_RAPS_like_evolution.xml"
-    cat(crayon::bold("CAUTION:"), "Using a downloaded version of the xml.")
-  }
-  demo = NULL
-  verbose = TRUE
-  debug = TRUE
-  rap_reference = RAPS::load_demo_dataset("FAS")
-  cat(crayon::bold("CAUTION:", "USING DEMO MODE"))
+  # load("~/GitHub/RAPS/RData/path2rap.RData")
+  #
+  # online = FALSE
+  # if (online) {
+  #   path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
+  # } else {
+  #   # path = ".//example-psystems/plingua5/RAPS/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
+  #   path = ".//.//stochastic_model_001_RAPS_like_evolution.xml"
+  #   cat(crayon::bold("CAUTION:"), "Using a downloaded version of the xml.")
+  # }
+  # demo = NULL
+  # verbose = TRUE
+  # debug = TRUE
+  # rap_reference = RAPS::load_demo_dataset("FAS")
+  # cat(crayon::bold("CAUTION:", "USING DEMO MODE"))
   ##
   # TODO: Add this demo to the demo section
   ## demo_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_001_model_001."
@@ -48,15 +49,17 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
       ##################
       ##### Demo 1 #####
       ##################
-      cat("Using the demo 1\n")
+      cat("Using the", crayon::bold("UPDATED"), "demo 1\n")
+      n_rules = 6
 
       expected_exit = list(
 
         "Configuration" = tibble::tibble(
-          environment = c(0, 0, 0, 0),
-          id = c(0, 1, 2, 3),
-          label = c(0, 1, 1, 2), # Both children have the same label
+          environment = c("dummy_env", 0, 0, 0, 0),
+          id = c("dummy_id", 0, 1, 2, 3),
+          label = c("dummy_label", 0, 1, 2, 3), # Both children have the same label
           objects = list(
+            tibble::tibble(object = "a", multiplicity = 1),
             tibble::tibble(),
             tibble::tibble(object = c("a", "b"),
                            multiplicity = 1:2),
@@ -65,64 +68,80 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
             tibble::tibble(object = c("e", "f"),
                            multiplicity = 5:6)
           ),
-          superM = c(NA, 0, 0, 2), # Given by ID # END: We could have more than one parent
+          superM = c(NA, NA, 0, 0, 2), # Given by ID # END: We could have more than one parent
 
           subM = list(
+            tibble::tibble(children = NA),
             tibble::tibble(children = c(1, 2)),
             tibble::tibble(children = NA),
             tibble::tibble(children = 3),
             tibble::tibble(children = NA)),
-          charge = c(0, 1, -1, 0),
-          other_params = c(NA, NA, NA, NA)
+          charge = c(0, 0, 1, -1, 0),
+          other_params = c(NA, NA, NA, NA, NA)
         ),
 
         "Rules" = tibble::tibble(
-          rule_id = 1:2,
-          dissolves = c(FALSE, TRUE),
-          priority = c("-", "1"),
+          # rule_id = 1:n_rules, # Basic
+          rule_id = c("Dummy_rule", "Evolution_1", "Evolution_2", "In", "Out", "In-out"), # Advanced
+          dissolves = rep(FALSE, n_rules), # TODO: Implement dissolution rules
+          priority = c("-", as.character(1:(n_rules-1))),
 
-          lhs_membrane_label = c(1,1),
+          main_membrane_label = c("dummy_id", 1, rep(2, n_rules-2)),
+
           lhs = list(
-            tibble::tibble(object = c("a", "b"),
+            # Dummy: [a -> a]_dummy_id
+            tibble::tibble(where = "@here",
+                           object = "a",
+                           multiplicity = 1),
+            # Evolution_1: [a,b2 -> a,b2,ap3,bp4]_1
+            tibble::tibble(where = c("@here", "@here"),
+                           object = c("a", "b"),
                            multiplicity = 1:2),
-            tibble::tibble(object = c("c", "d"),
-                           multiplicity = 3:4)
+            # Evolution_2: [c3,d4 -> c3,d4]_2
+            tibble::tibble(where = c("@here", "@here"),
+                           object = c("c", "d"),
+                           multiplicity = 3:4),
+            # In: [d []_3 -> [fp]_3]_2
+            tibble::tibble(where = c("@here", "@exists"),
+                           object = c("e", "3"),
+                           multiplicity = c(1, 1)),
+            # Out: [[e]_3 -> cp []_3]_2
+            tibble::tibble(where = c("3"),
+                           object = c("e"),
+                           multiplicity = 1),
+            # In-out: [d[e]_3 -> cp [fp]_3]_2
+            tibble::tibble(where = c("@here", "@exists", "3"),
+                           object = c("d", "3", "e"),
+                           multiplicity = c(1, 1, 1))
           ),
 
-          # THE FOLLOWING VS CONSIDERING A NEW LABEL FOR THE MEMBRANE, LIKE:
-          # MAIN MEMBRANE 0
-
-          # LHS
-          # membrane | object | multiplicity
-          # 0 | z | 1
-          # 1 | a | 1
-          # 2 | b | 2
-
-          # RHS
-          # membrane | object | multiplicity
-          # 0 | zp | 1
-          # 1 | ap | 1
-          # 2 | bp | 2
-
-          # FOR THE RULE WITH  [ z [a]'1 [b*2]'2 --> zp [ap]'1 [bp*2]'2]'0
-          # GIVEN THE CLASSICAL EVOLUTIONAL INTERPRETATION
-
-          # lhs_membranes = list(
-          #   tibble::tibble(membrane_id = c(2, 2),
-          #                  object = c("a", "b"),
-          #                  multiplicity = 1:2)),
-          #   tibble::tibble(object = c("c", "d"),
-          #                  multiplicity = 3:4)
-          # ),
-
-          rhs_membrane_label = c(1,1),
           rhs = list(
-            tibble::tibble(object = c("a", "b", "ap", "bp"),
+            # Dummy: [a -> a]_dummy_id
+            tibble::tibble(where = "@here",
+                           object = "a",
+                           multiplicity = 1),
+            # Evolution_1: [a,b2 -> a,b2,ap3,bp4]_1
+            tibble::tibble(where = rep("@here", 4),
+                           object = c("a", "b", "ap", "bp"),
                            multiplicity = 1:4),
-            tibble::tibble(object = c("c", "d"),
-                           multiplicity = 3:4)
+            # Evolution_2: [c3,d4 -> c3,d4]_2
+            tibble::tibble(where = rep("@here", 2),
+                           object = c("c", "d"),
+                           multiplicity = 3:4),
+            # In: [d []_3 -> [fp]_3]_2
+            tibble::tibble(where = c("3"),
+                           object = c("fp"),
+                           multiplicity = 1),
+            # Out: [[e]_3 -> cp []_3]_2
+            tibble::tibble(where = c("@here"),
+                           object = c("cp"),
+                           multiplicity = 1),
+            # In-out: [d[e]_3 -> cp [fp]_3]_2
+            tibble::tibble(where = c("@here", "3"),
+                           object = c("cp", "fp"),
+                           multiplicity = c(1, 1))
           ),
-          propensity = c(0.4, 0.7)
+          propensity = 1:n_rules
         ),
 
         "Properties" = tibble::tibble(
@@ -341,6 +360,68 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
           N_rules = NA,
           Max_depth_in_rules = NA # For now at least
         )
+      )
+    } else if (demo == "small") {
+      ########################
+      ##### Demo "small" #####
+      ########################
+      cat("Using the demo 'small'\n")
+      n_rules = 3
+
+      expected_exit = list(
+        Configuration = tibble::tibble(
+          environment = c("env_1", "env_1", "env_1", "env_1"),
+          id = c("skin", "id_1", "id_2", "id_3"),
+          label = c("skin_label", "label_1", "label_2", "label_3"),
+          objects = list(
+            tibble::tibble(object = "@filler", multiplicity = 1),
+            tibble::tibble(object = c("object_1", "object_999"), multiplicity = c(1, 999)),
+            tibble::tibble(object = c("object_2"), multiplicity = c(2)),
+            tibble::tibble(object = "object_n", multiplicity = 6023)
+          ),
+          superM = c(NA, "skin", "id_1", "id_2"), # Given by ID
+          subM = list(
+            tibble::tibble(children = "id_1"),
+            tibble::tibble(children = "id_2"),
+            tibble::tibble(children = "id_3"),
+            tibble::tibble(children = NA)
+          ),
+          charge = c("-", "-", "-", "-"),
+          other_params = c(NA, NA, NA, NA)
+        ),
+        Rules = tibble::tibble(
+          rule_id = 1:n_rules,
+          dissolves = c(rep(FALSE, n_rules)),
+          priority = rep("-", n_rules),
+
+          main_membrane_label = c(
+            "skin", "skin", "id_1"
+          ),
+          lhs = list(
+            tibble::tibble(where = c("@here"),
+                           object = c("object_1"),
+                           multiplicity = c(1)),
+            tibble::tibble(where = c("@here", "@exists"),
+                           object = c("object_999", "id_2"),
+                           multiplicity = c(1, 1)),
+            tibble::tibble(where = c("@here"),
+                           object = c("object_2"),
+                           multiplicity = c(1))
+          ),
+          rhs = list(
+            tibble::tibble(where = c("@here"),
+                           object = c("rule_1_executed"),
+                           multiplicity = c(1)),
+            tibble::tibble(where = c("@here"),
+                           object = c("rule_2_executed"),
+                           multiplicity = c(1)),
+            tibble::tibble(where = c("@here"),
+                           object = c("rule_3_executed"),
+                           multiplicity = c(1))
+          ),
+          propensity = c(1:n_rules)
+        ),
+        Properties = NA
       )
     }
 

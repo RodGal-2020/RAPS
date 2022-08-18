@@ -12,18 +12,27 @@
 #' #' @section TODO:
 #' * Print the trace of the execution, perhaps with the `RAPS::show_rap()` function.
 #' @export
-apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
+apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue = FALSE) {
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
-  # cat("\nUsing the demo rap...")
-  # rap = RAPS::path2rap(demo = 1)
+  ###############################
+  # keep_residue = FALSE
   # verbose = 1
   # debug = TRUE
+  ###############################
+  # cat("\nUsing the demo rap...")
+  # rap = RAPS::path2rap(demo = 1)
   # rule_id = 15 # To track errors
-  ###
+  ###### alg_det_menv
+  # rule_id = i_0
 
+  # TODO: Improve rule_info selection
   rule_info = rap$Rules %>%
-    dplyr::filter(rule_id == rule_id)
+    dplyr::mutate(rule_id_col = rule_id) %>%
+    dplyr::select(-rule_id) %>%
+    dplyr::filter(rule_id_col == rule_id) %>%
+    dplyr::mutate(rule_id = rule_id_col)
+
   # To directly avoid duplicates with dplyr
   colnames(rule_info$lhs[[1]]) = c("where", "object", "rule_multiplicity")
   colnames(rule_info$rhs[[1]]) = c("where", "object", "rule_multiplicity")
@@ -37,9 +46,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
   # Check if it can be applied
   ##############################
   # TODO
-  if (verbose) {
-    cat("\nWe can't check if the rule could be applied. Let's hope it could :)")
-  }
+  RAPS::check_applicability(verbose, rap, rule_id)
 
   ####################################
   ###### Get affected membranes ######
@@ -102,12 +109,12 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
         # Some other membrane or "@exists"
       } else if (where == "@exists"){
         # In this case we just check that it can be applied
-        cat("Checking existance within labels, without using subM or superM")
+        cat("\nChecking existance within labels, without using subM or superM")
         n_correct_membranes = sum(affected_membranes$label == lhs[i, ]$object)
 
         try(
           if (n_correct_membranes != lhs[i, ]$rule_multiplicity) {
-            stop("ERROR: Trying to apply a rule which can't be applied. Reference: @exists.")
+            stop("\nERROR: Trying to apply a rule which can't be applied. Reference: @exists.")
           }
         )
 
@@ -178,18 +185,33 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE) {
 
   }
 
+  ################################
+  ####### Create fillers #########
+  ################################
+  l_objects = length(objects)
+  for (i in 1:l_objects) {
+    if (dim(rap$Configuration$objects[[i]])[1] == 0) {
+      rap$Configuration$objects[[i]] = tibble::tibble(
+        object = "@filler",
+        multiplicity = "1"
+      )
+    }
+  }
+
+
   ###########################
   ####### Clean rap #########
   ###########################
 
-  # We just delete the objects which have 0 multiplicity:
-
-  l_objects = length(objects)
-
-  for (i in 1:l_objects) {
-    rap$Configuration$objects[[i]] %<>%
-      dplyr::filter(multiplicity != 0)
+  if (!keep_residue) {
+    for (i in 1:l_objects) {
+      rap$Configuration$objects[[i]] %<>%
+        dplyr::filter(multiplicity != 0)
+    }
   }
+
+
+
 
   return(rap)
 }

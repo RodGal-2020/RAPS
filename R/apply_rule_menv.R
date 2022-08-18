@@ -18,9 +18,9 @@ apply_rule_menv = function(rap, rule_id, environment_id = 0, verbose = FALSE, de
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   #############################################
-  cat(crayon::bold("Using demo mode\n"))
-  verbose = TRUE
-  debug = TRUE
+  # cat(crayon::bold("Using demo mode\n"))
+  # verbose = TRUE
+  # debug = TRUE
   #############################################
   #############################################
   ###### FAS
@@ -29,10 +29,15 @@ apply_rule_menv = function(rap, rule_id, environment_id = 0, verbose = FALSE, de
   # rule_id = 96
   # cat(crayon::bold("Working with FAS in demo mode\n"))
   ###### demo 1 from path2rap
-  rap = RAPS::path2rap(demo = 1)
-  environment_id = "0"
-  rule_id = "In-out"
+  # rap = RAPS::path2rap(demo = 1)
+  # environment_id = "0"
+  # rule_id = "In-out"
   #############################################
+  #############################################
+  ###### alg_det_menv
+  # rule_id = i_0
+  # environment_id = c_0
+
 
   affected_rap = rap
   affected_rap$Configuration %<>% dplyr::filter(environment == environment_id)

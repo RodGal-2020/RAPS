@@ -20,6 +20,7 @@ A rap object.
 }
 \description{
 This is the basic function of the package, and allows us to read a given P system, turning it into a rap object.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \section{Warning}{
 
