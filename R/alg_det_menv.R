@@ -9,7 +9,7 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE, random_trinity_selection = FALSE) {
+alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_trinity = FALSE, random_trinity_selection = FALSE) {
   cat(crayon::bold("alg_det_menv() is under development\n"))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
@@ -17,7 +17,8 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE, random_t
   # cat(crayon::bold("Using demo mode\n"))
   # verbose = TRUE
   # debug = TRUE
-  # max_T = 1
+  # debug_trinity = FALSE
+  # max_T = 0.5
   # random_trinity_selection = FALSE
   #############################################
   #############################################
@@ -30,6 +31,86 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE, random_t
 
 
   ########################################
+  # get_trinities function
+  ########################################
+  get_trinities = function(envs, debug = FALSE) {
+    cat("\nComputing trinities")
+    trinities = tibble::tibble(i = NULL,
+                               tau_i = NULL,
+                               c = NULL)
+    for (env in envs) {
+      chosen_env = rap$Configuration %>%
+        dplyr::filter(environment == env)
+
+      if (debug) {
+        cat("\n\n", rep("-", 50), sep = "")
+        cat("\n\tDebug: Focusing on env", crayon::bold(env), "\n")
+        cat(rep("-", 50), "\n", sep = "")
+      }
+
+      for (rule in 1:n_rules) {
+        if (debug) {
+          cat("\n\tDebug: Computing trinity for rule", rule, "with id =", rules[rule, ]$rule_id)
+          # RAPS::show_rule(rules[rule, ])
+        }
+        prod_concentration_of_reactives = 1
+        main_membrane_label = rules[rule, ]$main_membrane_label
+        lhs = rules[rule, ]$lhs[[1]] %>%
+          dplyr::filter(where != "@exists")
+        # Membranes' concentration is not considered
+        n_reactives = dim(lhs)[1]
+        for (reactive in 1:n_reactives) {
+          where = lhs$where[reactive]
+          if (where == "@here") {
+            chosen_objects = chosen_env %>%
+              dplyr::filter(id == main_membrane_label) %$%
+              objects
+
+            if (length(chosen_objects) != 0) {
+              old_concentration = chosen_objects %>%
+                magrittr::extract2(1) %>%
+                dplyr::filter(object == lhs$object[reactive]) %$%
+                multiplicity %>%
+                sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
+            } else {
+              old_concentration = 0
+            }
+
+          } else {
+            # It is in some other membrane "h"
+            chosen_objects = chosen_env %>%
+              dplyr::filter(id == where) %$%
+              objects
+
+            if (length(chosen_objects) != 0) {
+              old_concentration = chosen_objects %>%
+                magrittr::extract2(1) %>%
+                dplyr::filter(object == lhs$object[reactive]) %$%
+                multiplicity %>%
+                sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
+            } else {
+              old_concentration = 0
+            }
+          }
+          prod_concentration_of_reactives %<>%
+            prod(old_concentration)
+        }
+        v_r = propensities[rule] * prod_concentration_of_reactives
+
+        trinities %<>% dplyr::bind_rows(
+          tibble::tibble(
+            i = rules[rule, ]$rule_id,
+            tau_i = ifelse(v_r != 0, 1 / v_r, Inf),
+            c = env
+          )
+        )
+      }
+    }
+
+    return(trinities)
+  }
+
+  ########################################
   # Deterministic waiting time algorithm
   ########################################
   simulation_time = 0
@@ -39,78 +120,8 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE, random_t
   n_rules = dim(rules)[1]
   propensities = rules$propensity
 
-  cat("\nComputing trinities")
-  trinities = tibble::tibble(i = NULL,
-                             tau_i = NULL,
-                             c = NULL)
-  for (env in envs) {
-    chosen_env = rap$Configuration %>%
-      dplyr::filter(environment == env)
 
-    if (debug) {
-      cat("\n\n", rep("-", 50), sep = "")
-      cat("\n\tDebug: Focusing on env", crayon::bold(env), "\n")
-      cat(rep("-", 50), "\n", sep = "")
-    }
-
-    for (rule in 1:n_rules) {
-      if (debug) {
-        cat("\n\tDebug: Computing trinity for rule", rule, "with id =", rules[rule, ]$rule_id)
-        # RAPS::show_rule(rules[rule, ])
-      }
-      prod_concentration_of_reactives = 1
-      main_membrane_label = rules[rule, ]$main_membrane_label
-      lhs = rules[rule, ]$lhs[[1]] %>%
-        dplyr::filter(where != "@exists")
-        # Membranes' concentration is not considered
-      n_reactives = dim(lhs)[1]
-      for (reactive in 1:n_reactives) {
-        where = lhs$where[reactive]
-        if (where == "@here") {
-          chosen_objects = chosen_env %>%
-            dplyr::filter(id == main_membrane_label) %$%
-            objects
-
-          if (length(chosen_objects) != 0) {
-            old_concentration = chosen_objects %>%
-              magrittr::extract2(1) %>%
-              dplyr::filter(object == lhs$object[reactive]) %$%
-              multiplicity %>%
-              sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
-          } else {
-            old_concentration = 0
-          }
-
-        } else {
-          # It is in some other membrane "h"
-          chosen_objects = chosen_env %>%
-            dplyr::filter(id == where) %$%
-            objects
-
-          if (length(chosen_objects) != 0) {
-            old_concentration = chosen_objects %>%
-              magrittr::extract2(1) %>%
-              dplyr::filter(object == lhs$object[reactive]) %$%
-              multiplicity %>%
-              sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
-          } else {
-            old_concentration = 0
-          }
-        }
-        prod_concentration_of_reactives %<>%
-          prod(old_concentration)
-      }
-      v_r = propensities[rule] * prod_concentration_of_reactives
-
-      trinities %<>% dplyr::bind_rows(
-        tibble::tibble(
-          i = rules[rule, ]$rule_id,
-          tau_i = ifelse(v_r != 0, 1 / v_r, Inf),
-          c = env
-        )
-      )
-    }
-  }
+  trinities = get_trinities(envs, debug_trinity)
 
   ## Order by increasing tau_i
   trinities %<>%
@@ -120,8 +131,6 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE, random_t
     cat("\n\tDebug: Generated trinities:\n")
     print(trinities)
   }
-
-
 
 
   #########################
@@ -164,9 +173,9 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE, random_t
       dplyr::mutate(tau_i = tau_i - tau_i_0)
 
     ## Apply rule r_i_0 ONCE
-    # rap %>% RAPS::apply_rule_menv(rule_id = i_0, # Debugging
-    #                                environment_id = c_0,
-    #                                debug)
+
+    ## Debugging
+    # RAPS::show_rap(rap, focus_on = list("MEM" = 2:3, "OBJ"))
     rap %<>% RAPS::apply_rule_menv(rule_id = i_0,
                                    environment_id = c_0,
                                    debug)
@@ -178,68 +187,71 @@ alg_det_menv = function(rap, max_T = 10, verbose = TRUE, debug = FALSE, random_t
       cat("\n\tDebug: Remember that environmental movement rules are not supported... for now 😈")
     }
 
-    for (affected_environment in affected_environments) {
-      ## Delete trinities of the affected_environment
-      trinities %<>%
-        dplyr::filter(c != affected_environment)
+    ## Delete trinities of the affected_environment
+    trinities %<>%
+      dplyr::filter(!(c %in% affected_environments))
 
-      ## Update multiplicities of objects in c'
-      # Already done in the "Apply rule" step
+    ## Update multiplicities of objects in c'
+    # Already done in the "Apply rule" step
 
-      ## Compute new waiting times for affected_environment
-      # cat("\nUsing concentration_of_reactives = 1:n_rules")
-      # concentration_of_reactives = 1:n_rules # It depends on the environment (!)
+    ## Compute new waiting times for affected_environment
+    # Made inside the get_trinities() function
 
-      ## Add new trinities for affected_environment
-      for (rule in 1:n_rules) {
-        if (debug) {
-          cat("\n\tDebug: Re-computing trinity for rule", rule, "for affected_environment", affected_environment, "\n")
-          # RAPS::show_rule(rules[rule, ])
-        }
-        prod_concentration_of_reactives = 1
-        main_membrane_label = rules[rule, ]$main_membrane_label
-        lhs = rules[rule, ]$lhs[[1]] %>%
-          dplyr::filter(where != "@exists")
-        n_reactives = dim(lhs)[1]
-        for (reactive in 1:n_reactives) {
-          where = lhs$where[reactive]
-          if (where == "@here") {
-            new_concentration = rap$Configuration %>%
-              dplyr::filter(id == main_membrane_label) %$%
-              objects %>%
-              magrittr::extract2(1) %>%
-              dplyr::filter(object == lhs$object[reactive]) %$%
-              multiplicity %>%
-              sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
-          } else {
-            # It is in some other membrane "h"
-            new_concentration = rap$Configuration %>%
-              dplyr::filter(id == where) %$%
-              objects %>%
-              magrittr::extract2(1) %>%
-              dplyr::filter(object == lhs$object[reactive]) %$%
-              multiplicity %>%
-              sum(0)
-          }
-          prod_concentration_of_reactives %<>%
-            prod(new_concentration)
-        }
-        v_r = propensities[rule] * prod_concentration_of_reactives
+    ## Add new trinities for affected_environment
+    new_trinities = get_trinities(affected_environments, debug_trinity)
+    trinities %<>%
+      dplyr::bind_rows(new_trinities)
 
-        trinities %<>% dplyr::bind_rows(
-          tibble::tibble(
-            i = rule,
-            tau_i = ifelse(v_r != 0, 1 / v_r, 1e6),
-            c = affected_environment
-          )
-        )
-      }
+    ## Order by increasing tau_i
+    trinities %<>%
+      dplyr::arrange(tau_i) # Increasing order
 
-      ## Order by increasing tau_i
-      # trinities %<>%
-      #   dplyr::arrange(tau_i) # Increasing order
-    }
-  } # End of iteration
+    # for (affected_environment in affected_environments) {
+    #   for (rule in 1:n_rules) {
+    #     if (debug) {
+    #       cat("\n\tDebug: Re-computing trinity for rule", rule, "for affected_environment", affected_environment, "\n")
+    #       # RAPS::show_rule(rules[rule, ])
+    #     }
+    #     prod_concentration_of_reactives = 1
+    #     main_membrane_label = rules[rule, ]$main_membrane_label
+    #     lhs = rules[rule, ]$lhs[[1]] %>%
+    #       dplyr::filter(where != "@exists")
+    #     n_reactives = dim(lhs)[1]
+    #     for (reactive in 1:n_reactives) {
+    #       where = lhs$where[reactive]
+    #       if (where == "@here") {
+    #         new_concentration = rap$Configuration %>%
+    #           dplyr::filter(id == main_membrane_label) %$%
+    #           objects %>%
+    #           magrittr::extract2(1) %>%
+    #           dplyr::filter(object == lhs$object[reactive]) %$%
+    #           multiplicity %>%
+    #           sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
+    #       } else {
+    #         # It is in some other membrane "h"
+    #         new_concentration = rap$Configuration %>%
+    #           dplyr::filter(id == where) %$%
+    #           objects %>%
+    #           magrittr::extract2(1) %>%
+    #           dplyr::filter(object == lhs$object[reactive]) %$%
+    #           multiplicity %>%
+    #           sum(0)
+    #       }
+    #       prod_concentration_of_reactives %<>%
+    #         prod(new_concentration)
+    #     }
+    #     v_r = propensities[rule] * prod_concentration_of_reactives
+    #
+    #     trinities %<>% dplyr::bind_rows(
+    #       tibble::tibble(
+    #         i = rule,
+    #         tau_i = ifelse(v_r != 0, 1 / v_r, 1e6),
+    #         c = affected_environment
+    #       )
+    #     )
+    #   }
+    # }
+  } # End of main iteration
 
   ########################
   ##### END FUNCTION #####

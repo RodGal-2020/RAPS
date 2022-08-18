@@ -42,15 +42,21 @@ apply_rule_menv = function(rap, rule_id, environment_id = 0, verbose = FALSE, de
   affected_rap = rap
   affected_rap$Configuration %<>% dplyr::filter(environment == environment_id)
 
-  affected_rap %>% # Debugging
-    RAPS::apply_rule(rule_id, debug)
+  # affected_rap %>% # Debugging
+  #   RAPS::apply_rule(rule_id, debug)
 
   affected_rap %<>%
     RAPS::apply_rule(rule_id, debug)
 
-  rap$Configuration %>%
+  ## Debugging
+  # RAPS::show_rap(rap, focus_on = list("MEM" = 2:3, "OBJ"))
+
+  rap$Configuration %<>%
     dplyr::filter(environment != environment_id) %>%
     dplyr::bind_rows(affected_rap$Configuration)
+
+  ## Debugging
+  # rap$Configuration %>% dplyr::filter(id %in% 2:3) %$% objects
 
   return(rap)
 }

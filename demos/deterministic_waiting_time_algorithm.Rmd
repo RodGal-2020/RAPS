@@ -56,7 +56,7 @@ library(RAPS)
 ```
 
 
-# Small stochastic P system
+# Demo stochastic P system
 ```{r}
 my_rap = path2rap(demo = 1)
 RAPS::show_rap(my_rap)
@@ -64,8 +64,11 @@ RAPS::show_rap(my_rap)
 
 Now the simulation:
 ```{r}
+my_rap %<>%
+  RAPS::alg_det_menv(max_T = 0.5, verbose = TRUE, debug = TRUE)
+
 my_rap %>%
-  RAPS::alg_det_menv(max_T = 1e-4, verbose = TRUE, debug = TRUE)
+  RAPS::show_rap(focus_on = list("OBJ", "MEM" = 2:3))
 ```
 
 

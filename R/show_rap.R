@@ -9,11 +9,39 @@
 #' * Improve visualization.
 #' @export
 show_rap = function(rap, focus_on = NULL) {
+
+
+  ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
+  ###############################
+  rap = RAPS::path2rap(demo = 1)
+  focus_on = list("MEM" = 2:3, "OBJ")
+  ###############################
+
   if (is.null(focus_on)) {
-    cat("Function under development, returning the default R visualization\n")
+    cat("\nReturning the default R visualization\n")
     rap
   } else {
-    cat("Function under development, returning the default R visualization\n")
-    rap
+    chosen_visualization = rap$Configuration %>%
+      dplyr::filter(id %in% focus_on$MEM) # MEM is mandatory
+
+    if ("OBJ" %in% focus_on) {
+      chosen_visualization %<>%
+        dplyr::select(id, objects)
+
+      n_vis = dim(chosen_visualization)[1]
+
+      for (i in 1:n_vis) {
+        cat(rep("-", 50), sep = "")
+        cat("\nShowing membrane", crayon::bold(chosen_visualization$id[i]), "\n")
+        print(chosen_visualization$objects[[i]])
+      }
+    } else {
+      # Returning all the chosen membranes
+      chosen_visualization
+    }
+
+
+
+
   }
 }

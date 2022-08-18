@@ -6,9 +6,10 @@
 \usage{
 alg_det_menv(
   rap,
-  max_T = 10,
+  max_T = 1,
   verbose = TRUE,
   debug = FALSE,
+  debug_trinity = FALSE,
   random_trinity_selection = FALSE
 )
 }
