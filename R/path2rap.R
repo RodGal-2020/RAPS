@@ -451,7 +451,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ### if(is.na or is.null) {exit} else {var}
   ## TODO: Substitute with tidyr::replace_na(var, new_element = "-"), which is compatible w/ mutate & friends
   substitute_if_empty = function(var, new_element = "-") {
-    if (is.na(var) || is.null(var) || is_empty(var)) {
+    if (is.na(var) || is.null(var) || is_empty(var) || length(var) == 0 || var == "") {
       return(new_element)
     } else {
       return(var)
@@ -812,13 +812,12 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
       multiplicity %<>% c(new_multiplicity)
     }
 
-    return(tibble::tibble(object, multiplicity)) # TODO: Complete me
+    return(tibble::tibble(object, multiplicity))
   }
 
   n_values = length(initial_values)
 
   for (value in 1:n_values) {
-    # value = 1 # Debugging
     initial_values_children = initial_values[value] %>%
       xml2::xml_children()
 
@@ -875,6 +874,131 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ################################ Rules #######################################
   ##############################################################################
   ##############################################################################
+  rules_value = data_xml %>%
+    xml2::xml_find_all("//rules") %>%
+    xml2::xml_children()
+
+  rules = tibble::tibble(
+    rule_id = NULL,
+    dissolves = NULL,
+    priority = NULL,
+    main_membrane_label = NULL,
+    lhs = NULL,
+    rhs = NULL,
+    propensity = NULL
+  )
+
+  get_rule_from_value = function(value) {
+    children = value %>%
+      xml2::xml_children()
+
+    lhs_node = value %>% xml2::xml_find_all(".//left_hand_rule")
+    rhs_node = value %>% xml2::xml_find_all(".//right_hand_rule")
+    features_node = value %>% xml2::xml_find_all(".//features")
+
+    ###############################################
+    # lhs
+    # In the demo the first rules are: [a -> b]'1, [a -> b*2]'1
+    lhs_info = lhs_node %>%
+      xml2::xml_children() %>% # multiset, membrane (note that there is no "s")
+      magrittr::extract(2) %>%
+      xml2::xml_children()
+
+    ## charge
+    new_lhs_charge = lhs_info[1] %>%
+      xml2::xml_text() %>%
+      substitute_if_empty()
+
+    if (new_lhs_charge != "-") {
+      verbose_print(cat(crayon::bold("charge"), "in a rule is not supported yet"), 2)
+    }
+
+    ## main_membrane_label
+    new_lhs_main_membrane_label = lhs_info[2] %>%
+      xml2::xml_text()
+
+    ## multiset
+    new_lhs_objects = lhs_info[3] %>%
+      get_objects_from_value()
+
+    ## children
+    new_lhs_children = lhs_info[3]
+    if (!is_empty(new_lhs_children)) {
+      verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
+    }
+
+    ###############################################
+    # rhs
+    # In the demo the first rules are: [a -> b]'1, [a -> b*2]'1
+    rhs_info = rhs_node %>%
+      xml2::xml_children() %>% # multiset, membrane (note the "s")
+      magrittr::extract(2)
+
+    ## main_membrane_label
+    new_rhs_main_membrane_label = new_lhs_main_membrane_label
+
+    ## multiset
+    n_multisets = length(rhs_info)
+    new_lhs_objects = tibble::tibble(object = NULL, multiplicity = NULL)
+    for (i in 1:n_multisets) {
+      new_objects = get_objects_from_value(rhs_info[i])
+      ## FIXME: Define a get_objects_from_value_rhs() function perhaps
+      new_lhs_objects %<>%
+        dplyr::bind_rows(new_objects)
+    }
+
+    ## children
+    new_lhs_children = lhs_info[3]
+    if (!is_empty(new_lhs_children)) {
+      verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
+    }
+
+    ###############################################
+    # Parameters for RAPS
+    main_membrane_label = sample(c(new_lhs_main_membrane_label,
+                                   new_rhs_main_membrane_label), 1)
+
+
+    ###############################################
+    # features
+    # In the demo the first rules with stochastic constants are: [a -> b]'1 @sc=1
+
+
+    new_tibble = tibble::tibble(
+      rule_id = NULL,
+      dissolves = NULL,
+      priority = NULL,
+      main_membrane_label = NULL,
+      lhs = NULL,
+      rhs = NULL,
+      propensity = NULL
+    )
+
+    return(new_tibble)
+  }
+
+  n_rules = length(rules_value)
+
+  ####################################
+  exit$Properties %<>%
+    dplyr::mutate("n_rules" = n_rules)
+  ####################################
+
+  for (i in 1:n_rules) {
+    rules %<>%
+      dplyr::bind_cols(get_rule_from_value(rules_value[i]))
+  }
+
+
+  exit$Rules = rules
+
+
+  ##############################################################################
+  ##############################################################################
+  ################################## OLD #######################################
+  ##############################################################################
+  ##############################################################################
+
   rules_xml_nodeset = "TODO"
   n_rules = length(rules_xml_nodeset)
   exit$Properties %<>%
