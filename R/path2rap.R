@@ -14,13 +14,21 @@
 #' @section Future work:
 #' - Include different formats for inputs, like JSON or even the `.pli` itself.
 #' @export
-path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
+path2rap = function(path, verbose = 5, demo = 1, debug = FALSE) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
 
   ####################################################
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
+  ######## Common
   # library(RAPS)
+  # demo = NULL
+  # verbose = 5
+  # debug = TRUE
+  # rap_reference = RAPS::load_demo_dataset("FAS")
+  # cat(crayon::bold("CAUTION:", "USING DEMO MODE"))
+  ####################################################
+  ######## Debugging/Demo files
   ## Complex evolution rules
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
   ## 0 - a to b
@@ -32,22 +40,13 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ## 3 - a1,b2 to c3,d4
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
 
-  ######## Common
-  # demo = NULL
-  # verbose = 5
-  # debug = TRUE
-  # rap_reference = RAPS::load_demo_dataset("FAS")
-  # cat(crayon::bold("CAUTION:", "USING DEMO MODE"))
-  ####################################################
-  ### TODO: Add this demo to the demo section
-  # demo_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_001_model_001."
-  ####################################################
+
 
 
   ######################################
   # DEMO
   ######################################
-  if (!is.null(demo)) {
+  if (!is.null(demo) & missing(path)) {
     if (demo == 1) {
       ##################
       ##### Demo 1 #####
@@ -450,7 +449,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
   ### is.empty?
   is_empty = function(var) {
-    return(length(var) == 0)
+    return(length(var) == 0 || is.null(var) || is_empty(var) || length(var) == 0 || var == "")
   }
   ## Examples
   # is_empty(NA)
@@ -462,7 +461,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ### if(is.na or is.null) {exit} else {var}
   ## TODO: Substitute with tidyr::replace_na(var, new_element = "-"), which is compatible w/ mutate & friends
   substitute_if_empty = function(var, new_element = "-") {
-    if (is.na(var) || is.null(var) || is_empty(var) || length(var) == 0 || var == "") {
+    if (is.na(var) || is_empty(var)) {
       return(new_element)
     } else {
       return(var)
@@ -807,26 +806,28 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   )
 
   ##############################################################################
-  get_objects_from_values = function(values, rhs = FALSE) {
+  get_objects_from_values = function(values, rhs = FALSE, get_mem = FALSE) {
     # Input: nodeset of valuei, each with a branch with id and, optionally, multiplicity
 
-    # LHS - Debugging
+    # LHS - Debugging - Checked
+    # cat("Debugging LHS")
     # values = lhs_info %>%
     #   xml2::xml_find_all(".//multiset")
+    # rhs = FALSE
 
     # RHS - Debugging
-    values = rhs_info %>%
-      xml2::xml_find_all(".//membranes") %>%
-      xml2::xml_find_all(".//muiltiset")
+    # cat("Debugging RHS")
+    # values = rhs_info %>% # multiset, membranes
+    #   xml2::xml_find_all(".//membranes") # value0, value1
+    # rhs = TRUE
 
 
     value_children = values %>%
       xml2::xml_children()
 
-
-    if (rhs) {
-      value_children %>% xml2::xml_children()
-    }
+#     if (rhs) {
+#       value_children %>% xml2::xml_children()
+#     }
 
     n_children = length(value_children) # > 1 by definition of the valuei fields
 
@@ -834,27 +835,35 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     multiplicity = c()
 
     for (child in 1:n_children) {
-      aux_children = value_children[child] %>%
+      chosen_child = value_children[child]
+      aux_children = chosen_child %>%
         xml2::xml_children()
 
       if (!rhs) {
-        new_object = aux_children[1] %>%
+        new_object = chosen_child %>%
+          xml2::xml_find_all(".//id") %>%
           xml2::xml_text() # Can be more than one
 
-        new_multiplicity = aux_children[2] %>%
-          xml2::xml_text()
+        new_multiplicity = chosen_child %>%
+          xml2::xml_find_all(".//multiplicity") %>%
+          xml2::xml_text() # Can be more than one
 
       } else {
-        cat(crayon::bold("Not"), "working for RHS")
-        new_object = NULL
-        new_multiplicity = NULL
+        mem_id = chosen_child %>%
+          xml2::xml_find_all(".//label") %>%
+          xml2::xml_find_all(".//id") %>%
+          xml2::xml_text() # TODO: Use me for in-out
 
-        # new_object = aux_children[2] %>%
-        #   xml2::xml_children()
-        #   xml2::xml_text()
-        #
-        # new_multiplicity = aux_children[2] %>%
-        #   xml2::xml_text()
+        chosen_child_multiset = chosen_child %>%
+          xml2::xml_find_all(".//multiset")
+
+        new_object = chosen_child_multiset %>%
+          xml2::xml_find_all(".//id") %>%
+          xml2::xml_text()
+
+        new_multiplicity = chosen_child_multiset %>%
+          xml2::xml_find_all(".//multiplicity") %>%
+          xml2::xml_text()
 
       }
 
@@ -862,7 +871,11 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
       multiplicity %<>% c(new_multiplicity)
     }
 
-    return(tibble::tibble(object, multiplicity))
+    if (rhs & get_mem) {
+      return(list(objects = tibble::tibble(object, multiplicity), mem = mem_id))
+    } else {
+      return(tibble::tibble(object, multiplicity))
+    }
   }
   ##############################################################################
 
@@ -925,24 +938,13 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ################################ Rules #######################################
   ##############################################################################
   ##############################################################################
-  rules_value = data_xml %>%
-    xml2::xml_find_all("//rules") %>%
-    xml2::xml_children()
-
-  rules = tibble::tibble(
-    rule_id = NULL,
-    dissolves = NULL,
-    priority = NULL,
-    main_membrane_label = NULL,
-    lhs = NULL,
-    rhs = NULL,
-    propensity = NULL
-  )
 
   ##############################################################################
   get_rule_from_value = function(value) {
-    children = value %>%
-      xml2::xml_children()
+    ## Debugging:
+    # (value = rules_value[1])
+
+    new_rule_id = xml2::xml_name(value)
 
     lhs_node = value %>% xml2::xml_find_all(".//left_hand_rule")
     rhs_node = value %>% xml2::xml_find_all(".//right_hand_rule")
@@ -991,26 +993,15 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     new_rhs_main_membrane_label = new_lhs_main_membrane_label
 
     ## multiset
-    # rhs_info %>%
-    #   xml2::xml_find_first(".//multiset")
-
-    ## membranes
-    membranes = rhs_info %>%
-      xml2::xml_find_all(".//membranes")
-
-    ## FIXME: Working w/ get_objects_from_values
-
-    # n_membranes = length(membranes)
-    # new_rhs_objects = tibble::tibble(object = NULL, multiplicity = NULL)
-    # for (i in 1:n_membranes) {
-    #   new_objects = get_objects_from_value(membranes[i])
-    #   ## FIXME: Define a get_objects_from_value_rhs() function perhaps
-    #   new_lhs_objects %<>%
-    #     dplyr::bind_rows(new_objects)
-    # }
+    new_rhs_objects = rhs_info %>%
+      get_objects_from_values(rhs = TRUE, get_mem = TRUE) %>% # get_mem for in-out rules
+      magrittr::extract2("objects")
 
     ## children
-    new_lhs_children = lhs_info[3]
+    new_lhs_children = lhs_info %>%
+      xml2::xml_find_all("children") %>%
+      xml2::xml_text()
+
     if (!is_empty(new_lhs_children)) {
       verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
     }
@@ -1027,18 +1018,32 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
 
     new_tibble = tibble::tibble(
-      rule_id = NULL,
-      dissolves = NULL,
-      priority = NULL,
-      main_membrane_label = NULL,
-      lhs = NULL,
-      rhs = NULL,
-      propensity = NULL
+      rule_id = new_rule_id,
+      dissolves = "TODO",
+      priority = "TODO",
+      main_membrane_label = main_membrane_label,
+      lhs = new_lhs_objects,
+      rhs = new_rhs_objects,
+      propensity = "TODO"
     )
 
     return(new_tibble)
   }
   ##############################################################################
+
+  rules_value = data_xml %>%
+    xml2::xml_find_all("//rules") %>%
+    xml2::xml_children()
+
+  rules = tibble::tibble(
+    rule_id = NULL,
+    dissolves = NULL,
+    priority = NULL,
+    main_membrane_label = NULL,
+    lhs = NULL,
+    rhs = NULL,
+    propensity = NULL
+  )
 
   n_rules = length(rules_value)
 

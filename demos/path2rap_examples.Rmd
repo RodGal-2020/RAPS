@@ -1,0 +1,105 @@
+---
+title: "`path2rap` examples"
+subtitle: "RAPS: R Aid for P Systems"
+author: "Xopre"
+date: "`r format(Sys.time(), '%d de %B de %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_float: 
+      collapsed: true
+    number_sections: false 
+    df_print: kable
+    theme: readable
+    highlight: default 
+codification: "UTF-8"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{css, echo = FALSE}
+.blackbox {
+  padding: 1em;
+  background: #F47174;
+  color: white;
+  /* border: 2px solid orange; */
+  border-radius: 10px;
+}
+.greenbox {
+  padding: 1em;
+  background: #79d279;
+  color: white;
+  /* border: 2px solid orange; */
+  border-radius: 10px;
+}
+.center {
+  text-align: center;
+}
+
+.code {
+  font-family: Courier, "Lucida Console", monospace;
+}
+```
+
+If RAPS is not installed, uncomment the following:
+```{r}
+# devtools::document() # To update the documentation
+# devtools::install() # To install as package
+## Or use:
+# devtools::install_github("Xopre/RAPS")
+```
+
+```{r}
+library(RAPS)
+```
+
+## Complex evolution rules
+```{r}
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
+
+my_rap = path2rap(path, verbose = 0)
+show_rap(my_rap)
+show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
+```
+
+
+## 0 - a to b
+```{r}
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/0%20-%20%20a_to_b.xml"
+
+my_rap = path2rap(path, verbose = 0)
+show_rap(my_rap)
+show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
+```
+
+
+## 1 - a to b2
+```{r}
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/1%20-%20%20a_to_b2.xml"
+
+my_rap = path2rap(path, verbose = 0)
+show_rap(my_rap)
+show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
+```
+
+
+## 2 - a2 to b3
+```{r}
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/2%20-%20%20a2_to_b3.xml"
+
+my_rap = path2rap(path, verbose = 0)
+show_rap(my_rap)
+show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
+```
+
+
+## 3 - a1,b2 to c3,d4
+```{r}
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
+
+my_rap = path2rap(path, verbose = 0)
+show_rap(my_rap)
+show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
+```
