@@ -62,7 +62,14 @@ my_rap = path2rap(path, verbose = 0)
 show_rap(my_rap)
 show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
 ```
+## Stochastic 0 - a to b
+```{r}
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/0%20-%20a_to_b_stochastic.xml"
 
+my_rap = path2rap(path, verbose = 0)
+show_rap(my_rap)
+show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
+```
 
 ## 1 - a to b2
 ```{r}

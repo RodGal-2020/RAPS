@@ -681,6 +681,12 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       new_sc = NA # TODO: Check this
     }
 
+    ## Update names if necessary
+    if (!use_codification) {
+      new_lhs_objects %<>% translate_objects()
+      new_rhs_objects %<>% translate_objects()
+    }
+
     new_tibble = tibble::tibble(
       rule_id = new_rule_id,
       main_membrane_label = main_membrane_label,
