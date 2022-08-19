@@ -199,14 +199,9 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
   properties$labels_dictionary = tibble::tibble(codification, real_value)
 
   ## Property: Features
-  properties$features = NA
-  # features_node = data_xml %>%
-  #   xml2::xml_find_all("//features")
-  #
-  # properties$features = features_node %>%
-  #   magrittr::extract(1) %>%
-  #   xml2::xml_children() %>%
-  #   xml2::xml_text()
+  properties$features = data_xml[3] %>%
+    xml2::xml_children() %>%
+    xml2::xml_text() # pattern, sc (for stochastic constant)
 
   ## Property: Strings
   properties$strings_or_model_rules_names = data_xml %>%
