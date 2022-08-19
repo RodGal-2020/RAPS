@@ -1013,9 +1013,7 @@ path2rap = function(path, verbose = 5, demo = 1, debug = FALSE) {
 
 
     ###############################################
-    # features
-    # In the demo the first rules with stochastic constants are: [a -> b]'1 @sc=1
-
+    # TODO: features
 
     new_tibble = tibble::tibble(
       rule_id = new_rule_id,
@@ -1056,47 +1054,7 @@ path2rap = function(path, verbose = 5, demo = 1, debug = FALSE) {
       dplyr::bind_cols(get_rule_from_value(rules_value[i]))
   }
 
-
   exit$Rules = rules
-
-
-  ##############################################################################
-  ##############################################################################
-  ################################## OLD #######################################
-  ##############################################################################
-  ##############################################################################
-
-  rules_xml_nodeset = "TODO"
-  n_rules = length(rules_xml_nodeset)
-  exit$Properties %<>%
-    dplyr::mutate("N_rules" = n_rules)
-
-  cat("\n####################################################\n")
-  for (i in 1:n_rules) { # For each rule
-    new_rule = tibble::tibble(rule_id = i)
-    cat(crayon::bold("r_", i, "\n", sep = ""))
-
-    ####################
-    # Dissolution
-
-    ####################
-    # Priority
-
-    ####################
-    # Stochastic constant
-
-    ####################
-    # LHS
-
-    ####################
-    # RHS
-
-    ####################
-    # Adding the rule to the previous ones
-    exit$Rules %<>%
-      dplyr::bind_rows(new_rule)
-    cat("####################################################\n")
-  }
 
   return(exit)
 }
