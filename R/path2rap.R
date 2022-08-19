@@ -52,379 +52,382 @@ path2rap = function(path, verbose = 5, demo = 1, debug = FALSE) {
       ##### Demo 1 #####
       ##################
       cat("Using the", crayon::bold("UPDATED"), "demo 1\n")
-      n_rules = 6
-
-      expected_exit = list(
-
-        "Configuration" = tibble::tibble(
-          environment = c("dummy_env", 0, 0, 0, 0),
-          id = c("dummy_id", 0, 1, 2, 3),
-          label = c("dummy_label", 0, 1, 2, 3), # Both children have the same label
-          objects = list(
-            tibble::tibble(object = "a", multiplicity = 1),
-            tibble::tibble(),
-            tibble::tibble(object = c("a", "b"),
-                           multiplicity = 1:2),
-            tibble::tibble(object = c("c", "d"),
-                           multiplicity = 3:4),
-            tibble::tibble(object = c("e", "f"),
-                           multiplicity = 5:6)
-          ),
-          superM = c(NA, NA, 0, 0, 2), # Given by ID # END: We could have more than one parent
-
-          subM = list(
-            tibble::tibble(children = NA),
-            tibble::tibble(children = c(1, 2)),
-            tibble::tibble(children = NA),
-            tibble::tibble(children = 3),
-            tibble::tibble(children = NA)),
-          charge = c(0, 0, 1, -1, 0),
-          other_params = c(NA, NA, NA, NA, NA)
-        ),
-
-        "Rules" = tibble::tibble(
-          # rule_id = 1:n_rules, # Basic
-          rule_id = c("Dummy_rule", "Evolution_1", "Evolution_2", "In", "Out", "In-out"), # Advanced
-          dissolves = rep(FALSE, n_rules), # TODO: Implement dissolution rules
-          priority = c("-", as.character(1:(n_rules-1))),
-
-          main_membrane_label = c("dummy_id", 1, rep(2, n_rules-2)),
-
-          lhs = list(
-            # Dummy: [a -> a]_dummy_id
-            tibble::tibble(where = "@here",
-                           object = "a",
-                           multiplicity = 1),
-            # Evolution_1: [a,b2 -> a,b2,ap3,bp4]_1
-            tibble::tibble(where = c("@here", "@here"),
-                           object = c("a", "b"),
-                           multiplicity = 1:2),
-            # Evolution_2: [c3,d4 -> c3,d4]_2
-            tibble::tibble(where = c("@here", "@here"),
-                           object = c("c", "d"),
-                           multiplicity = 3:4),
-            # In: [d []_3 -> [fp]_3]_2
-            tibble::tibble(where = c("@here", "@exists"),
-                           object = c("e", "3"),
-                           multiplicity = c(1, 1)),
-            # Out: [[e]_3 -> cp []_3]_2
-            tibble::tibble(where = c("3"),
-                           object = c("e"),
-                           multiplicity = 1),
-            # In-out: [d[e]_3 -> cp [fp]_3]_2
-            tibble::tibble(where = c("@here", "@exists", "3"),
-                           object = c("d", "3", "e"),
-                           multiplicity = c(1, 1, 1))
-          ),
-
-          rhs = list(
-            # Dummy: [a -> a]_dummy_id
-            tibble::tibble(where = "@here",
-                           object = "a",
-                           multiplicity = 1),
-            # Evolution_1: [a,b2 -> a,b2,ap3,bp4]_1
-            tibble::tibble(where = rep("@here", 4),
-                           object = c("a", "b", "ap", "bp"),
-                           multiplicity = 1:4),
-            # Evolution_2: [c3,d4 -> c3,d4]_2
-            tibble::tibble(where = rep("@here", 2),
-                           object = c("c", "d"),
-                           multiplicity = 3:4),
-            # In: [d []_3 -> [fp]_3]_2
-            tibble::tibble(where = c("3"),
-                           object = c("fp"),
-                           multiplicity = 1),
-            # Out: [[e]_3 -> cp []_3]_2
-            tibble::tibble(where = c("@here"),
-                           object = c("cp"),
-                           multiplicity = 1),
-            # In-out: [d[e]_3 -> cp [fp]_3]_2
-            tibble::tibble(where = c("@here", "3"),
-                           object = c("cp", "fp"),
-                           multiplicity = c(1, 1))
-          ),
-          propensity = 1:n_rules
-        ),
-
-        "Properties" = tibble::tibble(
-          System = 1,
-          PLingua_model = "Transition",
-          N_membranes = 4,
-          N_objects = NA,
-          N_rules = 11,
-          Max_depth_in_rules = 1 # For now at least
-        )
-      )
+      return(0)
+      # n_rules = 6
+      #
+      # expected_exit = list(
+      #
+      #   "Configuration" = tibble::tibble(
+      #     environment = c("dummy_env", 0, 0, 0, 0),
+      #     id = c("dummy_id", 0, 1, 2, 3),
+      #     label = c("dummy_label", 0, 1, 2, 3), # Both children have the same label
+      #     objects = list(
+      #       tibble::tibble(object = "a", multiplicity = 1),
+      #       tibble::tibble(),
+      #       tibble::tibble(object = c("a", "b"),
+      #                      multiplicity = 1:2),
+      #       tibble::tibble(object = c("c", "d"),
+      #                      multiplicity = 3:4),
+      #       tibble::tibble(object = c("e", "f"),
+      #                      multiplicity = 5:6)
+      #     ),
+      #     superM = c(NA, NA, 0, 0, 2), # Given by ID # END: We could have more than one parent
+      #
+      #     subM = list(
+      #       tibble::tibble(children = NA),
+      #       tibble::tibble(children = c(1, 2)),
+      #       tibble::tibble(children = NA),
+      #       tibble::tibble(children = 3),
+      #       tibble::tibble(children = NA)),
+      #     charge = c(0, 0, 1, -1, 0),
+      #     other_params = c(NA, NA, NA, NA, NA)
+      #   ),
+      #
+      #   "Rules" = tibble::tibble(
+      #     # rule_id = 1:n_rules, # Basic
+      #     rule_id = c("Dummy_rule", "Evolution_1", "Evolution_2", "In", "Out", "In-out"), # Advanced
+      #     dissolves = rep(FALSE, n_rules), # TODO: Implement dissolution rules
+      #     priority = c("-", as.character(1:(n_rules-1))),
+      #
+      #     main_membrane_label = c("dummy_id", 1, rep(2, n_rules-2)),
+      #
+      #     lhs = list(
+      #       # Dummy: [a -> a]_dummy_id
+      #       tibble::tibble(where = "@here",
+      #                      object = "a",
+      #                      multiplicity = 1),
+      #       # Evolution_1: [a,b2 -> a,b2,ap3,bp4]_1
+      #       tibble::tibble(where = c("@here", "@here"),
+      #                      object = c("a", "b"),
+      #                      multiplicity = 1:2),
+      #       # Evolution_2: [c3,d4 -> c3,d4]_2
+      #       tibble::tibble(where = c("@here", "@here"),
+      #                      object = c("c", "d"),
+      #                      multiplicity = 3:4),
+      #       # In: [d []_3 -> [fp]_3]_2
+      #       tibble::tibble(where = c("@here", "@exists"),
+      #                      object = c("e", "3"),
+      #                      multiplicity = c(1, 1)),
+      #       # Out: [[e]_3 -> cp []_3]_2
+      #       tibble::tibble(where = c("3"),
+      #                      object = c("e"),
+      #                      multiplicity = 1),
+      #       # In-out: [d[e]_3 -> cp [fp]_3]_2
+      #       tibble::tibble(where = c("@here", "@exists", "3"),
+      #                      object = c("d", "3", "e"),
+      #                      multiplicity = c(1, 1, 1))
+      #     ),
+      #
+      #     rhs = list(
+      #       # Dummy: [a -> a]_dummy_id
+      #       tibble::tibble(where = "@here",
+      #                      object = "a",
+      #                      multiplicity = 1),
+      #       # Evolution_1: [a,b2 -> a,b2,ap3,bp4]_1
+      #       tibble::tibble(where = rep("@here", 4),
+      #                      object = c("a", "b", "ap", "bp"),
+      #                      multiplicity = 1:4),
+      #       # Evolution_2: [c3,d4 -> c3,d4]_2
+      #       tibble::tibble(where = rep("@here", 2),
+      #                      object = c("c", "d"),
+      #                      multiplicity = 3:4),
+      #       # In: [d []_3 -> [fp]_3]_2
+      #       tibble::tibble(where = c("3"),
+      #                      object = c("fp"),
+      #                      multiplicity = 1),
+      #       # Out: [[e]_3 -> cp []_3]_2
+      #       tibble::tibble(where = c("@here"),
+      #                      object = c("cp"),
+      #                      multiplicity = 1),
+      #       # In-out: [d[e]_3 -> cp [fp]_3]_2
+      #       tibble::tibble(where = c("@here", "3"),
+      #                      object = c("cp", "fp"),
+      #                      multiplicity = c(1, 1))
+      #     ),
+      #     propensity = 1:n_rules
+      #   ),
+      #
+      #   "Properties" = tibble::tibble(
+      #     System = 1,
+      #     PLingua_model = "Transition",
+      #     N_membranes = 4,
+      #     N_objects = NA,
+      #     N_rules = 11,
+      #     Max_depth_in_rules = 1 # For now at least
+      #   )
+      # )
     } else if (demo == 2) {
       ##################
       ##### Demo 2 #####
       ##################
       cat("Using the", crayon::bold("complex-enough"), "demo 2\n")
+      return(0)
 
-      expected_exit = list(
-
-        "Configuration" = tibble::tibble(
-          environment = c(0, 0, 0),
-          id = c(0, 1, 2),
-          label = c(0, 1, 2), # Both children have the same label
-          objects = list(
-            tibble::tibble(object = "@filler", multiplicity = 1),
-            tibble::tibble(object = c("a", "b", "c", "d"),
-                           multiplicity = 1:4),
-            tibble::tibble(object = c("a", "b"), multiplicity = 1:2)
-          ),
-          superM = c(NA, 0, 1), # Given by ID # END: We could have more than one parent
-
-          subM = list(
-            tibble::tibble(children = 1),
-            tibble::tibble(children = 2),
-            tibble::tibble(children = NA)),
-          charge = c(0, 1, -1),
-          other_params = c(NA, NA, NA)
-        ),
-
-        "Rules" = tibble::tibble(
-          # Rules:
-          # 1. a --> b
-          # 2. a --> b*2
-          # 3. a --> b*2, c
-          # 4. b*2 --> c
-          # 5. a, b --> c
-          # 6. a, b*2 --> c
-          # 7. a, b*2 --> c*3
-          # 8. a, b*2 --> c*3, d*4
-          # 9. a --> lambda
-          # 10. [a [ ]'2 --> [a]'2]'1
-          # 11. [ [a]'2 --> a [ ]'2]'1
-          # 12. a --> NEW
-          # 13. [a [a]'2  -> [b]'2]'1
-          # 14. [a,b []'2 -> [b]'2]'1
-          # 15. [a []'2  -> b [c]'2]'1
-          # 16. [b*2 []'2  -> [c*3]'2]'1
-          # 17. [ [a,b]'2  -> b [c]'2]'1
-          # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
-
-          # Propensity = (11 - Rule number) / 11
-
-          rule_id = 1:18,
-          dissolves = c(rep(FALSE, 8), TRUE, rep(FALSE, 9)),
-          priority = rep("-", 18),
-
-          # lhs_membrane_label = rep(1, 12),
-          main_membrane_label = rep(1, 18),
-          lhs = list(
-            tibble::tibble(where = "@here",
-                           object = "a",
-                           multiplicity = 1),
-            tibble::tibble(where = "@here",
-                           object = "a",
-                           multiplicity = 1),
-            tibble::tibble(where = "@here",
-                           object = "a",
-                           multiplicity = 1),
-            tibble::tibble(where = "@here",
-                           object = "b",
-                           multiplicity = 2),
-            tibble::tibble(where = c("@here", "@here"),
-                           object = c("a", "b"),
-                           multiplicity = c(1,1)),
-            tibble::tibble(where = c("@here", "@here"),
-                           object = c("a", "b"),
-                           multiplicity = 1:2),
-            tibble::tibble(where = c("@here", "@here"),
-                           object = c("a", "b"),
-                           multiplicity = 1:2),
-            tibble::tibble(where = c("@here", "@here"),
-                           object = c("a", "b"),
-                           multiplicity = 1:2),
-            tibble::tibble(where = "@here",
-                           object = "a",
-                           multiplicity = 1),
-            tibble::tibble(where = c("@here", "@exists"),
-                           object = c("a", 2),
-                           multiplicity = c(1, 1)),
-            tibble::tibble(where = 2,
-                           object = "a",
-                           multiplicity = 1),
-            tibble::tibble(where = "@here",
-                           object = "a",
-                           multiplicity = 1),
-
-            ## TODO
-            # 13. [a [a]'2  -> [b]'2]'1
-            tibble::tibble(where = c("@here", 2),
-                           object = c("a", "a"),
-                           multiplicity = c(1, 1)),
-
-            # 14. [a,b []'2 -> [b]'2]'1
-            tibble::tibble(where = c("@here", "@here"),
-                           object = c("a", "b"),
-                           multiplicity = c(1, 1)),
-
-            # 15. [a []'2  -> b [c]'2]'1
-            tibble::tibble(where = c("@here", "@exists"),
-                           object = c("a", 2),
-                           multiplicity = c(1, 1)),
-
-            # 16. [b*2 []'2  -> [c*3]'2]'1
-            tibble::tibble(where = c("@here", "@exists"),
-                           object = c("b", 2),
-                           multiplicity = c(2, 1)),
-
-            # 17. [ [a,b]'2  -> b [c]'2]'1
-            tibble::tibble(where = c(2, 2),
-                           object = c("a", "b"),
-                           multiplicity = c(1, 1)),
-
-            # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
-            tibble::tibble(where = c(2, 2),
-                           object = c("a", "b"),
-                           multiplicity = c(1, 2))
-          ),
-
-          # rhs_membrane_label = rep(1, 12), # Replaced with main_membrane_label
-          rhs = list(
-            tibble::tibble(where = "@here",
-                           object = "b",
-                           multiplicity = 1),
-            tibble::tibble(where = "@here",
-                           object = "b",
-                           multiplicity = 2),
-            tibble::tibble(where = c("@here", "@here"),
-                           object = c("b", "c"),
-                           multiplicity = c(2,1)),
-            tibble::tibble(where = "@here",
-                           object = "c",
-                           multiplicity = 1),
-            tibble::tibble(where = "@here",
-                           object = "c",
-                           multiplicity = 1),
-            tibble::tibble(where = "@here",
-                           object = "c",
-                           multiplicity = 1),
-            tibble::tibble(where = "@here",
-                           object = "c",
-                           multiplicity = 3),
-            tibble::tibble(where = c("@here", "@here"),
-                           object = c("c", "d"),
-                           multiplicity = 3:4),
-            tibble::tibble(where = "@here",
-                           object = "@delta",
-                           multiplicity = 1),
-            tibble::tibble(where = 2,
-                           object = "a",
-                           multiplicity = 1),
-            tibble::tibble(where = "@here",
-                           object = "a",
-                           multiplicity = 1),
-            tibble::tibble(where = "@here",
-                           object = "NEW",
-                           multiplicity = 1),
-
-            # 13. [a [a]'2  -> [b]'2]'1
-            tibble::tibble(where = 2,
-                           object = "b",
-                           multiplicity = 1),
-
-            # 14. [a,b []'2 -> [b]'2]'1
-            tibble::tibble(where = 2,
-                           object = "b",
-                           multiplicity = 1),
-
-            # 15. [a []'2  -> b [c]'2]'1
-            tibble::tibble(where = c("@here", 2),
-                           object = c("b", "c"),
-                           multiplicity = c(1, 1)),
-
-            # 16. [b*2 []'2  -> [c*3]'2]'1
-            tibble::tibble(where = 2,
-                           object = "c",
-                           multiplicity = 3),
-
-            # 17. [ [a,b]'2  -> b [c]'2]'1
-            tibble::tibble(where = c("@here", 2),
-                           object = c("b", "c"),
-                           multiplicity = c(1, 1)),
-
-            # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
-            tibble::tibble(where = c(2, 2),
-                           object = c("c", "d"),
-                           multiplicity = 3:4)
-          ),
-          propensity = seq(1, 1/18, -1/18)
-        ),
-
-        "Properties" = tibble::tibble(
-          System = NA,
-          PLingua_model = NA,
-          N_membranes = 2,
-          N_objects = NA,
-          N_rules = NA,
-          Max_depth_in_rules = NA # For now at least
-        )
-      )
+      # expected_exit = list(
+      #
+      #   "Configuration" = tibble::tibble(
+      #     environment = c(0, 0, 0),
+      #     id = c(0, 1, 2),
+      #     label = c(0, 1, 2), # Both children have the same label
+      #     objects = list(
+      #       tibble::tibble(object = "@filler", multiplicity = 1),
+      #       tibble::tibble(object = c("a", "b", "c", "d"),
+      #                      multiplicity = 1:4),
+      #       tibble::tibble(object = c("a", "b"), multiplicity = 1:2)
+      #     ),
+      #     superM = c(NA, 0, 1), # Given by ID # END: We could have more than one parent
+      #
+      #     subM = list(
+      #       tibble::tibble(children = 1),
+      #       tibble::tibble(children = 2),
+      #       tibble::tibble(children = NA)),
+      #     charge = c(0, 1, -1),
+      #     other_params = c(NA, NA, NA)
+      #   ),
+      #
+      #   "Rules" = tibble::tibble(
+      #     # Rules:
+      #     # 1. a --> b
+      #     # 2. a --> b*2
+      #     # 3. a --> b*2, c
+      #     # 4. b*2 --> c
+      #     # 5. a, b --> c
+      #     # 6. a, b*2 --> c
+      #     # 7. a, b*2 --> c*3
+      #     # 8. a, b*2 --> c*3, d*4
+      #     # 9. a --> lambda
+      #     # 10. [a [ ]'2 --> [a]'2]'1
+      #     # 11. [ [a]'2 --> a [ ]'2]'1
+      #     # 12. a --> NEW
+      #     # 13. [a [a]'2  -> [b]'2]'1
+      #     # 14. [a,b []'2 -> [b]'2]'1
+      #     # 15. [a []'2  -> b [c]'2]'1
+      #     # 16. [b*2 []'2  -> [c*3]'2]'1
+      #     # 17. [ [a,b]'2  -> b [c]'2]'1
+      #     # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
+      #
+      #     # Propensity = (11 - Rule number) / 11
+      #
+      #     rule_id = 1:18,
+      #     dissolves = c(rep(FALSE, 8), TRUE, rep(FALSE, 9)),
+      #     priority = rep("-", 18),
+      #
+      #     # lhs_membrane_label = rep(1, 12),
+      #     main_membrane_label = rep(1, 18),
+      #     lhs = list(
+      #       tibble::tibble(where = "@here",
+      #                      object = "a",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = "@here",
+      #                      object = "a",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = "@here",
+      #                      object = "a",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = "@here",
+      #                      object = "b",
+      #                      multiplicity = 2),
+      #       tibble::tibble(where = c("@here", "@here"),
+      #                      object = c("a", "b"),
+      #                      multiplicity = c(1,1)),
+      #       tibble::tibble(where = c("@here", "@here"),
+      #                      object = c("a", "b"),
+      #                      multiplicity = 1:2),
+      #       tibble::tibble(where = c("@here", "@here"),
+      #                      object = c("a", "b"),
+      #                      multiplicity = 1:2),
+      #       tibble::tibble(where = c("@here", "@here"),
+      #                      object = c("a", "b"),
+      #                      multiplicity = 1:2),
+      #       tibble::tibble(where = "@here",
+      #                      object = "a",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = c("@here", "@exists"),
+      #                      object = c("a", 2),
+      #                      multiplicity = c(1, 1)),
+      #       tibble::tibble(where = 2,
+      #                      object = "a",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = "@here",
+      #                      object = "a",
+      #                      multiplicity = 1),
+      #
+      #       ## TODO
+      #       # 13. [a [a]'2  -> [b]'2]'1
+      #       tibble::tibble(where = c("@here", 2),
+      #                      object = c("a", "a"),
+      #                      multiplicity = c(1, 1)),
+      #
+      #       # 14. [a,b []'2 -> [b]'2]'1
+      #       tibble::tibble(where = c("@here", "@here"),
+      #                      object = c("a", "b"),
+      #                      multiplicity = c(1, 1)),
+      #
+      #       # 15. [a []'2  -> b [c]'2]'1
+      #       tibble::tibble(where = c("@here", "@exists"),
+      #                      object = c("a", 2),
+      #                      multiplicity = c(1, 1)),
+      #
+      #       # 16. [b*2 []'2  -> [c*3]'2]'1
+      #       tibble::tibble(where = c("@here", "@exists"),
+      #                      object = c("b", 2),
+      #                      multiplicity = c(2, 1)),
+      #
+      #       # 17. [ [a,b]'2  -> b [c]'2]'1
+      #       tibble::tibble(where = c(2, 2),
+      #                      object = c("a", "b"),
+      #                      multiplicity = c(1, 1)),
+      #
+      #       # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
+      #       tibble::tibble(where = c(2, 2),
+      #                      object = c("a", "b"),
+      #                      multiplicity = c(1, 2))
+      #     ),
+      #
+      #     # rhs_membrane_label = rep(1, 12), # Replaced with main_membrane_label
+      #     rhs = list(
+      #       tibble::tibble(where = "@here",
+      #                      object = "b",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = "@here",
+      #                      object = "b",
+      #                      multiplicity = 2),
+      #       tibble::tibble(where = c("@here", "@here"),
+      #                      object = c("b", "c"),
+      #                      multiplicity = c(2,1)),
+      #       tibble::tibble(where = "@here",
+      #                      object = "c",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = "@here",
+      #                      object = "c",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = "@here",
+      #                      object = "c",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = "@here",
+      #                      object = "c",
+      #                      multiplicity = 3),
+      #       tibble::tibble(where = c("@here", "@here"),
+      #                      object = c("c", "d"),
+      #                      multiplicity = 3:4),
+      #       tibble::tibble(where = "@here",
+      #                      object = "@delta",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = 2,
+      #                      object = "a",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = "@here",
+      #                      object = "a",
+      #                      multiplicity = 1),
+      #       tibble::tibble(where = "@here",
+      #                      object = "NEW",
+      #                      multiplicity = 1),
+      #
+      #       # 13. [a [a]'2  -> [b]'2]'1
+      #       tibble::tibble(where = 2,
+      #                      object = "b",
+      #                      multiplicity = 1),
+      #
+      #       # 14. [a,b []'2 -> [b]'2]'1
+      #       tibble::tibble(where = 2,
+      #                      object = "b",
+      #                      multiplicity = 1),
+      #
+      #       # 15. [a []'2  -> b [c]'2]'1
+      #       tibble::tibble(where = c("@here", 2),
+      #                      object = c("b", "c"),
+      #                      multiplicity = c(1, 1)),
+      #
+      #       # 16. [b*2 []'2  -> [c*3]'2]'1
+      #       tibble::tibble(where = 2,
+      #                      object = "c",
+      #                      multiplicity = 3),
+      #
+      #       # 17. [ [a,b]'2  -> b [c]'2]'1
+      #       tibble::tibble(where = c("@here", 2),
+      #                      object = c("b", "c"),
+      #                      multiplicity = c(1, 1)),
+      #
+      #       # 18. [ [a,b*2]'2  -> [c*3, d*4]'2]'1
+      #       tibble::tibble(where = c(2, 2),
+      #                      object = c("c", "d"),
+      #                      multiplicity = 3:4)
+      #     ),
+      #     propensity = seq(1, 1/18, -1/18)
+      #   ),
+      #
+      #   "Properties" = tibble::tibble(
+      #     System = NA,
+      #     PLingua_model = NA,
+      #     N_membranes = 2,
+      #     N_objects = NA,
+      #     N_rules = NA,
+      #     Max_depth_in_rules = NA # For now at least
+      #   )
+      # )
     } else if (demo == "small") {
       ########################
       ##### Demo "small" #####
       ########################
       cat("Using the", crayon::bold("OUTDATED"), "demo \"small\"\n")
-      n_rules = 3
-
-      expected_exit = list(
-        Configuration = tibble::tibble(
-          environment = c("env_1", "env_1", "env_1", "env_1"),
-          id = c("skin", "id_1", "id_2", "id_3"),
-          label = c("skin_label", "label_1", "label_2", "label_3"),
-          objects = list(
-            tibble::tibble(object = "@filler", multiplicity = 1),
-            tibble::tibble(object = c("object_1", "object_999"), multiplicity = c(1, 999)),
-            tibble::tibble(object = c("object_2"), multiplicity = c(2)),
-            tibble::tibble(object = "object_n", multiplicity = 6023)
-          ),
-          superM = c(NA, "skin", "id_1", "id_2"), # Given by ID
-          subM = list(
-            tibble::tibble(children = "id_1"),
-            tibble::tibble(children = "id_2"),
-            tibble::tibble(children = "id_3"),
-            tibble::tibble(children = NA)
-          ),
-          charge = c("-", "-", "-", "-"),
-          other_params = c(NA, NA, NA, NA)
-        ),
-        Rules = tibble::tibble(
-          rule_id = 1:n_rules,
-          dissolves = c(rep(FALSE, n_rules)),
-          priority = rep("-", n_rules),
-
-          main_membrane_label = c(
-            "skin", "skin", "id_1"
-          ),
-          lhs = list(
-            tibble::tibble(where = c("@here"),
-                           object = c("object_1"),
-                           multiplicity = c(1)),
-            tibble::tibble(where = c("@here", "@exists"),
-                           object = c("object_999", "id_2"),
-                           multiplicity = c(1, 1)),
-            tibble::tibble(where = c("@here"),
-                           object = c("object_2"),
-                           multiplicity = c(1))
-          ),
-          rhs = list(
-            tibble::tibble(where = c("@here"),
-                           object = c("rule_1_executed"),
-                           multiplicity = c(1)),
-            tibble::tibble(where = c("@here"),
-                           object = c("rule_2_executed"),
-                           multiplicity = c(1)),
-            tibble::tibble(where = c("@here"),
-                           object = c("rule_3_executed"),
-                           multiplicity = c(1))
-          ),
-          propensity = c(1:n_rules)
-        ),
-        Properties = NA
-      )
+      return(0)
+      # n_rules = 3
+      #
+      # expected_exit = list(
+      #   Configuration = tibble::tibble(
+      #     environment = c("env_1", "env_1", "env_1", "env_1"),
+      #     id = c("skin", "id_1", "id_2", "id_3"),
+      #     label = c("skin_label", "label_1", "label_2", "label_3"),
+      #     objects = list(
+      #       tibble::tibble(object = "@filler", multiplicity = 1),
+      #       tibble::tibble(object = c("object_1", "object_999"), multiplicity = c(1, 999)),
+      #       tibble::tibble(object = c("object_2"), multiplicity = c(2)),
+      #       tibble::tibble(object = "object_n", multiplicity = 6023)
+      #     ),
+      #     superM = c(NA, "skin", "id_1", "id_2"), # Given by ID
+      #     subM = list(
+      #       tibble::tibble(children = "id_1"),
+      #       tibble::tibble(children = "id_2"),
+      #       tibble::tibble(children = "id_3"),
+      #       tibble::tibble(children = NA)
+      #     ),
+      #     charge = c("-", "-", "-", "-"),
+      #     other_params = c(NA, NA, NA, NA)
+      #   ),
+      #   Rules = tibble::tibble(
+      #     rule_id = 1:n_rules,
+      #     dissolves = c(rep(FALSE, n_rules)),
+      #     priority = rep("-", n_rules),
+      #
+      #     main_membrane_label = c(
+      #       "skin", "skin", "id_1"
+      #     ),
+      #     lhs = list(
+      #       tibble::tibble(where = c("@here"),
+      #                      object = c("object_1"),
+      #                      multiplicity = c(1)),
+      #       tibble::tibble(where = c("@here", "@exists"),
+      #                      object = c("object_999", "id_2"),
+      #                      multiplicity = c(1, 1)),
+      #       tibble::tibble(where = c("@here"),
+      #                      object = c("object_2"),
+      #                      multiplicity = c(1))
+      #     ),
+      #     rhs = list(
+      #       tibble::tibble(where = c("@here"),
+      #                      object = c("rule_1_executed"),
+      #                      multiplicity = c(1)),
+      #       tibble::tibble(where = c("@here"),
+      #                      object = c("rule_2_executed"),
+      #                      multiplicity = c(1)),
+      #       tibble::tibble(where = c("@here"),
+      #                      object = c("rule_3_executed"),
+      #                      multiplicity = c(1))
+      #     ),
+      #     propensity = c(1:n_rules)
+      #   ),
+      #   Properties = NA
+      # )
     }
 
     return(expected_exit)
