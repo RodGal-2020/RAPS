@@ -13,8 +13,8 @@ show_rap = function(rap, focus_on = NULL) {
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   ###############################
-  rap = RAPS::path2rap(demo = 1)
-  focus_on = list("MEM" = 2:3, "OBJ")
+  # rap = RAPS::path2rap(demo = 1)
+  # focus_on = list("MEM" = 2:3, "OBJ")
   ###############################
 
   if (is.null(focus_on)) {
