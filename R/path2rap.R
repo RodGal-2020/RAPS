@@ -14,15 +14,16 @@
 #' @section Future work:
 #' - Include different formats for inputs, like JSON or even the `.pli` itself.
 #' @export
-path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
+path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, debug = FALSE) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
   ####################################################
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   ######## Common
   # library(RAPS)
-  # demo = FALSE
+  # use_codification = FALSE
   # verbose = 5
+  # demo = FALSE
   # debug = TRUE
   # rap_reference = RAPS::load_demo_dataset("FAS")
   # cat(crayon::bold("CAUTION:", "USING DEMO MODE"))
@@ -180,9 +181,16 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
   properties$objects_dictionary = tibble::tibble(
     real_name = objects_node_values %>%
       xml2::xml_text(),
-    codification = objects_node_values %>%
-      xml2::xml_name()
+    codification_as_id = objects_node_values %>%
+      xml2::xml_name() %>%
+      substr(start = 6, stop = 8) # Only 3 digits
+
   )
+
+  if (!use_codification) {
+    objects_dictionary = properties$objects_dictionary
+    colnames(objects_dictionary) = c("true_object", "object")
+  }
 
   ## Property: Labels used in the membrane structure
   labels_node = data_xml %>%
@@ -219,7 +227,7 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
     xml2::xml_find_all("//model") %>%
     xml2::xml_text()
 
-  ## TODO: Property: Semantics (rule information)
+  ## TODO: Property: Semantics (rule type codification as id [just like the objects_dictionary])
   properties$semantics = NA
   # semantics = list()
   # semantics_node_children = data_xml %>%
@@ -517,7 +525,20 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
     multisets_aux %<>%
       dplyr::filter(id == mem_id)
 
-    multisets_aux$objects[[1]] = get_objects_from_values(value_node)
+    objects_from_values = get_objects_from_values(value_node)
+
+    if (!use_codification) {
+      translation = objects_dictionary %>%
+        dplyr::filter(codification_as_id == objects_from_values$object) %$%
+        real_name
+
+      objects_from_values %<>%
+        dplyr::inner_join(objects_dictionary, by = "object") %>%
+        dplyr::select(-object) %>%
+        dplyr::rename(object = true_object)
+    }
+
+    multisets_aux$objects[[1]] = objects_from_values
 
     multisets_aux = old_multisets_aux %>%
       dplyr::filter(id != mem_id) %>%
