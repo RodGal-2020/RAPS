@@ -17,19 +17,11 @@
 path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
-  if (demo) {
-    cat("\nChoose a dataset from the following:\n")
-    datasets = c("EGFR", "FAS", "QUORUM", "TEMPLATE", "demo-1", "demo-2", "demo-small")
-    cat(paste(datasets, collapse = ", "))
-    chosen_dataset = readline()
-    return(RAPS::load_demo_dataset(dataset = chosen_dataset))
-  }
-
   ####################################################
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   ######## Common
   # library(RAPS)
-  # demo = NULL
+  # demo = FALSE
   # verbose = 5
   # debug = TRUE
   # rap_reference = RAPS::load_demo_dataset("FAS")
@@ -46,6 +38,14 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/2%20-%20%20a2_to_b3.xml"
   ## 3 - a1,b2 to c3,d4
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
+
+  if (demo) {
+    cat("\nChoose a dataset from the following:\n")
+    datasets = c("EGFR", "FAS", "QUORUM", "TEMPLATE", "demo-1", "demo-2", "demo-small")
+    cat(paste(datasets, collapse = ", "))
+    chosen_dataset = readline()
+    return(RAPS::load_demo_dataset(dataset = chosen_dataset))
+  }
 
   ######################################
   ### Aux functions
