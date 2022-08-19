@@ -54,9 +54,28 @@ If RAPS is not installed, uncomment the following:
 ```{r}
 library(RAPS)
 ```
+# Minimal stochastic example
+
+This example doesn't consider environments, so we must add them ourselves:
+```{r}
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/0%20-%20a_to_b_stochastic.xml"
+
+my_rap = path2rap(path)
+my_rap$Configuration$environment = "synthetic_env"
+RAPS::show_rap(my_rap)
+```
+
+Now the simulation:
+```{r}
+my_rap %<>%
+  RAPS::alg_det_menv(max_T = 0.5, verbose = TRUE, debug = TRUE)
+
+my_rap %>%
+  RAPS::show_rap(focus_on = list("OBJ", "MEM" = 0:1))
+```
 
 
-# Demo stochastic P system
+# **OUTDATED** - Demo stochastic P system
 ```{r}
 my_rap = path2rap(demo = 1)
 RAPS::show_rap(my_rap)

@@ -653,6 +653,10 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ###############################################
     # Parameters for RAPS
+
+    ## where
+
+    ## main_membrane_label
     main_membrane_label = sample(c(new_lhs_main_membrane_label,
                                    new_rhs_main_membrane_label), 1)
     verbose_print(cat(crayon::bold("main_membrane_label"), "parameter is under development"), 2)
