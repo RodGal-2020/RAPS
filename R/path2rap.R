@@ -21,7 +21,18 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   ####################################################
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   # library(RAPS)
+  ## Complex evolution rules
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
+  ## 0 - a to b
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/0%20-%20%20a_to_b.xml"
+  ## 1 - a to b2
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/1%20-%20%20a_to_b2.xml"
+  ## 2 - a2 to b3
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/2%20-%20%20a2_to_b3.xml"
+  ## 3 - a1,b2 to c3,d4
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
+
+  ######## Common
   # demo = NULL
   # verbose = 5
   # debug = TRUE
@@ -631,6 +642,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
   #                      > charge, label
   #                      > children
 
+  ##############################################################################
   get_name_from_value = function(value) {
     return(value %>%
       xml2::xml_children() %>%
@@ -639,7 +651,9 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
       xml2::xml_text()
     )
   }
+  ##############################################################################
 
+  ##############################################################################
   get_children_names_from_values = function(nodes) {
     l_nodes = length(nodes)
 
@@ -659,13 +673,16 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
     return(children_names)
   }
+  ##############################################################################
 
+  ##############################################################################
   get_children_from_value = function(node) {
     return(node %>%
       xml2::xml_children() %>%
       magrittr::extract(3) %>%
       xml2::xml_children())
   }
+  ##############################################################################
 
   cat("\nAssuming that only a root/skin node exists")
   skin_id = structure_node %>%
@@ -789,9 +806,27 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     ))
   )
 
-  get_objects_from_value = function(value) {
-    value_children = value %>%
+  ##############################################################################
+  get_objects_from_values = function(values, rhs = FALSE) {
+    # Input: nodeset of valuei, each with a branch with id and, optionally, multiplicity
+
+    # LHS - Debugging
+    # values = lhs_info %>%
+    #   xml2::xml_find_all(".//multiset")
+
+    # RHS - Debugging
+    values = rhs_info %>%
+      xml2::xml_find_all(".//membranes") %>%
+      xml2::xml_find_all(".//muiltiset")
+
+
+    value_children = values %>%
       xml2::xml_children()
+
+
+    if (rhs) {
+      value_children %>% xml2::xml_children()
+    }
 
     n_children = length(value_children) # > 1 by definition of the valuei fields
 
@@ -802,11 +837,26 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
       aux_children = value_children[child] %>%
         xml2::xml_children()
 
-      new_object = aux_children[1] %>%
-        xml2::xml_text() # Can be more than one
+      if (!rhs) {
+        new_object = aux_children[1] %>%
+          xml2::xml_text() # Can be more than one
 
-      new_multiplicity = aux_children[2] %>%
-        xml2::xml_text()
+        new_multiplicity = aux_children[2] %>%
+          xml2::xml_text()
+
+      } else {
+        cat(crayon::bold("Not"), "working for RHS")
+        new_object = NULL
+        new_multiplicity = NULL
+
+        # new_object = aux_children[2] %>%
+        #   xml2::xml_children()
+        #   xml2::xml_text()
+        #
+        # new_multiplicity = aux_children[2] %>%
+        #   xml2::xml_text()
+
+      }
 
       object %<>% c(new_object)
       multiplicity %<>% c(new_multiplicity)
@@ -814,6 +864,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
     return(tibble::tibble(object, multiplicity))
   }
+  ##############################################################################
 
   n_values = length(initial_values)
 
@@ -831,7 +882,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     multisets_aux %<>%
       dplyr::filter(id == mem_id)
 
-    multisets_aux$objects[[1]] = get_objects_from_value(value_node)
+    multisets_aux$objects[[1]] = get_objects_from_values(value_node)
 
     multisets_aux = old_multisets_aux %>%
       dplyr::filter(id != mem_id) %>%
@@ -888,6 +939,7 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     propensity = NULL
   )
 
+  ##############################################################################
   get_rule_from_value = function(value) {
     children = value %>%
       xml2::xml_children()
@@ -901,11 +953,11 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     # In the demo the first rules are: [a -> b]'1, [a -> b*2]'1
     lhs_info = lhs_node %>%
       xml2::xml_children() %>% # multiset, membrane (note that there is no "s")
-      magrittr::extract(2) %>%
-      xml2::xml_children()
+      magrittr::extract(2) # charge, label, multiset, children
 
     ## charge
-    new_lhs_charge = lhs_info[1] %>%
+    new_lhs_charge = lhs_info %>%
+      xml2::xml_find_all(".//charge") %>%
       xml2::xml_text() %>%
       substitute_if_empty()
 
@@ -914,15 +966,18 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     }
 
     ## main_membrane_label
-    new_lhs_main_membrane_label = lhs_info[2] %>%
+    new_lhs_main_membrane_label = lhs_info %>%
+      xml2::xml_find_all(".//label") %>%
       xml2::xml_text()
 
     ## multiset
-    new_lhs_objects = lhs_info[3] %>%
-      get_objects_from_value()
+    new_lhs_objects = lhs_info %>%
+      xml2::xml_find_all(".//multiset") %>%
+      get_objects_from_values()
 
     ## children
-    new_lhs_children = lhs_info[3]
+    new_lhs_children = lhs_info %>%
+      xml2::xml_find_all(".//children")
     if (!is_empty(new_lhs_children)) {
       verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
     }
@@ -930,22 +985,29 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
     ###############################################
     # rhs
     # In the demo the first rules are: [a -> b]'1, [a -> b*2]'1
-    rhs_info = rhs_node %>%
-      xml2::xml_children() %>% # multiset, membrane (note the "s")
-      magrittr::extract(2)
+    rhs_info = rhs_node # multiset, membranes (note the "s")
 
     ## main_membrane_label
     new_rhs_main_membrane_label = new_lhs_main_membrane_label
 
     ## multiset
-    n_multisets = length(rhs_info)
-    new_lhs_objects = tibble::tibble(object = NULL, multiplicity = NULL)
-    for (i in 1:n_multisets) {
-      new_objects = get_objects_from_value(rhs_info[i])
-      ## FIXME: Define a get_objects_from_value_rhs() function perhaps
-      new_lhs_objects %<>%
-        dplyr::bind_rows(new_objects)
-    }
+    # rhs_info %>%
+    #   xml2::xml_find_first(".//multiset")
+
+    ## membranes
+    membranes = rhs_info %>%
+      xml2::xml_find_all(".//membranes")
+
+    ## FIXME: Working w/ get_objects_from_values
+
+    # n_membranes = length(membranes)
+    # new_rhs_objects = tibble::tibble(object = NULL, multiplicity = NULL)
+    # for (i in 1:n_membranes) {
+    #   new_objects = get_objects_from_value(membranes[i])
+    #   ## FIXME: Define a get_objects_from_value_rhs() function perhaps
+    #   new_lhs_objects %<>%
+    #     dplyr::bind_rows(new_objects)
+    # }
 
     ## children
     new_lhs_children = lhs_info[3]
@@ -976,12 +1038,12 @@ path2rap = function(path = NULL, verbose = 5, demo = 1, debug = FALSE) {
 
     return(new_tibble)
   }
+  ##############################################################################
 
   n_rules = length(rules_value)
 
   ####################################
-  exit$Properties %<>%
-    dplyr::mutate("n_rules" = n_rules)
+  exit$Properties$n_rules = n_rules
   ####################################
 
   for (i in 1:n_rules) {
