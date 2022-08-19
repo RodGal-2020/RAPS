@@ -54,17 +54,6 @@ If RAPS is not installed, uncomment the following:
 ```{r}
 library(RAPS)
 ```
-
-## Complex evolution rules
-```{r}
-path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
-
-my_rap = path2rap(path, verbose = 0)
-show_rap(my_rap)
-show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
-```
-
-
 ## 0 - a to b
 ```{r}
 path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/0%20-%20%20a_to_b.xml"
@@ -98,6 +87,16 @@ show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
 ## 3 - a1,b2 to c3,d4
 ```{r}
 path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
+
+my_rap = path2rap(path, verbose = 0)
+show_rap(my_rap)
+show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
+```
+
+
+## Complex evolution rules
+```{r}
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
 
 my_rap = path2rap(path, verbose = 0)
 show_rap(my_rap)
