@@ -190,6 +190,15 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   if (!use_codification) {
     objects_dictionary = properties$objects_dictionary
     colnames(objects_dictionary) = c("true_object", "object")
+
+    translate_objects = function(object_tibble) {
+      return(object_tibble %>%
+        dplyr::inner_join(objects_dictionary, by = "object") %>%
+        dplyr::select(true_object, multiplicity) %>%
+        # dplyr::select(-object) %>%
+        dplyr::rename(object = true_object)
+        )
+    }
   }
 
   ## Property: Labels used in the membrane structure
@@ -528,14 +537,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     objects_from_values = get_objects_from_values(value_node)
 
     if (!use_codification) {
-      translation = objects_dictionary %>%
-        dplyr::filter(codification_as_id == objects_from_values$object) %$%
-        real_name
-
-      objects_from_values %<>%
-        dplyr::inner_join(objects_dictionary, by = "object") %>%
-        dplyr::select(-object) %>%
-        dplyr::rename(object = true_object)
+      objects_from_values %<>% translate_objects()
     }
 
     multisets_aux$objects[[1]] = objects_from_values
