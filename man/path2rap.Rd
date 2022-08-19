@@ -4,7 +4,13 @@
 \alias{path2rap}
 \title{Load a P System given as a path/URL to a XML/JSON file}
 \usage{
-path2rap(path, verbose = 5, demo = FALSE, debug = FALSE)
+path2rap(
+  path,
+  use_codification = FALSE,
+  verbose = 5,
+  demo = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{path}{Path/URL to the input file.}

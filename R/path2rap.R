@@ -558,7 +558,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ######################################
   # labels
   ######################################
-  verbose_print(cat(crayon::bold("labels"), "are not supported yet"), 2)
+  verbose_print(cat(crayon::bold("labels"), "are not supported yet, using ids"), 2)
   configuration$labels = configuration$id
 
   ######################################
@@ -589,7 +589,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ## Debugging:
     # (value = rules_value[1])
 
-    new_rule_id = xml2::xml_name(value)
+    new_rule_id = xml2::xml_name(value) # TODO: Use rules dictionary
 
     lhs_node = value %>% xml2::xml_find_all(".//left_hand_rule")
     rhs_node = value %>% xml2::xml_find_all(".//right_hand_rule")
@@ -660,15 +660,35 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ###############################################
     # TODO: features
+    # features_node
+
+    ###############################################
+    # Stochastic constant # Quick deployment, improvable
+    features_children = features_node %>%
+      xml2::xml_children()
+
+    if (length(features_children) == 2) {
+      new_sc = features_children %>%
+        magrittr::extract(2) %>%
+        xml2::xml_children() %>%
+        magrittr::extract(2) %>%
+        xml2::xml_children() %>%
+        magrittr::extract(2) %>%
+        xml2::xml_text() %>%
+        utf8ToInt()
+    } else {
+      cat("This function only supports sc for now as features.")
+      new_sc = NA # TODO: Check this
+    }
 
     new_tibble = tibble::tibble(
       rule_id = new_rule_id,
-      dissolves = "TODO",
-      priority = "TODO",
       main_membrane_label = main_membrane_label,
       lhs = list(new_lhs_objects),
       rhs = list(new_rhs_objects),
-      propensity = "TODO"
+      propensity = new_sc,
+      dissolves = "TODO",
+      priority = "TODO",
     )
 
     return(new_tibble)
