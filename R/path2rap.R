@@ -28,16 +28,23 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
   # cat(crayon::bold("CAUTION:", "USING DEMO MODE"))
   ####################################################
   ######## Debugging/Demo files
+  #### Evolution rules
   ## Complex evolution rules
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
   ## 0 - a to b
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/0%20-%20%20a_to_b.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/0%20-%20%20a_to_b.xml"
   ## 1 - a to b2
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/1%20-%20%20a_to_b2.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/1%20-%20%20a_to_b2.xml"
   ## 2 - a2 to b3
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/2%20-%20%20a2_to_b3.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20%20a2_to_b3.xml"
   ## 3 - a1,b2 to c3,d4
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
+
+  #### TODO: Communication rules
+  # path = NULL
+
+  #### TODO: Stochastic rules
+  # path = NULL
 
   if (demo) {
     cat("\nChoose a dataset from the following:\n")
