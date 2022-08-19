@@ -626,6 +626,7 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
     # Parameters for RAPS
     main_membrane_label = sample(c(new_lhs_main_membrane_label,
                                    new_rhs_main_membrane_label), 1)
+    verbose_print(cat(crayon::bold("main_membrane_label"), "parameter is under development"), 2)
 
 
     ###############################################
@@ -636,8 +637,8 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
       dissolves = "TODO",
       priority = "TODO",
       main_membrane_label = main_membrane_label,
-      lhs = new_lhs_objects,
-      rhs = new_rhs_objects,
+      lhs = list(new_lhs_objects),
+      rhs = list(new_rhs_objects),
       propensity = "TODO"
     )
 
@@ -667,7 +668,7 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
 
   for (i in 1:n_rules) {
     rules %<>%
-      dplyr::bind_cols(get_rule_from_value(rules_value[i]))
+      dplyr::bind_rows(get_rule_from_value(rules_value[i]))
   }
 
   exit$Rules = rules
