@@ -65,7 +65,7 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
 
   ### is.empty?
   is_empty = function(var) {
-    return(length(var) == 0 || is.null(var) || is_empty(var) || length(var) == 0 || var == "")
+    return(length(var) == 0 || is.null(var)|| length(var) == 0 || var == "")
   }
   ## Examples
   # is_empty(NA)
