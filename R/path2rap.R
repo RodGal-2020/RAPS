@@ -43,8 +43,9 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
   #### TODO: Communication rules
   # path = NULL
 
-  #### TODO: Stochastic rules
-  # path = NULL
+  #### Stochastic rules
+  ## 0 - stochastic a to b
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/0%20-%20a_to_b_stochastic.xml"
 
   if (demo) {
     cat("\nChoose a dataset from the following:\n")
@@ -171,14 +172,17 @@ path2rap = function(path, verbose = 5, demo = FALSE, debug = FALSE) {
     magrittr::extract(3) %>% # psystem node
     xml2::xml_children()
 
-  ## Property: Objects used in the PS
-  objects_node = data_xml %>%
-    xml2::xml_find_all("//objects")
+  ## Property: Dictionary of rules and real names of objects used in the PS
+  objects_node_values = data_xml %>%
+    xml2::xml_find_all("//objects") %>%
+    xml2::xml_children()
 
-  properties$objects = objects_node %>%
-    xml2::xml_children() %>%
-    xml2::xml_contents() %>%
-    xml2::xml_text()
+  properties$objects_dictionary = tibble::tibble(
+    real_name = objects_node_values %>%
+      xml2::xml_text(),
+    codification = objects_node_values %>%
+      xml2::xml_name()
+  )
 
   ## Property: Labels used in the membrane structure
   labels_node = data_xml %>%
