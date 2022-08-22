@@ -595,6 +595,66 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ##############################################################################
 
   ##############################################################################
+  preprocess_multiset = function(multiset) {
+    ### Options
+    ## multiset > values > (key>id), (value>multiplicity)
+    ## multiset > #
+
+    ## Debugging:
+    # rule_id = 2
+    # (multiset = rules_value[rule_id] %>%
+    #   ## RHS
+    #    # xml2::xml_find_all(".//right_hand_rule") %>%
+    #   ## LHS
+    #    xml2::xml_find_all(".//left_hand_rule") %>%
+    #    xml2::xml_find_first(".//multiset"))
+
+    get_objects_from_values(multiset)
+
+  }
+  ##############################################################################
+
+  ##############################################################################
+  preprocess_membrane = function(membrane) {
+    ### Options
+    ## membrane > charge, label, multiset, children # multiset as before
+
+    ## Debugging:
+    rule_id = 1
+    (membrane = rules_value[rule_id] %>%
+    ## LHS
+      xml2::xml_find_all(".//left_hand_rule") %>%
+      xml2::xml_find_first(".//membrane")) # Or membranes
+    ## RHS
+      # xml2::xml_find_all(".//right_hand_rule") %>%
+      # xml2::xml_find_first(".//membranes")) # Or membranes
+
+    ### Charge
+    charge = membrane %>%
+      xml2::xml_find_all(".//charge") %>%
+      xml2::xml_text() %>%
+      substitute_if_empty()
+
+    ### Label
+    membrane_label = membrane %>%
+      xml2::xml_find_all(".//label") %>%
+      xml2::xml_text()
+
+    ### Multiset
+    multiset = membrane %>%
+      xml2::xml_find_first(".//multiset") %>%
+      preprocess_multiset()
+
+    ### Children
+    children = membrane %>%
+      xml2::xml_find_all(".//children")
+    if (!is_empty(children)) {
+      verbose_print(cat(crayon::bold("children"), "parameter is not supported yet, which means that we can't work with (membranes inside of)*2 membranes"), 4)
+    }
+  }
+  ##############################################################################
+
+  ##############################################################################
   get_rule_from_value = function(value) {
     ## Debugging:
     # (value = rules_value[1])
@@ -608,9 +668,52 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ###############################################
     # lhs
     # In the demo the first rules are: [a -> b]'1, [a -> b*2]'1
+    # In "a []'1 -> whatever" a would be in the multiset node, while []'1 would appear in the membrane zone
     lhs_info = lhs_node %>%
-      xml2::xml_children() %>% # multiset, membrane (note that there is no "s")
-      magrittr::extract(2) # charge, label, multiset, children
+      xml2::xml_children() # multiset, membrane (note that there is no "s")
+
+    ## Multiset
+    multiset_info = lhs_node %>%
+      xml2::xml_find_first(".//multiset") # Objects outside the AM
+
+    # multiset_info %>%
+    #   get_objects_from_values()
+
+    ## Membrane
+    membrane_info = lhs_node %>%
+      xml2::xml_find_first(".//membrane") # charge, label, multiset, children
+
+    ## charge
+    new_lhs_charge = lhs_info %>%
+      xml2::xml_find_all(".//charge") %>%
+      xml2::xml_text() %>%
+      substitute_if_empty()
+
+    if (new_lhs_charge != "-") {
+      verbose_print(cat(crayon::bold("charge"), "in a rule is not supported yet"), 2)
+    }
+
+    ## main_membrane_label
+    new_lhs_main_membrane_label = lhs_info %>%
+      xml2::xml_find_all(".//label") %>%
+      xml2::xml_text()
+
+    ## multiset
+    new_lhs_objects = lhs_info %>%
+      xml2::xml_find_all(".//multiset") %>%
+      get_objects_from_values()
+
+    ## children
+    new_lhs_children = lhs_info %>%
+      xml2::xml_find_all(".//children")
+    if (!is_empty(new_lhs_children)) {
+      verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
+    }
+
+    #########################
+    #### OLD LHS with the 2nd child of lhs_node, membrane
+    #########################
+    lhs_info = membrane_info # FIXME: This is used only as a placeholder in order to guarantee the correct execution with the evolution rules
 
     ## charge
     new_lhs_charge = lhs_info %>%
@@ -642,6 +745,17 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ###############################################
     # rhs
     # In the demo the first rules are: [a -> b]'1, [a -> b*2]'1
+    # In "-> a []'1 " a would be in the multiset node, while []'1 would appear in the membranes zone
+
+    multiset_info = rhs_node %>%
+      xml2::xml_find_first(".//multiset")
+
+    membranes_info = rhs_node %>%
+      xml2::xml_find_first(".//membranes")
+
+    #########################
+    #### OLD RHS
+    #########################
     rhs_info = rhs_node # multiset, membranes (note the "s")
 
     ## main_membrane_label
