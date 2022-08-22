@@ -455,36 +455,54 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   )
 
   ##############################################################################
-  get_objects_from_values = function(values, rhs = FALSE, get_mem = FALSE) {
+  get_objects_from_multiset = function(multiset, rhs = FALSE, get_mem = FALSE) {
+    ## TODO: Delete rhs and get_mem if useless (which is likely)
+
     # Input: nodeset of valuei, each with a branch with id and, optionally, multiplicity
+
+    ### Options
+    ## multiset > values > (key>id), (value>multiplicity)
+    ## multiset > #
+
+    ### Debugging rules 2.0:
+
+    # rule_id = 2
+    # (multiset = rules_value[rule_id] %>%
+    #   ## RHS
+    #    # xml2::xml_find_all(".//right_hand_rule") %>%
+    #   ## LHS
+    #    xml2::xml_find_all(".//left_hand_rule") %>%
+    #    xml2::xml_find_first(".//multiset"))
+
+    ### Debugging rules 2.0:
 
     # LHS - Debugging - Checked
     # cat("Debugging LHS")
-    # values = lhs_info %>%
+    # multiset = lhs_info %>%
     #   xml2::xml_find_all(".//multiset")
     # rhs = FALSE
 
     # RHS - Debugging
     # cat("Debugging RHS")
-    # values = rhs_info %>% # multiset, membranes
+    # multiset = rhs_info %>% # multiset, membranes
     #   xml2::xml_find_all(".//membranes") # value0, value1
     # rhs = TRUE
 
 
-    value_children = values %>%
+    values = multiset %>%
       xml2::xml_children()
 
 #     if (rhs) {
-#       value_children %>% xml2::xml_children()
+#       values %>% xml2::xml_children()
 #     }
 
-    n_children = length(value_children) # > 1 by definition of the valuei fields
+    n_children = length(values) # > 1 by definition of the valuei fields
 
     object = c()
     multiplicity = c()
 
     for (child in 1:n_children) {
-      chosen_child = value_children[child]
+      chosen_child = values[child]
       aux_children = chosen_child %>%
         xml2::xml_children()
 
@@ -544,13 +562,13 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     multisets_aux %<>%
       dplyr::filter(id == mem_id)
 
-    objects_from_values = get_objects_from_values(value_node)
+    objects_from_multiset = get_objects_from_multiset(value_node)
 
     if (!use_codification) {
-      objects_from_values %<>% translate_objects()
+      objects_from_multiset %<>% translate_objects()
     }
 
-    multisets_aux$objects[[1]] = objects_from_values
+    multisets_aux$objects[[1]] = objects_from_multiset
 
     multisets_aux = old_multisets_aux %>%
       dplyr::filter(id != mem_id) %>%
@@ -595,36 +613,19 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ##############################################################################
 
   ##############################################################################
-  preprocess_multiset = function(multiset) {
-    ### Options
-    ## multiset > values > (key>id), (value>multiplicity)
-    ## multiset > #
+  get_membrane_info = function(membrane) {
+    ### Returns a tibble with info about the membrane and its inner objects (children are ignored for now)
 
-    ## Debugging:
-    # rule_id = 2
-    # (multiset = rules_value[rule_id] %>%
-    #   ## RHS
-    #    # xml2::xml_find_all(".//right_hand_rule") %>%
-    #   ## LHS
-    #    xml2::xml_find_all(".//left_hand_rule") %>%
-    #    xml2::xml_find_first(".//multiset"))
-
-    get_objects_from_values(multiset)
-
-  }
-  ##############################################################################
-
-  ##############################################################################
-  preprocess_membrane = function(membrane) {
     ### Options
     ## membrane > charge, label, multiset, children # multiset as before
+    ## Looks like it's never empty
 
     ## Debugging:
-    rule_id = 1
-    (membrane = rules_value[rule_id] %>%
+    # rule_id = 1
+    # (membrane = rules_value[rule_id] %>%
     ## LHS
-      xml2::xml_find_all(".//left_hand_rule") %>%
-      xml2::xml_find_first(".//membrane")) # Or membranes
+      # xml2::xml_find_all(".//left_hand_rule") %>%
+      # xml2::xml_find_first(".//membrane")) # Or membranes
     ## RHS
       # xml2::xml_find_all(".//right_hand_rule") %>%
       # xml2::xml_find_first(".//membranes")) # Or membranes
@@ -636,7 +637,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       substitute_if_empty()
 
     ### Label
-    membrane_label = membrane %>%
+    label = membrane %>%
       xml2::xml_find_all(".//label") %>%
       xml2::xml_text()
 
@@ -647,10 +648,19 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ### Children
     children = membrane %>%
-      xml2::xml_find_all(".//children")
+      xml2::xml_find_all(".//children") %>%
+      xml2::xml_text()
     if (!is_empty(children)) {
       verbose_print(cat(crayon::bold("children"), "parameter is not supported yet, which means that we can't work with (membranes inside of)*2 membranes"), 4)
     }
+
+    return(tibble::tibble(
+      charge,
+      label,
+      children,
+      objects = list(multiset)
+    ))
+
   }
   ##############################################################################
 
@@ -677,7 +687,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       xml2::xml_find_first(".//multiset") # Objects outside the AM
 
     # multiset_info %>%
-    #   get_objects_from_values()
+    #   get_objects_from_multiset()
 
     ## Membrane
     membrane_info = lhs_node %>%
@@ -701,7 +711,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ## multiset
     new_lhs_objects = lhs_info %>%
       xml2::xml_find_all(".//multiset") %>%
-      get_objects_from_values()
+      get_objects_from_multiset()
 
     ## children
     new_lhs_children = lhs_info %>%
@@ -733,7 +743,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ## multiset
     new_lhs_objects = lhs_info %>%
       xml2::xml_find_all(".//multiset") %>%
-      get_objects_from_values()
+      get_objects_from_multiset()
 
     ## children
     new_lhs_children = lhs_info %>%
@@ -763,7 +773,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ## multiset
     new_rhs_objects = rhs_info %>%
-      get_objects_from_values(rhs = TRUE, get_mem = TRUE) %>% # get_mem for in-out rules
+      get_objects_from_multiset(rhs = TRUE, get_mem = TRUE) %>% # get_mem for in-out rules
       magrittr::extract2("objects")
 
     ## children
