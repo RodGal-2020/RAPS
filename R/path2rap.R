@@ -203,9 +203,9 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     translate_objects = function(object_tibble) {
       return(object_tibble %>%
-        dplyr::inner_join(objects_dictionary, by = "object") %>%
+        dplyr::left_join(objects_dictionary, by = "object") %>%
+        dplyr::mutate(true_object = tidyr::replace_na(true_object, object)) %>%
         dplyr::select(true_object, multiplicity) %>%
-        # dplyr::select(-object) %>%
         dplyr::rename(object = true_object)
         )
     }
@@ -442,22 +442,9 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ##############################################################################
   ## multisets
   ##############################################################################
-  initial_values = data_xml %>%
-    xml2::xml_find_all("//multisets") %>%
-    xml2::xml_children()
-
-  multisets_aux = tibble::tibble(
-    id = configuration$id,
-    objects = list(tibble::tibble(
-      object = "@filler",
-      multiplicity = 1
-    ))
-  )
 
   ##############################################################################
-  get_objects_from_multiset = function(multiset, rhs = FALSE, get_mem = FALSE) {
-    ## TODO: Delete rhs and get_mem if useless (which is likely)
-
+  get_objects_from_multiset = function(multiset, within_rule = FALSE) {
     # Input: nodeset of valuei, each with a branch with id and, optionally, multiplicity
 
     ### Options
@@ -467,6 +454,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ### Debugging rules 2.0:
 
     # rule_id = 2
+    # within_rule = TRUE
     # (multiset = rules_value[rule_id] %>%
     #   ## RHS
     #    # xml2::xml_find_all(".//right_hand_rule") %>%
@@ -474,7 +462,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     #    xml2::xml_find_all(".//left_hand_rule") %>%
     #    xml2::xml_find_first(".//multiset"))
 
-    ### Debugging rules 2.0:
+    ### Debugging rules 1.0:
 
     # LHS - Debugging - Checked
     # cat("Debugging LHS")
@@ -488,13 +476,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     #   xml2::xml_find_all(".//membranes") # value0, value1
     # rhs = TRUE
 
-
     values = multiset %>%
       xml2::xml_children()
-
-#     if (rhs) {
-#       values %>% xml2::xml_children()
-#     }
 
     n_children = length(values) # > 1 by definition of the valuei fields
 
@@ -506,50 +489,54 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       aux_children = chosen_child %>%
         xml2::xml_children()
 
-      if (!rhs) {
-        new_object = chosen_child %>%
-          xml2::xml_find_all(".//id") %>%
-          xml2::xml_text() # Can be more than one
+      mem_id = chosen_child %>%
+        xml2::xml_find_all(".//label") %>%
+        xml2::xml_find_all(".//id") %>%
+        xml2::xml_text() # TODO: Use me for in-out
 
-        new_multiplicity = chosen_child %>%
-          xml2::xml_find_all(".//multiplicity") %>%
-          xml2::xml_text() # Can be more than one
+      chosen_child_multiset = chosen_child %>%
+        xml2::xml_find_all(".//multiset")
 
-      } else {
-        mem_id = chosen_child %>%
-          xml2::xml_find_all(".//label") %>%
-          xml2::xml_find_all(".//id") %>%
-          xml2::xml_text() # TODO: Use me for in-out
+      new_object = chosen_child_multiset %>%
+        xml2::xml_find_all(".//id") %>%
+        xml2::xml_text()
 
-        chosen_child_multiset = chosen_child %>%
-          xml2::xml_find_all(".//multiset")
-
-        new_object = chosen_child_multiset %>%
-          xml2::xml_find_all(".//id") %>%
-          xml2::xml_text()
-
-        new_multiplicity = chosen_child_multiset %>%
-          xml2::xml_find_all(".//multiplicity") %>%
-          xml2::xml_text()
-
-      }
+      new_multiplicity = chosen_child_multiset %>%
+        xml2::xml_find_all(".//multiplicity") %>%
+        xml2::xml_text()
 
       object %<>% c(new_object)
       multiplicity %<>% c(new_multiplicity)
     }
 
     if (max(length(object), length(multiplicity)) == 0) {
-      cat("\nObjects not found")
-      return(NA)
+      cat("\nObjects not found, returning filler")
+      return(tibble::tibble(
+        object = "@filler",
+        multiplicity = 1
+      ))
     }
 
-    if (rhs & get_mem) {
-      return(list(objects = tibble::tibble(object, multiplicity), mem = mem_id))
+    if (within_rule) {
+      print("get_objects_from_multiset() is under development for rules")
+      return(0)
     } else {
       return(tibble::tibble(object, multiplicity))
     }
   }
   ##############################################################################
+
+  initial_values = data_xml %>%
+    xml2::xml_find_all("//multisets") %>%
+    xml2::xml_children()
+
+  multisets_aux = tibble::tibble(
+    id = configuration$id,
+    objects = list(tibble::tibble(
+      object = "@filler",
+      multiplicity = 1
+      )) # This shouldn't be duplicated
+    )
 
   n_values = length(initial_values)
 
@@ -557,8 +544,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     initial_values_children = initial_values[value] %>%
       xml2::xml_children()
 
-    mem_id = initial_values_children[1] %>%
-      xml2::xml_text()
+    # mem_id = initial_values_children[1] %>%
+    #   xml2::xml_text()
 
     value_node = initial_values_children[2]
 
@@ -644,6 +631,13 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       xml2::xml_text() %>%
       substitute_if_empty()
 
+    #### TODO: Improve labelling. Avoid duplicates.
+
+    ### Main label
+    main_label = membrane %>%
+      xml2::xml_find_first(".//label") %>%
+      xml2::xml_text()
+
     ### Label
     label = membrane %>%
       xml2::xml_find_all(".//label") %>%
@@ -652,7 +646,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ### Multiset
     multiset = membrane %>%
       xml2::xml_find_first(".//multiset") %>%
-      preprocess_multiset()
+      get_objects_from_multiset()
 
     ### Children
     children = membrane %>%
@@ -664,13 +658,13 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     membrane_info = tibble::tibble(
       charge,
+      main_label,
       label,
       children,
       objects = list(multiset)
     )
 
     return(membrane_info)
-
   }
   ##############################################################################
 
@@ -700,6 +694,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       xml2::xml_find_first(".//membrane") %>% # charge, label, multiset, children
       get_membrane_info()
 
+    lhs_membrane_label = lhs_membrane_info$main_label
+
     if (lhs_membrane_info$charge %>% substitute_if_empty() != "-") {
       verbose_print(cat(crayon::bold("charge"), "in a rule is not supported yet"), 2)
     }
@@ -723,40 +719,13 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       xml2::xml_find_first(".//membranes") %>% # Note the "s"
       get_membrane_info()
 
+    rhs_membrane_label = rhs_membrane_info$main_label
+
     if (rhs_membrane_info$charge %>% substitute_if_empty() != "-") {
       verbose_print(cat(crayon::bold("charge"), "in a rule is not supported yet"), 2)
     }
 
     if (!is_empty(rhs_membrane_info$children)) {
-      verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
-    }
-
-    ##############################################
-    ##############################################
-    ##############################################
-    ##############################################
-    ##############################################
-
-
-    #########################
-    #### OLD RHS
-    #########################
-    rhs_info = rhs_node # multiset, membranes (note the "s")
-
-    ## membrane_label
-    new_rhs_membrane_label = new_lhs_membrane_label
-
-    ## multiset
-    new_rhs_objects = rhs_info %>%
-      get_objects_from_multiset(rhs = TRUE, get_mem = TRUE) %>% # get_mem for in-out rules
-      magrittr::extract2("objects")
-
-    ## children
-    new_lhs_children = lhs_info %>%
-      xml2::xml_find_all("children") %>%
-      xml2::xml_text()
-
-    if (!is_empty(new_lhs_children)) {
       verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
     }
 
@@ -766,13 +735,11 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ## where
 
     ## main_membrane_label
-    main_membrane_label = NA
-    verbose_print(cat(crayon::bold("membrane_label"), "parameter is under development"), 2)
-
-
-    ###############################################
-    # TODO: features
-    # features_node
+    if (rhs_membrane_label == lhs_membrane_label) {
+      main_membrane_label = rhs_membrane_label
+    } else {
+      main_membrane_label = "@any"
+    }
 
     ###############################################
     # Stochastic constant # Quick deployment, improvable
@@ -780,7 +747,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       xml2::xml_children()
 
     if (length(features_children) == 2) {
-      new_sc = features_children %>%
+      sc = features_children %>%
         magrittr::extract(2) %>%
         xml2::xml_children() %>%
         magrittr::extract(2) %>%
@@ -789,22 +756,22 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
         xml2::xml_text() %>%
         utf8ToInt()
     } else {
-      cat("This function only supports sc for now as features.")
-      new_sc = NA # TODO: Check this
+      cat("This function only supports sc among all features.")
+      sc = NA # TODO: Check this
     }
 
     ## Update names if necessary
     if (!use_codification) {
-      new_lhs_objects %<>% translate_objects()
-      new_rhs_objects %<>% translate_objects()
+      lhs_objects %<>% translate_objects()
+      rhs_objects %<>% translate_objects()
     }
 
-    new_tibble = tibble::tibble(
-      rule_id = new_rule_id,
+    my_tibble = tibble::tibble(
+      rule_id = rule_id,
       main_membrane_label = main_membrane_label,
-      lhs = list(new_lhs_objects),
-      rhs = list(new_rhs_objects),
-      propensity = new_sc,
+      lhs = list(lhs_objects),
+      rhs = list(rhs_objects),
+      propensity = sc,
       dissolves = "TODO",
       priority = "TODO",
     )
