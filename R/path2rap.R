@@ -538,6 +538,11 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       multiplicity %<>% c(new_multiplicity)
     }
 
+    if (max(length(object), length(multiplicity)) == 0) {
+      cat("\nObjects not found")
+      return(NA)
+    }
+
     if (rhs & get_mem) {
       return(list(objects = tibble::tibble(object, multiplicity), mem = mem_id))
     } else {
@@ -586,19 +591,19 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ######################################
   # labels
   ######################################
-  verbose_print(cat(crayon::bold("labels"), "are not supported yet, using ids"), 2)
+  verbose_print(cat(crayon::bold("\nlabels"), "are not supported yet, using ids"), 2)
   configuration$labels = configuration$id
 
   ######################################
   # charge
   ######################################
-  verbose_print(cat(crayon::bold("charge"), "is not supported yet"), 2)
+  verbose_print(cat(crayon::bold("\ncharge"), "is not supported yet"), 2)
   configuration$charge = "-"
 
   ######################################
   # other_params
   ######################################
-  verbose_print(cat(crayon::bold("other_params"), "are not supported yet"), 2)
+  verbose_print(cat(crayon::bold("\nother_params"), "are not supported yet"), 2)
   configuration$other_params = NA
 
   ######################################
@@ -621,14 +626,17 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ## Looks like it's never empty
 
     ## Debugging:
+    ## LHS
     # rule_id = 1
     # (membrane = rules_value[rule_id] %>%
-    ## LHS
-      # xml2::xml_find_all(".//left_hand_rule") %>%
-      # xml2::xml_find_first(".//membrane")) # Or membranes
+    #   xml2::xml_find_all(".//left_hand_rule") %>%
+    #   xml2::xml_find_first(".//membrane"))
+
     ## RHS
-      # xml2::xml_find_all(".//right_hand_rule") %>%
-      # xml2::xml_find_first(".//membranes")) # Or membranes
+    # rule_id = 1
+    # (membrane = rules_value[rule_id] %>%
+    #   xml2::xml_find_all(".//right_hand_rule") %>%
+    #   xml2::xml_find_first(".//membranes"))
 
     ### Charge
     charge = membrane %>%
@@ -654,12 +662,14 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       verbose_print(cat(crayon::bold("children"), "parameter is not supported yet, which means that we can't work with (membranes inside of)*2 membranes"), 4)
     }
 
-    return(tibble::tibble(
+    membrane_info = tibble::tibble(
       charge,
       label,
       children,
       objects = list(multiset)
-    ))
+    )
+
+    return(membrane_info)
 
   }
   ##############################################################################
@@ -679,76 +689,22 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     # lhs
     # In the demo the first rules are: [a -> b]'1, [a -> b*2]'1
     # In "a []'1 -> whatever" a would be in the multiset node, while []'1 would appear in the membrane zone
-    lhs_info = lhs_node %>%
-      xml2::xml_children() # multiset, membrane (note that there is no "s")
 
-    ## Multiset
-    multiset_info = lhs_node %>%
-      xml2::xml_find_first(".//multiset") # Objects outside the AM
+    ### Multiset
+    lhs_multiset_objects = lhs_node %>%
+      xml2::xml_find_first(".//multiset") %>% # Objects outside the AM
+      get_objects_from_multiset()
 
-    # multiset_info %>%
-    #   get_objects_from_multiset()
+    ### Membrane
+    lhs_membrane_info = lhs_node %>%
+      xml2::xml_find_first(".//membrane") %>% # charge, label, multiset, children
+      get_membrane_info()
 
-    ## Membrane
-    membrane_info = lhs_node %>%
-      xml2::xml_find_first(".//membrane") # charge, label, multiset, children
-
-    ## charge
-    new_lhs_charge = lhs_info %>%
-      xml2::xml_find_all(".//charge") %>%
-      xml2::xml_text() %>%
-      substitute_if_empty()
-
-    if (new_lhs_charge != "-") {
+    if (lhs_membrane_info$charge %>% substitute_if_empty() != "-") {
       verbose_print(cat(crayon::bold("charge"), "in a rule is not supported yet"), 2)
     }
 
-    ## main_membrane_label
-    new_lhs_main_membrane_label = lhs_info %>%
-      xml2::xml_find_all(".//label") %>%
-      xml2::xml_text()
-
-    ## multiset
-    new_lhs_objects = lhs_info %>%
-      xml2::xml_find_all(".//multiset") %>%
-      get_objects_from_multiset()
-
-    ## children
-    new_lhs_children = lhs_info %>%
-      xml2::xml_find_all(".//children")
-    if (!is_empty(new_lhs_children)) {
-      verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
-    }
-
-    #########################
-    #### OLD LHS with the 2nd child of lhs_node, membrane
-    #########################
-    lhs_info = membrane_info # FIXME: This is used only as a placeholder in order to guarantee the correct execution with the evolution rules
-
-    ## charge
-    new_lhs_charge = lhs_info %>%
-      xml2::xml_find_all(".//charge") %>%
-      xml2::xml_text() %>%
-      substitute_if_empty()
-
-    if (new_lhs_charge != "-") {
-      verbose_print(cat(crayon::bold("charge"), "in a rule is not supported yet"), 2)
-    }
-
-    ## main_membrane_label
-    new_lhs_main_membrane_label = lhs_info %>%
-      xml2::xml_find_all(".//label") %>%
-      xml2::xml_text()
-
-    ## multiset
-    new_lhs_objects = lhs_info %>%
-      xml2::xml_find_all(".//multiset") %>%
-      get_objects_from_multiset()
-
-    ## children
-    new_lhs_children = lhs_info %>%
-      xml2::xml_find_all(".//children")
-    if (!is_empty(new_lhs_children)) {
+    if (!is_empty(lhs_membrane_info$children)) {
       verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
     }
 
@@ -757,19 +713,38 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     # In the demo the first rules are: [a -> b]'1, [a -> b*2]'1
     # In "-> a []'1 " a would be in the multiset node, while []'1 would appear in the membranes zone
 
-    multiset_info = rhs_node %>%
-      xml2::xml_find_first(".//multiset")
+    ### Multiset
+    rhs_multiset_objects = rhs_node %>%
+      xml2::xml_find_first(".//multiset") %>% # Objects outside the AM
+      get_objects_from_multiset()
 
-    membranes_info = rhs_node %>%
-      xml2::xml_find_first(".//membranes")
+    ### Membrane
+    rhs_membrane_info = rhs_node %>%
+      xml2::xml_find_first(".//membranes") %>% # Note the "s"
+      get_membrane_info()
+
+    if (rhs_membrane_info$charge %>% substitute_if_empty() != "-") {
+      verbose_print(cat(crayon::bold("charge"), "in a rule is not supported yet"), 2)
+    }
+
+    if (!is_empty(rhs_membrane_info$children)) {
+      verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
+    }
+
+    ##############################################
+    ##############################################
+    ##############################################
+    ##############################################
+    ##############################################
+
 
     #########################
     #### OLD RHS
     #########################
     rhs_info = rhs_node # multiset, membranes (note the "s")
 
-    ## main_membrane_label
-    new_rhs_main_membrane_label = new_lhs_main_membrane_label
+    ## membrane_label
+    new_rhs_membrane_label = new_lhs_membrane_label
 
     ## multiset
     new_rhs_objects = rhs_info %>%
@@ -791,9 +766,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ## where
 
     ## main_membrane_label
-    main_membrane_label = sample(c(new_lhs_main_membrane_label,
-                                   new_rhs_main_membrane_label), 1)
-    verbose_print(cat(crayon::bold("main_membrane_label"), "parameter is under development"), 2)
+    main_membrane_label = NA
+    verbose_print(cat(crayon::bold("membrane_label"), "parameter is under development"), 2)
 
 
     ###############################################
