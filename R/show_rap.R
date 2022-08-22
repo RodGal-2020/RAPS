@@ -15,33 +15,34 @@ show_rap = function(rap, focus_on = NULL) {
   ###############################
   # rap = RAPS::path2rap(demo = 1)
   # focus_on = list("MEM" = 2:3, "OBJ")
+  # focus_on = list("RUL")
   ###############################
 
   if (is.null(focus_on)) {
     cat("\nReturning the default R visualization\n")
     rap
   } else {
-    chosen_visualization = rap$Configuration %>%
-      dplyr::filter(id %in% focus_on$MEM) # MEM is mandatory
+    if ("MEM" %in% focus_on) {
+      chosen_visualization = rap$Configuration %>%
+        dplyr::filter(id %in% focus_on$MEM) # MEM is mandatory
 
-    if ("OBJ" %in% focus_on) {
-      chosen_visualization %<>%
-        dplyr::select(id, objects)
+      if ("OBJ" %in% focus_on) {
+        chosen_visualization %<>%
+          dplyr::select(id, objects)
 
-      n_vis = dim(chosen_visualization)[1]
+        n_vis = dim(chosen_visualization)[1]
 
-      for (i in 1:n_vis) {
-        cat(rep("-", 50), sep = "")
-        cat("\nShowing membrane", crayon::bold(chosen_visualization$id[i]), "\n")
-        print(chosen_visualization$objects[[i]])
+        for (i in 1:n_vis) {
+          cat(rep("-", 50), sep = "")
+          cat("\nShowing membrane", crayon::bold(chosen_visualization$id[i]), "\n")
+          print(chosen_visualization$objects[[i]])
+        }
+      } else {
+        # Returning all the chosen membranes
+        chosen_visualization
       }
-    } else {
-      # Returning all the chosen membranes
-      chosen_visualization
+    } else if ("RUL" %in% focus_on) {
+      print(rap$Rules)
     }
-
-
-
-
   }
 }
