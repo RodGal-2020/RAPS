@@ -41,12 +41,22 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ## 3 - a1,b2 to c3,d4
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
 
-  #### TODO: Communication rules
-  # path = NULL
+  #### Communication rules
+  ## 0 - Outside to inside
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/0%20-%20a_outside_to_a_inside.xml"
+  ## 1 - Inside to outside
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/1%20-%20a_inside_to_a_outside.xml"
+  ## 2 - Multiinsde to multioutside
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside.xml"
+
+  ## N - Crazy multicommunication
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/N%20-%20crazy_multi_inside_to_crazy_multi_outside.xml"
 
   #### Stochastic rules
-  ## 0 - stochastic a to b
+  ## 0 - Stochastic a to b
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/0%20-%20a_to_b_stochastic.xml"
+  ## 0 - Mixed stochastic a to b
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/0%20-%20a_to_b_stochastic_mixed.xml"
 
   if (demo) {
     cat("\nChoose a dataset from the following:\n")
