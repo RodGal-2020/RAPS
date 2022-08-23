@@ -453,7 +453,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ### Debugging rules 2.0:
 
-    # rule_id = 2
+    # rule_id = 2 # a_outside []'1 ->
     # within_rule = TRUE
     # (multiset = rules_value[rule_id] %>%
     #   ## RHS
@@ -462,41 +462,29 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     #    xml2::xml_find_all(".//left_hand_rule") %>%
     #    xml2::xml_find_first(".//multiset"))
 
-    ### Debugging rules 1.0:
-
-    # LHS - Debugging - Checked
-    # cat("Debugging LHS")
-    # multiset = lhs_info %>%
-    #   xml2::xml_find_all(".//multiset")
-    # rhs = FALSE
-
-    # RHS - Debugging
-    # cat("Debugging RHS")
-    # multiset = rhs_info %>% # multiset, membranes
-    #   xml2::xml_find_all(".//membranes") # value0, value1
-    # rhs = TRUE
-
     values = multiset %>%
       xml2::xml_children()
 
-    n_children = length(values) # > 1 by definition of the valuei fields
+    n_values = length(values) # > 1 by definition of the valuei fields
 
     object = c()
     multiplicity = c()
 
-    for (child in 1:n_children) {
-      chosen_child = values[child]
+    for (child in 1:n_values) {
+      chosen_value = values[child]
 
       # mem_id = chosen_child %>%
       #   xml2::xml_find_all(".//label") %>%
       #   xml2::xml_find_all(".//id") %>%
       #   xml2::xml_text() # TODO: Use me for in-out
 
-      new_object = chosen_child %>%
+      new_object = chosen_value %>%
+        xml2::xml_find_all(".//key") %>%
         xml2::xml_find_all(".//id") %>%
         xml2::xml_text()
 
-      new_multiplicity = chosen_child %>%
+      new_multiplicity = chosen_value %>%
+        xml2::xml_find_all(".//value") %>%
         xml2::xml_find_all(".//multiplicity") %>%
         xml2::xml_text()
 
@@ -504,19 +492,25 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       multiplicity %<>% c(new_multiplicity)
     }
 
-    if (max(length(object), length(multiplicity)) == 0) {
-      cat("\nObjects not found, returning filler")
-      return(tibble::tibble(
-        object = "@filler",
-        multiplicity = 1
-      ))
-    }
-
-    if (within_rule) {
-      print("get_objects_from_multiset() is under development for rules")
-      return(0)
+    if (!within_rule) {
+      if (max(length(object), length(multiplicity)) == 0) {
+        cat("\nObjects not found, returning filler")
+        return(tibble::tibble(
+          object = "@filler",
+          multiplicity = 1
+        ))
+      } else {
+        return(tibble::tibble(object, multiplicity))
+      }
     } else {
-      return(tibble::tibble(object, multiplicity))
+      print("get_objects_from_multiset() is under development for rules")
+
+      ##########################################################
+      ##########################################################
+      # FOCUS
+      return(tibble::tibble(object, multiplicity)) # TODO: Complete me
+      ##########################################################
+      ##########################################################
     }
   }
   ##############################################################################
@@ -600,6 +594,32 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ##############################################################################
 
   ##############################################################################
+  extend_children = function(membrane_info) {
+
+    while(any(membrane_info$has_children)) {
+      n_rows = dim(membrane_info)[1]
+
+      for (row in 1:n_rows) {
+        if(membrane_info$has_children[row]) {
+          children_info = membrane_info$children[[1]] %>%
+            # tidyr::replace_na(children, NULL) %>%
+            dplyr::mutate(has_children = !(is_empty(children) || is.na(children)))
+
+          membrane_info %<>%
+            dplyr::bind_rows(children_info)
+
+          membrane_info$children[[row]] = list(children_info$membrane_label)
+
+          membrane_info$has_children[[row]] = FALSE
+        }
+      }
+    }
+
+    return(membrane_info)
+  }
+  ##############################################################################
+
+  ##############################################################################
   get_membrane_info = function(membrane) {
     ### Returns a tibble with info about the membrane and its inner objects (children are ignored for now)
 
@@ -609,55 +629,62 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ## Debugging:
     ## LHS
-    # rule_id = 1
+    # rule_id = 2 # 1 is [a], 2 is a[b]
     # (membrane = rules_value[rule_id] %>%
     #   xml2::xml_find_all(".//left_hand_rule") %>%
     #   xml2::xml_find_first(".//membrane"))
 
     ## RHS
-    # rule_id = 1
+    # rule_id = 1 # 1 is [[b]], 2 is [b]
     # (membrane = rules_value[rule_id] %>%
     #   xml2::xml_find_all(".//right_hand_rule") %>%
     #   xml2::xml_find_first(".//membranes"))
 
     ### Charge
     charge = membrane %>%
-      xml2::xml_find_all(".//charge") %>%
+      xml2::xml_find_first(".//charge") %>%
       xml2::xml_text() %>%
       substitute_if_empty()
 
-    #### TODO: Improve labelling. Avoid duplicates.
-
-    ### Main label
-    main_label = membrane %>%
+    ### Membrane label
+    membrane_label = membrane %>%
       xml2::xml_find_first(".//label") %>%
       xml2::xml_text()
 
-    ### Label
-    label = membrane %>%
-      xml2::xml_find_all(".//label") %>%
-      xml2::xml_text()
+    ### Labels
+    # labels = membrane %>%
+    #   xml2::xml_find_all(".//label") %>%
+    #   xml2::xml_text()
 
     ### Multiset
     multiset = membrane %>%
       xml2::xml_find_first(".//multiset") %>%
-      get_objects_from_multiset()
+      get_objects_from_multiset(within_rule = TRUE)
 
     ### Children
     children = membrane %>%
-      xml2::xml_find_all(".//children") %>%
-      xml2::xml_text()
-    if (!is_empty(children)) {
-      verbose_print(cat(crayon::bold("children"), "parameter is not supported yet, which means that we can't work with (membranes inside of)*2 membranes"), 4)
+      xml2::xml_find_first(".//children") %>%
+      xml2::xml_children()
+
+    has_children = !is_empty(children)
+
+    if (has_children) {
+      children %<>% get_membrane_info() # Warning! Recursion
+    } else {
+      children = NULL
     }
 
     membrane_info = tibble::tibble(
       charge,
-      main_label,
-      label,
-      children,
-      objects = list(multiset)
+      membrane_label,
+      labels = list(labels),
+      children = list(children),
+      has_children,
+      multiset = list(multiset)
     )
+
+    membrane_info %<>%
+      extend_children()
 
     return(membrane_info)
   }
@@ -689,7 +716,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       xml2::xml_find_first(".//membrane") %>% # charge, label, multiset, children
       get_membrane_info()
 
-    lhs_membrane_label = lhs_membrane_info$main_label
+    lhs_membrane_label = lhs_membrane_info$membrane_label
 
     if (lhs_membrane_info$charge %>% substitute_if_empty() != "-") {
       verbose_print(cat(crayon::bold("charge"), "in a rule is not supported yet"), 2)
@@ -707,14 +734,14 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ### Multiset
     rhs_multiset_objects = rhs_node %>%
       xml2::xml_find_first(".//multiset") %>% # Objects outside the AM
-      get_objects_from_multiset()
+      get_objects_from_multiset(within_rule = TRUE)
 
     ### Membrane
     rhs_membrane_info = rhs_node %>%
       xml2::xml_find_first(".//membranes") %>% # Note the "s"
       get_membrane_info()
 
-    rhs_membrane_label = rhs_membrane_info$main_label
+    rhs_membrane_label = rhs_membrane_info$membrane_label
 
     if (rhs_membrane_info$charge %>% substitute_if_empty() != "-") {
       verbose_print(cat(crayon::bold("charge"), "in a rule is not supported yet"), 2)
