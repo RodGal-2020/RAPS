@@ -1090,8 +1090,6 @@ load_demo_dataset = function(dataset = NULL) {
         ),
 
         rhs = list(
-          # TODO:
-
           # r1 : FASL[ FASR ]s → [ FASC ]s k1f
           tibble::tibble(where = c("s"),
                          object = c("FASC"),
