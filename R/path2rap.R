@@ -601,9 +601,10 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
       for (row in 1:n_rows) {
         if(membrane_info$has_children[row]) {
-          children_info = membrane_info$children[[1]] %>%
+          children_info = membrane_info$children[[1]]
+          # %>%
             # tidyr::replace_na(children, NULL) %>%
-            dplyr::mutate(has_children = !(is_empty(children) || is.na(children)))
+            # dplyr::mutate(has_children = !(is_empty(children) || is.na(children)))
 
           membrane_info %<>%
             dplyr::bind_rows(children_info)
@@ -671,7 +672,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     if (has_children) {
       children %<>% get_membrane_info() # Warning! Recursion
     } else {
-      children = NULL
+      children = NA
     }
 
     membrane_info = tibble::tibble(
@@ -685,6 +686,9 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     membrane_info %<>%
       extend_children()
+
+    membrane_info %<>%
+      dplyr::select(-has_children)
 
     return(membrane_info)
   }
