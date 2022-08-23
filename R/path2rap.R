@@ -486,22 +486,17 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     for (child in 1:n_children) {
       chosen_child = values[child]
-      aux_children = chosen_child %>%
-        xml2::xml_children()
 
-      mem_id = chosen_child %>%
-        xml2::xml_find_all(".//label") %>%
-        xml2::xml_find_all(".//id") %>%
-        xml2::xml_text() # TODO: Use me for in-out
+      # mem_id = chosen_child %>%
+      #   xml2::xml_find_all(".//label") %>%
+      #   xml2::xml_find_all(".//id") %>%
+      #   xml2::xml_text() # TODO: Use me for in-out
 
-      chosen_child_multiset = chosen_child %>%
-        xml2::xml_find_all(".//multiset")
-
-      new_object = chosen_child_multiset %>%
+      new_object = chosen_child %>%
         xml2::xml_find_all(".//id") %>%
         xml2::xml_text()
 
-      new_multiplicity = chosen_child_multiset %>%
+      new_multiplicity = chosen_child %>%
         xml2::xml_find_all(".//multiplicity") %>%
         xml2::xml_text()
 
