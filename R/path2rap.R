@@ -204,7 +204,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       return(object_tibble %>%
         dplyr::left_join(objects_dictionary, by = "object") %>%
         # dplyr::mutate(true_object = tidyr::replace_na(true_object, object)) %>%
-        dplyr::select(true_object, multiplicity) %>%
+        dplyr::select(-object) %>%
         dplyr::rename(object = true_object)
         )
     }
@@ -691,12 +691,13 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ##############################################################################
 
   ##############################################################################
-  from_membrane_info_to_rap = function(membrane_info, main_membrane_label, raps_like = TRUE) {
+  from_membrane_info_to_rap = function(membrane_info, is_rhs = FALSE, main_membrane_label, raps_like = TRUE) {
     ## Debugging
     # (reference = RAPS::load_demo_dataset("FAS")$Rules[1,]$lhs[[1]]) # Reference
     # main_membrane_label = "0"
     # (membrane_info = lhs_membrane_info)
     # (membrane_info = rhs_membrane_info)
+    # is_rhs = TRUE
     # properties$objects_dictionary
 
     ### FIXME: Not working for rhs standard (the second one)
@@ -724,16 +725,22 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     side_tibble %<>%
       dplyr::filter(!is.na(object) & !is.na(multiplicity))
 
+    if (is_rhs) {
+      side_tibble %<>%
+        dplyr::filter(where != "@exists") # It isn't necessary
+    }
+
     return(side_tibble)
   }
   ##############################################################################
 
   ##############################################################################
-  get_rule_from_value = function(value, rule_id) {
+  get_rule_from_value = function(value) {
     ## Debugging:
-    # (value = rules_value[1])
+    # (value = rules_value[1]) # RAPS-like
+    # (value = rules_value[2]) # Standard
 
-    new_rule_id = xml2::xml_name(value) # TODO: Use rules dictionary
+    rule_id = xml2::xml_name(value) # TODO: Use rules dictionary
 
     lhs_node = value %>% xml2::xml_find_all(".//left_hand_rule")
     rhs_node = value %>% xml2::xml_find_all(".//right_hand_rule")
@@ -803,8 +810,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ## LHS & RHS
     if (raps_like) {
-      lhs = lhs_membrane_info %>% from_membrane_info_to_rap(main_membrane_label)
-      rhs = rhs_membrane_info %>% from_membrane_info_to_rap(main_membrane_label)
+      lhs = lhs_membrane_info %>% from_membrane_info_to_rap(main_membrane_label, is_rhs = FALSE)
+      rhs = rhs_membrane_info %>% from_membrane_info_to_rap(main_membrane_label, is_rhs = TRUE)
     }
 
     ###############################################
@@ -868,7 +875,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
   for (i in 1:n_rules) {
     rules %<>%
-      dplyr::bind_rows(get_rule_from_value(rules_value[i], rule_id = i))
+      dplyr::bind_rows(get_rule_from_value(rules_value[i]))
   }
 
   exit$Rules = rules
