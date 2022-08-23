@@ -198,12 +198,12 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
   if (!use_codification) {
     objects_dictionary = properties$objects_dictionary
-    colnames(objects_dictionary) = c("true_object", "object")
+    colnames(objects_dictionary) = c("object", "true_object")
 
     translate_objects = function(object_tibble) {
       return(object_tibble %>%
         dplyr::left_join(objects_dictionary, by = "object") %>%
-        dplyr::mutate(true_object = tidyr::replace_na(true_object, object)) %>%
+        # dplyr::mutate(true_object = tidyr::replace_na(true_object, object)) %>%
         dplyr::select(true_object, multiplicity) %>%
         dplyr::rename(object = true_object)
         )
@@ -699,6 +699,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     # (membrane_info = rhs_membrane_info)
     # properties$objects_dictionary
 
+    ### FIXME: Not working for rhs standard (the second one)
+
     side_tibble = tibble::tibble(
       where = membrane_info$membrane_label,
       multiset = membrane_info$multiset
@@ -727,7 +729,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ##############################################################################
 
   ##############################################################################
-  get_rule_from_value = function(value) {
+  get_rule_from_value = function(value, rule_id) {
     ## Debugging:
     # (value = rules_value[1])
 
@@ -799,6 +801,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       main_membrane_label = "@any"
     }
 
+    ## LHS & RHS
     if (raps_like) {
       lhs = lhs_membrane_info %>% from_membrane_info_to_rap(main_membrane_label)
       rhs = rhs_membrane_info %>% from_membrane_info_to_rap(main_membrane_label)
@@ -825,8 +828,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ## Update names if necessary
     if (!use_codification) {
-      lhs_objects %<>% translate_objects()
-      rhs_objects %<>% translate_objects()
+      lhs %<>% translate_objects()
+      rhs %<>% translate_objects()
     }
 
     my_tibble = tibble::tibble(
@@ -839,7 +842,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       priority = "TODO",
     )
 
-    return(new_tibble)
+    return(my_tibble)
   }
   ##############################################################################
 
@@ -865,7 +868,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
   for (i in 1:n_rules) {
     rules %<>%
-      dplyr::bind_rows(get_rule_from_value(rules_value[i]))
+      dplyr::bind_rows(get_rule_from_value(rules_value[i], rule_id = i))
   }
 
   exit$Rules = rules
