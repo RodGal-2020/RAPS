@@ -503,14 +503,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
         return(tibble::tibble(object, multiplicity))
       }
     } else {
-      print("get_objects_from_multiset() is under development for rules")
-
-      ##########################################################
-      ##########################################################
-      # FOCUS
+      print("get_objects_from_multiset() is under development for rules (?)")
       return(tibble::tibble(object, multiplicity)) # TODO: Complete me
-      ##########################################################
-      ##########################################################
     }
   }
   ##############################################################################
@@ -594,29 +588,31 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ##############################################################################
 
   ##############################################################################
-  extend_children = function(membrane_info) {
+  extend_children = function(membrane_info_parameter) {
+    ## Debugging
+    # membrane_info_parameter = membrane_info
 
-    while(any(membrane_info$has_children)) {
+    while(any(membrane_info_parameter$has_children, na.rm = TRUE)) {
       n_rows = dim(membrane_info)[1]
 
       for (row in 1:n_rows) {
-        if(membrane_info$has_children[row]) {
-          children_info = membrane_info$children[[1]]
+        if(membrane_info_parameter$has_children[row]) {
+          children_info = membrane_info_parameter$children[[1]]
           # %>%
             # tidyr::replace_na(children, NULL) %>%
             # dplyr::mutate(has_children = !(is_empty(children) || is.na(children)))
 
-          membrane_info %<>%
+          membrane_info_parameter %<>%
             dplyr::bind_rows(children_info)
 
-          membrane_info$children[[row]] = list(children_info$membrane_label)
+          membrane_info_parameter$children[[row]] = list(children_info$membrane_label)
 
-          membrane_info$has_children[[row]] = FALSE
+          membrane_info_parameter$has_children[[row]] = FALSE
         }
       }
     }
 
-    return(membrane_info)
+    return(membrane_info_parameter)
   }
   ##############################################################################
 
@@ -630,7 +626,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ## Debugging:
     ## LHS
-    # rule_id = 2 # 1 is [a], 2 is a[b]
+    # rule_id = 1 # 1 is [a], 2 is a[b]
     # (membrane = rules_value[rule_id] %>%
     #   xml2::xml_find_all(".//left_hand_rule") %>%
     #   xml2::xml_find_first(".//membrane"))
@@ -678,19 +674,53 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     membrane_info = tibble::tibble(
       charge,
       membrane_label,
-      labels = list(labels),
+      # labels = list(labels),
       children = list(children),
       has_children,
       multiset = list(multiset)
     )
 
     membrane_info %<>%
+    # membrane_info %>% # Debugging
       extend_children()
 
     membrane_info %<>%
       dplyr::select(-has_children)
 
     return(membrane_info)
+  }
+  ##############################################################################
+
+  ##############################################################################
+  from_membrane_info_to_rap = function(membrane_info, main_membrane_label, raps_like = TRUE) {
+    ## Debugging
+    # (reference = RAPS::load_demo_dataset("FAS")$Rules[1,]$lhs[[1]]) # Reference
+    # main_membrane_label = "0"
+    # (membrane_info = lhs_membrane_info)
+    # (membrane_info = rhs_membrane_info)
+
+
+
+    side_tibble = tibble::tibble(
+      where = membrane_info$membrane_label,
+      multiset = membrane_info$multiset
+    ) %>%
+      tidyr::unnest_wider(multiset) # Let's get object and multiplicity
+
+    n_rows = dim(side_tibble)[1]
+
+    for (row in 1:n_rows) {
+      if (side_tibble$where[row] == main_membrane_label) {
+        side_tibble$where[row] = "@here"
+      }
+      if (is.na(side_tibble$object[row])) {
+        side_tibble$object[row] = side_tibble$where[row]
+        side_tibble$where[row] = "@exists"
+        side_tibble$multiplicity[row] = 1
+      }
+    }
+
+    return(side_tibble)
   }
   ##############################################################################
 
@@ -713,21 +743,15 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ### Multiset
     lhs_multiset_objects = lhs_node %>%
       xml2::xml_find_first(".//multiset") %>% # Objects outside the AM
-      get_objects_from_multiset()
+      get_objects_from_multiset(within_rule = TRUE)
 
     ### Membrane
     lhs_membrane_info = lhs_node %>%
       xml2::xml_find_first(".//membrane") %>% # charge, label, multiset, children
       get_membrane_info()
 
-    lhs_membrane_label = lhs_membrane_info$membrane_label
-
-    if (lhs_membrane_info$charge %>% substitute_if_empty() != "-") {
+    if (any(lhs_membrane_info$charge %>% substitute_if_empty() != "-")) {
       verbose_print(cat(crayon::bold("charge"), "in a rule is not supported yet"), 2)
-    }
-
-    if (!is_empty(lhs_membrane_info$children)) {
-      verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
     }
 
     ###############################################
@@ -745,27 +769,45 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       xml2::xml_find_first(".//membranes") %>% # Note the "s"
       get_membrane_info()
 
-    rhs_membrane_label = rhs_membrane_info$membrane_label
-
-    if (rhs_membrane_info$charge %>% substitute_if_empty() != "-") {
+    if (any(rhs_membrane_info$charge %>% substitute_if_empty() != "-")) {
       verbose_print(cat(crayon::bold("charge"), "in a rule is not supported yet"), 2)
-    }
-
-    if (!is_empty(rhs_membrane_info$children)) {
-      verbose_print(cat(crayon::bold("children"), "parameter is not supported yet"), 4)
     }
 
     ###############################################
     # Parameters for RAPS
+    ## Now that we have all the info we needed it's time to adapt this info, to be RAPS-like
+    ### Debugging
+    # fas_chosen_rules = RAPS::load_demo_dataset("FAS")$Rules[1:2, ]
 
-    ## where
+    # We have:
+    # lhs_multiset_objects
+    # lhs_membrane_info
+    # rhs_multiset_objects
+    # rhs_membrane_info
+
+    raps_like = TRUE # TODO: Extend
 
     ## main_membrane_label
-    if (rhs_membrane_label == lhs_membrane_label) {
+    rhs_membrane_label = rhs_membrane_info$membrane_label[1]
+    lhs_membrane_label = lhs_membrane_info$membrane_label[1] # The first membrane detected
+    using_main_membrane_label = rhs_membrane_label == lhs_membrane_label
+    if (using_main_membrane_label) {
       main_membrane_label = rhs_membrane_label
     } else {
       main_membrane_label = "@any"
     }
+
+    if (raps_like) {
+      ## In this case we only need the following objects
+      # lhs_membrane_info
+      # rhs_membrane_info
+      lhs = lhs_membrane_info %>% from_membrane_info_to_rap(main_membrane_label)
+      rhs = rhs_membrane_info %>% from_membrane_info_to_rap(main_membrane_label)
+    }
+
+
+
+
 
     ###############################################
     # Stochastic constant # Quick deployment, improvable
