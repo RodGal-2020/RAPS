@@ -189,12 +189,11 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     xml2::xml_children()
 
   properties$objects_dictionary = tibble::tibble(
-    real_name = objects_node_values %>%
-      xml2::xml_text(),
     codification_as_id = objects_node_values %>%
       xml2::xml_name() %>%
-      substr(start = 6, stop = 8) # Only 3 digits
-
+      substr(start = 6, stop = 8), # Only 3 digits
+    real_name = objects_node_values %>%
+      xml2::xml_text()
   )
 
   if (!use_codification) {
@@ -593,7 +592,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     # membrane_info_parameter = membrane_info
 
     while(any(membrane_info_parameter$has_children, na.rm = TRUE)) {
-      n_rows = dim(membrane_info)[1]
+      n_rows = dim(membrane_info_parameter)[1]
 
       for (row in 1:n_rows) {
         if(membrane_info_parameter$has_children[row]) {
@@ -698,8 +697,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     # main_membrane_label = "0"
     # (membrane_info = lhs_membrane_info)
     # (membrane_info = rhs_membrane_info)
-
-
+    # properties$objects_dictionary
 
     side_tibble = tibble::tibble(
       where = membrane_info$membrane_label,
@@ -712,13 +710,17 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     for (row in 1:n_rows) {
       if (side_tibble$where[row] == main_membrane_label) {
         side_tibble$where[row] = "@here"
-      }
-      if (is.na(side_tibble$object[row])) {
-        side_tibble$object[row] = side_tibble$where[row]
-        side_tibble$where[row] = "@exists"
-        side_tibble$multiplicity[row] = 1
+      } else {
+        if (is.na(side_tibble$object[row])) {
+          side_tibble$object[row] = side_tibble$where[row]
+          side_tibble$where[row] = "@exists"
+          side_tibble$multiplicity[row] = 1
+        }
       }
     }
+
+    side_tibble %<>%
+      dplyr::filter(!is.na(object) & !is.na(multiplicity))
 
     return(side_tibble)
   }
@@ -798,16 +800,9 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     }
 
     if (raps_like) {
-      ## In this case we only need the following objects
-      # lhs_membrane_info
-      # rhs_membrane_info
       lhs = lhs_membrane_info %>% from_membrane_info_to_rap(main_membrane_label)
       rhs = rhs_membrane_info %>% from_membrane_info_to_rap(main_membrane_label)
     }
-
-
-
-
 
     ###############################################
     # Stochastic constant # Quick deployment, improvable
@@ -837,8 +832,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     my_tibble = tibble::tibble(
       rule_id = rule_id,
       main_membrane_label = main_membrane_label,
-      lhs = list(lhs_objects),
-      rhs = list(rhs_objects),
+      lhs = list(lhs),
+      rhs = list(rhs),
       propensity = sc,
       dissolves = "TODO",
       priority = "TODO",
