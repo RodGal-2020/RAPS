@@ -14,7 +14,7 @@
 #' @section Future work:
 #' - Include different formats for inputs, like JSON or even the `.pli` itself.
 #' @export
-path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, debug = FALSE) {
+path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, debug = FALSE, is_html = TRUE) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
   ####################################################
@@ -28,6 +28,9 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   # rap_reference = RAPS::load_demo_dataset("FAS")
   # cat(crayon::bold("CAUTION:", "USING DEMO MODE"))
   ####################################################
+  ######## Real files
+  #### FAS
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
   ######## Debugging/Demo files
   #### Evolution rules
   ## Complex evolution rules
@@ -142,7 +145,19 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   # cat("Using the following directory:", case, "\n") %>% verbose_print
   # }
 
-  data_xml = xml2::read_xml(path) %>%
+  ### FIXME: Reading of FAS is incorrect
+  #   if (is_html) {
+  #     data_xml = xml2::read_html(path)
+  #     cat("Using html data\n")
+  #   } else {
+  #     data_xml = xml2::read_xml(path)
+  #     cat("Using xml data\n")
+  #   }
+
+  data_xml = xml2::read_xml(path)
+  cat("Using xml data\n")
+
+  data_xml %<>%
     xml2::xml_children() %>%
     xml2::xml_children() # Omitting cereal>file
 
