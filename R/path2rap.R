@@ -570,10 +570,10 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   configuration$environment = "dummy_environment"
 
   ######################################
-  # labels
+  # label
   ######################################
   verbose_print(cat(crayon::bold("\nlabels"), "are not supported yet, using ids"), 2)
-  configuration$labels = configuration$id
+  configuration$label = configuration$id
 
   ######################################
   # charge
@@ -857,7 +857,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       lhs = list(lhs),
       rhs = list(rhs),
       propensity = sc,
-      dissolves = "TODO",
+      dissolves = FALSE, # TODO
       priority = "TODO",
     )
 

@@ -34,8 +34,10 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
     dplyr::mutate(rule_id = rule_id_col)
 
   # To directly avoid duplicates with dplyr
-  colnames(rule_info$lhs[[1]]) = c("where", "object", "rule_multiplicity")
-  colnames(rule_info$rhs[[1]]) = c("where", "object", "rule_multiplicity")
+  rule_info$lhs[[1]] %<>%
+    dplyr::rename(rule_multiplicity = multiplicity)
+  rule_info$rhs[[1]] %<>%
+    dplyr::rename(rule_multiplicity = multiplicity)
 
   if (verbose) {
     cat("\n\tApplying the rule with id", crayon::bold(rule_id))

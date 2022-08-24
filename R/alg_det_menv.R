@@ -14,6 +14,7 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   #############################################
+  # library(RAPS)
   # cat(crayon::bold("Using demo mode\n"))
   # verbose = TRUE
   # debug = TRUE
@@ -27,7 +28,7 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
   # cat(crayon::bold("Working with FAS in demo mode\n"))
   ###### multi_communication from path2rap
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
-  # rap = RAPS::path2rap(path)
+  # rap = path2rap(path)
   #############################################
 
 
@@ -186,7 +187,7 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
     ## Apply rule r_i_0 ONCE
 
     ## Debugging
-    # RAPS::show_rap(rap, focus_on = list("MEM" = 2:3, "OBJ"))
+    # rap %>% RAPS::apply_rule_menv(rule_id = i_0,
     rap %<>% RAPS::apply_rule_menv(rule_id = i_0,
                                    environment_id = c_0,
                                    debug)
@@ -217,51 +218,6 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
     trinities %<>%
       dplyr::arrange(tau_i) # Increasing order
 
-    # for (affected_environment in affected_environments) {
-    #   for (rule in 1:n_rules) {
-    #     if (debug) {
-    #       cat("\n\tDebug: Re-computing trinity for rule", rule, "for affected_environment", affected_environment, "\n")
-    #       # RAPS::show_rule(rules[rule, ])
-    #     }
-    #     prod_concentration_of_reactives = 1
-    #     main_membrane_label = rules[rule, ]$main_membrane_label
-    #     lhs = rules[rule, ]$lhs[[1]] %>%
-    #       dplyr::filter(where != "@exists")
-    #     n_reactives = dim(lhs)[1]
-    #     for (reactive in 1:n_reactives) {
-    #       where = lhs$where[reactive]
-    #       if (where == "@here") {
-    #         new_concentration = rap$Configuration %>%
-    #           dplyr::filter(id == main_membrane_label) %$%
-    #           objects %>%
-    #           magrittr::extract2(1) %>%
-    #           dplyr::filter(object == lhs$object[reactive]) %$%
-    #           multiplicity %>%
-    #           sum(0) # If is not found it becomes "numeric(0)", and with this a real 0
-    #       } else {
-    #         # It is in some other membrane "h"
-    #         new_concentration = rap$Configuration %>%
-    #           dplyr::filter(id == where) %$%
-    #           objects %>%
-    #           magrittr::extract2(1) %>%
-    #           dplyr::filter(object == lhs$object[reactive]) %$%
-    #           multiplicity %>%
-    #           sum(0)
-    #       }
-    #       prod_concentration_of_reactives %<>%
-    #         prod(new_concentration)
-    #     }
-    #     v_r = propensities[rule] * prod_concentration_of_reactives
-    #
-    #     trinities %<>% dplyr::bind_rows(
-    #       tibble::tibble(
-    #         i = rule,
-    #         tau_i = ifelse(v_r != 0, 1 / v_r, 1e6),
-    #         c = affected_environment
-    #       )
-    #     )
-    #   }
-    # }
   } # End of main iteration
 
   ########################

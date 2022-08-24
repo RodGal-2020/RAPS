@@ -9,5 +9,5 @@
 #' This is a warning
 #' @export
 check_applicability = function(verbose, rap, rule_id) {
-  cat("\nWe can't check if the rule could be applied. Let's hope it could :)")
+  cat("\nWe can't check if the rule could be applied. Let's hope it could :)\n")
 }

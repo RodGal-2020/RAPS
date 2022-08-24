@@ -42,7 +42,8 @@ apply_rule_menv = function(rap, rule_id, environment_id = 0, verbose = FALSE, de
   affected_rap = rap
   affected_rap$Configuration %<>% dplyr::filter(environment == environment_id)
 
-  # affected_rap %>% # Debugging
+  ## Debugging
+  # affected_rap %>%
   #   RAPS::apply_rule(rule_id, debug)
 
   affected_rap %<>%

@@ -54,6 +54,16 @@ If RAPS is not installed, uncomment the following:
 ```{r}
 library(RAPS)
 ```
+# Debugging stochastic example with communication rules
+```{r}
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
+
+my_rap = path2rap(path, verbose = 0)
+my_rap %<>% alg_det_menv(max_T = 0.5, verbose = TRUE, debug = TRUE)
+show_rap(my_rap, focus_on = list("OBJ", "MEM" = 0:1))
+```
+
+
 # Minimal stochastic example
 
 This example doesn't consider environments, so we must add them ourselves:
