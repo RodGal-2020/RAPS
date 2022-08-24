@@ -10,7 +10,6 @@
 #' @export
 show_rap = function(rap, focus_on = NULL) {
 
-
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   ###############################
   # rap = RAPS::path2rap(demo = 1)
@@ -18,11 +17,13 @@ show_rap = function(rap, focus_on = NULL) {
   # focus_on = list("RUL")
   ###############################
 
+  names_focus = names(focus_on)
+
   if (is.null(focus_on)) {
     cat("\nReturning the default R visualization\n")
     rap
   } else {
-    if ("MEM" %in% focus_on) {
+    if ("MEM" %in% names_focus) {
       chosen_visualization = rap$Configuration %>%
         dplyr::filter(id %in% focus_on$MEM) # MEM is mandatory
 
@@ -41,7 +42,7 @@ show_rap = function(rap, focus_on = NULL) {
         # Returning all the chosen membranes
         chosen_visualization
       }
-    } else if ("RUL" %in% focus_on) {
+    } else if ("RUL" %in% names_focus) {
       print(rap$Rules)
     }
   }
