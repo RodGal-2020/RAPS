@@ -54,6 +54,8 @@ If RAPS is not installed, uncomment the following:
 ```{r}
 library(RAPS)
 ```
+# Evolution
+
 ## 0 - a to b
 ```{r}
 path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/0%20-%20%20a_to_b.xml"
@@ -117,3 +119,56 @@ my_rap = path2rap(path, verbose = 0)
 show_rap(my_rap)
 show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
 ```
+
+
+# Communication
+```{r}
+library(RAPS)
+option = "r"
+```
+
+
+
+## 0 - Outside to inside
+
+```{r}
+if (option == "r") {
+  path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/0%20-%20a_outside_to_a_inside_r.xml"  
+}
+
+my_rap = path2rap(path, verbose = 0)
+show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
+show_rap(my_rap, focus_on = list("RUL"))
+```
+
+## 1 - Inside to outside
+```{r}
+if (option == "r") {
+  path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/1%20-%20a_inside_to_a_outside_r.xml"
+}
+
+my_rap = path2rap(path, verbose = 0)
+show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
+show_rap(my_rap, focus_on = list("RUL"))
+```
+
+## 2 - Multiinsde to multioutside
+```{r}
+if (option == "r") {
+  path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
+}
+
+my_rap = path2rap(path, verbose = 0)
+show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
+show_rap(my_rap, focus_on = list("RUL"))
+```
+
+## N - Crazy multicommunication
+```{r}
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/N%20-%20crazy_multi_inside_to_crazy_multi_outside.xml"
+
+my_rap = path2rap(path, verbose = 0)
+show_rap(my_rap, focus_on = list("MEM" = 0:1, "OBJ"))
+show_rap(my_rap, focus_on = list("RUL"))
+```
+
