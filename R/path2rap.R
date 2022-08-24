@@ -511,13 +511,10 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
           object = "@filler",
           multiplicity = 1
         ))
-      } else {
-        return(tibble::tibble(object, multiplicity))
       }
-    } else {
-      print("get_objects_from_multiset() is under development for rules (?)")
-      return(tibble::tibble(object, multiplicity)) # TODO: Complete me
     }
+
+    return(tibble::tibble(object, multiplicity))
   }
   ##############################################################################
 
