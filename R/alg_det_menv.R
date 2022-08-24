@@ -25,8 +25,9 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
   ###### FAS
   # rap = RAPS::load_demo_dataset("FAS")
   # cat(crayon::bold("Working with FAS in demo mode\n"))
-  ###### demo 1 from path2rap
-  # rap = RAPS::path2rap(demo = 1)
+  ###### multi_communication from path2rap
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
+  # rap = RAPS::path2rap(path)
   #############################################
 
 
@@ -34,11 +35,17 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
   # get_trinities function
   ########################################
   get_trinities = function(envs, debug = FALSE) {
+    ## Debugging
+    # envs = unique(rap$Configuration$environment)
+    # debug = TRUE
+
     cat("\nComputing trinities")
     trinities = tibble::tibble(i = NULL,
                                tau_i = NULL,
                                c = NULL)
     for (env in envs) {
+      # # Debugging
+      # env = envs[1]
       chosen_env = rap$Configuration %>%
         dplyr::filter(environment == env)
 
@@ -49,6 +56,8 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
       }
 
       for (rule in 1:n_rules) {
+        # # Debugging
+        # rule = 1
         if (debug) {
           cat("\n\tDebug: Computing trinity for rule", rule, "with id =", rules[rule, ]$rule_id)
           # RAPS::show_rule(rules[rule, ])
@@ -60,6 +69,8 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
         # Membranes' concentration is not considered
         n_reactives = dim(lhs)[1]
         for (reactive in 1:n_reactives) {
+          ## Debugging
+          # reactive = 1
           where = lhs$where[reactive]
           if (where == "@here") {
             chosen_objects = chosen_env %>%

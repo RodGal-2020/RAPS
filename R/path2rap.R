@@ -498,7 +498,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       new_multiplicity = chosen_value %>%
         xml2::xml_find_all(".//value") %>%
         xml2::xml_find_all(".//multiplicity") %>%
-        xml2::xml_text()
+        xml2::xml_integer()
 
       object %<>% c(new_object)
       multiplicity %<>% c(new_multiplicity)
