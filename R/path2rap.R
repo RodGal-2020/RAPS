@@ -463,8 +463,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ## multiset > values > (key>id), (value>multiplicity)
     ## multiset > #
 
-    ### Debugging rules 2.0:
-
+    ### Debugging rules:
     # rule_id = 2 # a_outside []'1 ->
     # within_rule = TRUE
     # (multiset = rules_value[rule_id] %>%
@@ -533,11 +532,13 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   n_values = length(initial_values)
 
   for (value in 1:n_values) {
+    ## Debugging
+    # value = 1
     initial_values_children = initial_values[value] %>%
       xml2::xml_children()
 
-    # mem_id = initial_values_children[1] %>%
-    #   xml2::xml_text()
+    mem_id = initial_values_children[1] %>%
+      xml2::xml_text()
 
     value_node = initial_values_children[2]
 
@@ -557,11 +558,6 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     multisets_aux = old_multisets_aux %>%
       dplyr::filter(id != mem_id) %>%
       dplyr::bind_rows(multisets_aux)
-
-    # For the following steps
-    # ! Perhaps there are not
-    # value_children = value_node %>%
-    #   xml2::xml_children()
   }
 
   configuration %<>%
