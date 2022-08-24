@@ -204,10 +204,10 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
       if (within_rule) {
         untouched = object_tibble %>%
-          dplyr::filter(where %in% c("@here", "@exists"))
+          dplyr::filter(where %in% c("@exists"))
 
         new_tibble = object_tibble %>%
-          dplyr::filter(! where %in% c("@here", "@exists")) %>%
+          dplyr::filter(! where %in% c("@exists")) %>%
           dplyr::left_join(objects_dictionary, by = "object") %>%
           dplyr::select(-object) %>%
           dplyr::rename(object = true_object) %>%
@@ -566,6 +566,12 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
   configuration %<>%
     dplyr::left_join(multisets_aux, by = "id")
+
+  ######################################
+  # environment
+  ######################################
+  verbose_print(cat(crayon::bold("\nenvironments"), "are not supported yet, using common environment dummy_env for all"), 2)
+  configuration$environment = "dummy_environment"
 
   ######################################
   # labels
