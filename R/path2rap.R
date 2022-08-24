@@ -43,11 +43,11 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
   #### Communication rules
   ## 0 - Outside to inside
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/0%20-%20a_outside_to_a_inside.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/0%20-%20a_outside_to_a_inside_r.xml"
   ## 1 - Inside to outside
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/1%20-%20a_inside_to_a_outside.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/1%20-%20a_inside_to_a_outside_r.xml"
   ## 2 - Multiinsde to multioutside
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
 
   ## N - Crazy multicommunication
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/N%20-%20crazy_multi_inside_to_crazy_multi_outside.xml"
@@ -200,13 +200,26 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     objects_dictionary = properties$objects_dictionary
     colnames(objects_dictionary) = c("object", "true_object")
 
-    translate_objects = function(object_tibble) {
-      return(object_tibble %>%
-        dplyr::left_join(objects_dictionary, by = "object") %>%
-        # dplyr::mutate(true_object = tidyr::replace_na(true_object, object)) %>%
-        dplyr::select(-object) %>%
-        dplyr::rename(object = true_object)
-        )
+    translate_objects = function(object_tibble, within_rule = FALSE) {
+
+      if (within_rule) {
+        untouched = object_tibble %>%
+          dplyr::filter(where %in% c("@here", "@exists"))
+
+        new_tibble = object_tibble %>%
+          dplyr::filter(! where %in% c("@here", "@exists")) %>%
+          dplyr::left_join(objects_dictionary, by = "object") %>%
+          dplyr::select(-object) %>%
+          dplyr::rename(object = true_object) %>%
+          dplyr::bind_rows(untouched)
+      } else {
+        new_tibble = object_tibble %>%
+          dplyr::left_join(objects_dictionary, by = "object") %>%
+          dplyr::select(-object) %>%
+          dplyr::rename(object = true_object)
+      }
+
+      return(new_tibble)
     }
   }
 
@@ -835,8 +848,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ## Update names if necessary
     if (!use_codification) {
-      lhs %<>% translate_objects()
-      rhs %<>% translate_objects()
+      lhs %<>% translate_objects(within_rule = TRUE)
+      rhs %<>% translate_objects(within_rule = TRUE)
     }
 
     my_tibble = tibble::tibble(
