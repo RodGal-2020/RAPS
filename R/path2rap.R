@@ -14,7 +14,7 @@
 #' @section Future work:
 #' - Include different formats for inputs, like JSON or even the `.pli` itself.
 #' @export
-path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, debug = FALSE, is_html = TRUE) {
+path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, debug = FALSE) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")
 
   ####################################################
