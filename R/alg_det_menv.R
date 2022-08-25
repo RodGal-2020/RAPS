@@ -9,8 +9,16 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_trinity = FALSE, random_trinity_selection = FALSE) {
+alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, random_trinity_selection = FALSE) {
   cat(crayon::bold("alg_det_menv() is under development\n"))
+
+  ##############################################################################
+  verbose_print = function(action, minimum_verbose_to_print = 1) {
+    if (verbose >= minimum_verbose_to_print) {
+      action
+    }
+  }
+  ##############################################################################
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   #############################################
@@ -18,14 +26,17 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
   # cat(crayon::bold("Using demo mode\n"))
   # verbose = TRUE
   # debug = TRUE
-  # debug_trinity = FALSE
-  # max_T = 0.5
+  # verbose = 5
+  # max_T = 1e-5
   # random_trinity_selection = FALSE
   #############################################
   #############################################
   ###### FAS
-  # rap = RAPS::load_demo_dataset("FAS")
   # cat(crayon::bold("Working with FAS in demo mode\n"))
+  ## Using load_demo_dataset
+  # rap = RAPS::load_demo_dataset("FAS")
+  ## Using the PL5 XML
+  # rap = RAPS::path2rap("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml")
   ###### multi_communication from path2rap
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
   # rap = path2rap(path)
@@ -40,7 +51,8 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
     # envs = unique(rap$Configuration$environment)
     # debug = TRUE
 
-    cat("\nComputing trinities")
+    verbose_print(cat("\nComputing trinities"), 2)
+
     trinities = tibble::tibble(i = NULL,
                                tau_i = NULL,
                                c = NULL)
@@ -126,14 +138,14 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
   # Deterministic waiting time algorithm
   ########################################
   simulation_time = 0
-  cat(crayon::bold("\nsimulation_time"), simulation_time)
+  verbose_print(cat(crayon::bold("\nsimulation_time"), simulation_time), 1)
   envs = unique(rap$Configuration$environment) # Instead of max in order to generalize
   rules = rap$Rules
   n_rules = dim(rules)[1]
   propensities = rules$propensity
 
 
-  trinities = get_trinities(envs, debug_trinity)
+  trinities = get_trinities(envs, debug)
 
   ## Order by increasing tau_i
   trinities %<>%
@@ -164,13 +176,10 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
     i_0 = chosen_trinity[[1]]
     tau_i_0 = chosen_trinity[[2]]
     c_0 = chosen_trinity[[3]]
-    if (verbose) {
-      cat("\nWe have chosen the rule", crayon::bold(i_0), "with waiting time", tau_i_0, "to be executed in environment", crayon::bold(c_0))
-      ## Alternative with RAPS::show_rule()
-      # rap$Rules %>%
-      #   dplyr::filter(rule_id == i_0) %>%
-      #   RAPS::show_rule()
-    }
+
+    verbose_print(cat("\nWe have chosen the rule", crayon::bold(i_0), "with waiting time", tau_i_0, "to be executed in environment", crayon::bold(c_0)), 1)
+
+    verbose_print(RAPS::show_rule(dplyr::filter(rap$Rules, rule_id == i_0)), 3)
 
     ## Delete the chosen trinity from the trinities' list
     trinities %<>%
@@ -178,7 +187,7 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
 
     ## Update simulation time
     simulation_time %<>% sum(tau_i_0)
-    cat(crayon::bold("\nsimulation_time"), simulation_time)
+    verbose_print(cat(crayon::bold("\nsimulation_time"), simulation_time), 1)
 
     ## Update waiting time in other trinities
     trinities %<>%
@@ -210,7 +219,7 @@ alg_det_menv = function(rap, max_T = 1, verbose = TRUE, debug = FALSE, debug_tri
     # Made inside the get_trinities() function
 
     ## Add new trinities for affected_environment
-    new_trinities = get_trinities(affected_environments, debug_trinity)
+    new_trinities = get_trinities(affected_environments, debug)
     trinities %<>%
       dplyr::bind_rows(new_trinities)
 

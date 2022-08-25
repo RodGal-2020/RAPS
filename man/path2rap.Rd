@@ -9,8 +9,7 @@ path2rap(
   use_codification = FALSE,
   verbose = 5,
   demo = FALSE,
-  debug = FALSE,
-  is_html = TRUE
+  debug = FALSE
 )
 }
 \arguments{

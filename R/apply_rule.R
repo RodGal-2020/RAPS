@@ -73,7 +73,6 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
     RAPS::show_rule(rule_info)
   }
 
-
   ##############################
   # Check if it can be applied
   ##############################
