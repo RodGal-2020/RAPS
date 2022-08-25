@@ -9,16 +9,8 @@
 #' @section Warning:
 #' This is a warning
 #' @export
-alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, random_trinity_selection = FALSE) {
+alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_trinity = FALSE, random_trinity_selection = FALSE) {
   cat(crayon::bold("alg_det_menv() is under development\n"))
-
-  ##############################################################################
-  verbose_print = function(action, minimum_verbose_to_print = 1) {
-    if (verbose >= minimum_verbose_to_print) {
-      action
-    }
-  }
-  ##############################################################################
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   #############################################
@@ -26,6 +18,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, random_tr
   # cat(crayon::bold("Using demo mode\n"))
   # verbose = TRUE
   # debug = TRUE
+  # debug_trinity = FALSE
   # verbose = 5
   # max_T = 1e-5
   # random_trinity_selection = FALSE
@@ -35,7 +28,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, random_tr
   # cat(crayon::bold("Working with FAS in demo mode\n"))
   ## Using load_demo_dataset
   # rap = RAPS::load_demo_dataset("FAS")
-  ## Using the PL5 XML
+  # # Using the PL5 XML
   # rap = RAPS::path2rap("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml")
   ###### multi_communication from path2rap
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
@@ -43,8 +36,14 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, random_tr
   #############################################
 
 
-  ########################################
-  # get_trinities function
+  ##############################################################################
+  verbose_print = function(action, minimum_verbose_to_print = 1) {
+    if (verbose >= minimum_verbose_to_print) {
+      action
+    }
+  }
+  ##############################################################################
+
   ########################################
   get_trinities = function(envs, debug = FALSE) {
     ## Debugging
@@ -145,7 +144,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, random_tr
   propensities = rules$propensity
 
 
-  trinities = get_trinities(envs, debug)
+  trinities = get_trinities(envs, debug_trinity)
 
   ## Order by increasing tau_i
   trinities %<>%
@@ -219,7 +218,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, random_tr
     # Made inside the get_trinities() function
 
     ## Add new trinities for affected_environment
-    new_trinities = get_trinities(affected_environments, debug)
+    new_trinities = get_trinities(affected_environments, debug_trinity)
     trinities %<>%
       dplyr::bind_rows(new_trinities)
 

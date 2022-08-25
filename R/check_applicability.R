@@ -79,5 +79,5 @@ check_applicability = function(verbose, affected_membranes, main_membrane_index,
     check_lhs_object(lhs[i])
   }
 
-  verbose_print(cat("\nThe rule could be applied.\n"), verbose)
+  verbose_print(cat("\nThe rule could be applied.\n"), 1)
 }

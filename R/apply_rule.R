@@ -77,7 +77,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
   # Check if it can be applied
   ##############################
   if (debug) {
-    RAPS::check_applicability(verbose, affected_membranes, main_membrane_index, rule_info)
+    RAPS::check_applicability(verbose = 1, affected_membranes, main_membrane_index, rule_info)
   }
 
   #########################
