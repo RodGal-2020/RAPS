@@ -20,5 +20,5 @@ show_rule = function(rule) {
   crayon::bold("\n\tlhs:")
   print(rule$rhs[[1]])
 
-  cat("\n------------------------------")
+  cat("\n------------------------------\n")
 }

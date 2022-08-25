@@ -44,15 +44,10 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
     RAPS::show_rule(rule_info)
   }
 
-  ##############################
-  # Check if it can be applied
-  ##############################
-  RAPS::check_applicability(verbose, rap, rule_id)
-
   ####################################
   ###### Get affected membranes ######
   ####################################
-  affected_membranes_labels = c(rule_info$main_membrane_label)
+  affected_membranes_labels = unique(c(rule_info$main_membrane_label))
 
   lhs = rule_info$lhs[[1]]
   rhs = rule_info$rhs[[1]]
@@ -73,9 +68,17 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
   main_membrane_index = which(affected_membranes$label == rule_info$main_membrane_label)
 
   if (debug) {
-    cat("\n\tDebug: affected_membranes$objects before anythin = \n")
+    cat("\n\tDebug: affected_membranes$objects before anything = \n")
     print(affected_membranes$objects)
     RAPS::show_rule(rule_info)
+  }
+
+
+  ##############################
+  # Check if it can be applied
+  ##############################
+  if (debug) {
+    RAPS::check_applicability(verbose, affected_membranes, main_membrane_index, rule_info)
   }
 
   #########################
