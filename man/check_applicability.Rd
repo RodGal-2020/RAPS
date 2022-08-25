@@ -4,7 +4,12 @@
 \alias{check_applicability}
 \title{Template for new functions}
 \usage{
-check_applicability(verbose, rap, rule_id)
+check_applicability(
+  verbose,
+  affected_membranes,
+  main_membrane_index,
+  rule_info
+)
 }
 \arguments{
 \item{my_param}{Yep, it's a parameter.}
