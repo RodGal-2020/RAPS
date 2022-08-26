@@ -14,6 +14,8 @@ It returns...
 }
 \description{
 This is a template.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \section{Warning}{
 
@@ -22,4 +24,5 @@ This is a warning
 
 \examples{
 Some examples
+
 }

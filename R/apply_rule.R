@@ -1,16 +1,23 @@
-#' Apply a rule to a given rap object
+#' Apply a rule to a given P system
 #'
 #' `r lifecycle::badge("experimental")`
+#' Apply a rule to a given P system given as a `rap` object.
+#'
 #' @param rap A rap object.
 #' @param rule_id The id of the rule to be applied.
-#' @param ... Other parameters such as `debug` or `verbose`.
-#' @return A new rap object, the result of applying the given rule.
-#' @examples
-#' TODO
+#' @param verbose The verbosity, between 0 and 5.
+#' @param debug Useful if you want to debug the execution of the function.
+#' @param keep_residue Do you want to delete the objects with multiplicity 0 at the end of the application?
+#'
+#' @return
+#' A new rap object, the result of applying the given rule.
+#'
 #' @seealso
-#' `apply_rules` to apply more than one rule at the same time.
-#' #' @section TODO:
-#' * Print the trace of the execution, perhaps with the `RAPS::show_rap()` function.
+#' `apply_rules` to apply more than one rule at the same time, `apply_rule_menv` to apply one rule in a multienvironmental P system.
+#'
+#' @section TODO:
+#' * Include examples
+#'
 #' @export
 apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue = FALSE) {
 

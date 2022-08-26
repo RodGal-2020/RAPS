@@ -1,13 +1,28 @@
-#' Template for new functions
+#' Deterministic waiting time algorithm for multienvironmental systems
 #'
-#' This is a template.
+#' @description
 #' `r lifecycle::badge("experimental")`
-#' @param my_param Yep, it's a parameter.
-#' @return It returns...
+#'
+#' Simulates the evolution of a P system given as a `rap` object using the deterministic waiting time algorithm.
+#' @param rap A `rap` object, usually generated with `load_demo_dataset()` or `path2rap()`.
+#' @param max_T Maximum simulation time.
+#' @param verbose The verbosity, between 0 and 5.
+#' @param debug Useful if you want to debug an execution of the function.
+#' @param debug_trinity The same as `debug` but applied only to the debugging of the generation of the trinities.
+#' @param random_trinity_selection If there are more than one possible trinity, do you want to select one randomly (TRUE) or do you want to select the first one according to `dplyr::arrange()` (FALSE)?
+#'
+#' @return
+#' A new `rap` object, the result of simulating the multienvironmental deterministic algorithm.
+#'
 #' @examples
-#' Some examples
-#' @section Warning:
-#' This is a warning
+#' fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+#' my_rap = path2rap(fas_path)
+#' new_rap = alg_det_menv(my_rap, verbose = 4)
+#' show_rap(new_rap)
+#'
+#' @section TODO:
+#' Add references.
+#'
 #' @export
 alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_trinity = FALSE, random_trinity_selection = FALSE) {
   cat(crayon::bold("alg_det_menv() is under development\n"))

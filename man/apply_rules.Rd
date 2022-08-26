@@ -2,24 +2,31 @@
 % Please edit documentation in R/apply_rules.R
 \name{apply_rules}
 \alias{apply_rules}
-\title{Template for new functions}
+\title{Apply one or more rules to a given P system}
 \usage{
 apply_rules(rap, rules, return_between = FALSE)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rap}{A rap object.}
+
+\item{rules}{The set of rules to be applied.}
+
+\item{return_between}{Do you want to return the middle states?}
 }
 \value{
-It returns...
+A new rap object, the result of applying the given rules.
 }
 \description{
-This is a template.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Apply one or more ruless to a given P system given as a \code{rap} object.
 }
-\section{Warning}{
+\section{TODO}{
 
-This is a warning
+\itemize{
+\item Include examples
+}
 }
 
-\examples{
-Some examples
+\seealso{
+\code{apply_rule_menv} to apply one rule in a multienvironmental P system, \code{apply_rule} to apply one rule in a monoenvironmental P system.
 }

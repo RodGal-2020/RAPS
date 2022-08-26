@@ -1,5 +1,8 @@
 #' Simulate the evolution of a loaded P System
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' Given a P System and some semantics we want to follow, simulate the evolution of the system.
 #' @param p_system The p_system whose evolution we want to simulate.
 #' @param verbose Verbose?

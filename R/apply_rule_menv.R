@@ -1,16 +1,24 @@
-#' Apply a rule to a given rap object
+#' Apply a rule to a given multienvironmental P system
 #'
 #' `r lifecycle::badge("experimental")`
+#' Apply a rule to a given multienvironmental P system given as a `rap` object.
+#'
 #' @param rap A rap object.
 #' @param rule_id The id of the rule to be applied.
-#' @param ... Other parameters such as `debug` or `verbose`.
-#' @return A new rap object, the result of applying the given rule.
-#' @examples
-#' TODO
+#' @param environment_id The id of the affected environment.
+#' @param verbose The verbosity, between 0 and 5.
+#' @param debug Useful if you want to debug the execution of the function.
+#'
+#' @return
+#' A new rap object, the result of applying the given rule.
+#'
 #' @seealso
-#' `apply_rules` to apply more than one rule at the same time.
-#' #' @section TODO:
+#' `apply_rules` to apply more than one rule at the same time, `apply_rule` to apply one rule in a monoenvironmental P system.
+#'
+#' @section TODO:
 #' * Print the trace of the execution, perhaps with the `RAPS::show_rap()` function.
+#' * Include examples
+#'
 #' @export
 apply_rule_menv = function(rap, rule_id, environment_id = 0, verbose = FALSE, debug = FALSE) {
   # cat(crayon::bold("apply_rule_pdp() is under development"))

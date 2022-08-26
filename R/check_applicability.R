@@ -1,12 +1,16 @@
-#' Template for new functions
+#' Check if a rule can be applied
 #'
-#' This is a template.
-#' @param my_param Yep, it's a parameter.
-#' @return It returns...
-#' @examples
-#' Some examples
-#' @section Warning:
-#' This is a warning
+#' `r lifecycle::badge("stable")`
+#' Used inside application functions, this checks if a given rule can be applied. The parameter may be a little obscure, as it is used in a very specific moment of the workflow.
+#'
+#' @param affected_membranes A subset of `rap$Configuration` for a given `rap` object, with all the membranes affected by the application of the rule included in `rule_info`.
+#' @param main_membrane_index The index of the main membrane within the `affected_membranes` object.
+#' @param rule_info A row of `rap$Rules` for a given `rap` object, *i,e*, everything required to know a certain rule.
+#' @param verbose The verbosity, between 0 and 5.
+#'
+#' @return
+#' Nothing, only prints a message if everything is OK, and stops the execution otherwise.
+#'
 #' @export
 check_applicability = function(verbose, affected_membranes, main_membrane_index, rule_info) {
 

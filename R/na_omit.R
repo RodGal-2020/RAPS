@@ -1,7 +1,9 @@
 #' Omit all NAs in a given vector
 #'
 #' `r lifecycle::badge("deprecated")`
+#' **Deprecation info**: Deprecated in favor of `tidyr::replace_na()` and other local functions.
 #' Used as help in some functions
+
 #' @param v The vector.
 #' @return The vector v without the NAs.
 #' @examples

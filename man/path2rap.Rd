@@ -13,26 +13,22 @@ path2rap(
 )
 }
 \arguments{
-\item{path}{Path/URL to the input file.}
+\item{path}{Path/URL to the input file, given as a \code{.xml}.}
 
 \item{verbose}{Level of verbosity, between 0 and 5.}
 
 \item{demo}{To execute as a demo.}
 
-\item{max_depth}{To look for new structures in the jerarchy of the P system.}
+\item{debug}{To run in debugging mode, useful in order to catch errors.}
 }
 \value{
 A rap object.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This is the basic function of the package, and allows us to read a given P system, turning it into a rap object.
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
-\section{Warning}{
-
-Experimental function.
-}
-
 \section{Future work}{
 
 \itemize{
@@ -41,5 +37,8 @@ Experimental function.
 }
 
 \examples{
-TODO.
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+my_rap = path2rap(path)
+show_rap(my_rap)
+
 }

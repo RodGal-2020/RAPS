@@ -1,12 +1,24 @@
-#' Template for new functions
+#' Gillespie's algorithm for multienvironmental systems
 #'
-#' This is a template.
-#' @param my_param Yep, it's a parameter.
-#' @return It returns...
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
+#' Simulates the evolution of a P system given as a `rap` object using the Gillespie's algorithm for multienvironmental systems
+#' @param rap A `rap` object, usually generated with `load_demo_dataset()` or `path2rap()`.
+#' @param max_T Maximum simulation time.
+#'
+#' @return
+#' A new `rap` object, the result of simulating the Gillespie's algorithm for multienvironmental systems.
+#'
 #' @examples
-#' Some examples
-#' @section Warning:
-#' This is a warning
+#' fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+#' my_rap = path2rap(fas_path)
+#' new_rap = alg_gillespie_menv(my_rap, verbose = 4)
+#' show_rap(new_rap)
+#'
+#' @section TODO:
+#' Add references.
+#'
 #' @export
 alg_gillespie_menv = function(rap_environment, max_T = 10) {
   cat(crayon::bold("alg_gillespie_pdp() is under development"))

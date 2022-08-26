@@ -2,26 +2,35 @@
 % Please edit documentation in R/show_rap.R
 \name{show_rap}
 \alias{show_rap}
-\title{Template for new functions}
+\title{Print info of a given \code{rap} object}
 \usage{
 show_rap(rap, focus_on = NULL)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rap}{The \code{rap} object.}
+
+\item{focus_on}{A sublistof \code{list("MEM" = 2:3, "OBJ")} or \code{list("RUL")}.}
 }
 \value{
-It returns...
+Nothing, only prints.
 }
 \description{
-This is a template.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+Print objects, rules or subsets of those of a given \code{rap} object.
 }
 \section{TODO}{
 
 \itemize{
 \item Improve visualization.
+\item Add syntax guide for the \code{focus_on} parameter.
 }
 }
 
 \examples{
-Some examples
+rap = RAPS::path2rap(demo = 1)
+focus_on = list("MEM" = 2:3, "OBJ")
+show_rap(rap, focus_on)
+focus_on = list("RUL")
+show_rap(rap, focus_on)
+
 }

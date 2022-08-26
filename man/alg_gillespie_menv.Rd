@@ -2,24 +2,32 @@
 % Please edit documentation in R/alg_gillepies_menv.R
 \name{alg_gillespie_menv}
 \alias{alg_gillespie_menv}
-\title{Template for new functions}
+\title{Gillespie's algorithm for multienvironmental systems}
 \usage{
 alg_gillespie_menv(rap_environment, max_T = 10)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{max_T}{Maximum simulation time.}
+
+\item{rap}{A \code{rap} object, usually generated with \code{load_demo_dataset()} or \code{path2rap()}.}
 }
 \value{
-It returns...
+A new \code{rap} object, the result of simulating the Gillespie's algorithm for multienvironmental systems.
 }
 \description{
-This is a template.
-}
-\section{Warning}{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This is a warning
+Simulates the evolution of a P system given as a \code{rap} object using the Gillespie's algorithm for multienvironmental systems
+}
+\section{TODO}{
+
+Add references.
 }
 
 \examples{
-Some examples
+fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+my_rap = path2rap(fas_path)
+new_rap = alg_gillespie_menv(my_rap, verbose = 4)
+show_rap(new_rap)
+
 }

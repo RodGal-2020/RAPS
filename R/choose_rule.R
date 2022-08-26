@@ -1,11 +1,20 @@
-#' Choose a rule to be applied in a rap object
+#' Choose a rule to be applied in a rap object, following some semantics
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' **Deprecation info**: This function was developed for a previous version of RAPS, with a different workflow in mind.
 #'
 #' Note that the rule is not applied.
 #' @param rap A rap object.
 #' @param semantics The path to a semantics object, or the id of a given algorithm from the following list: GIL (for Gillespie), DET (for Deterministic Waiting Times Algorithm).
-#' @return The id of a rule which is to be applied and the id of the chosen membrane.
+#'
+#' @return
+#' The id of a rule which is to be applied and the id of the chosen membrane.
+#'
 #' @examples
 #' TODO.
+#'
 #' @export
 choose_rule = function(rap, semantics = "GIL") {
   cat(crayon::italic("\n\tchoose_rule"), "is under develpment, returning", crayon::italic("rule_id = 1, membrane_id = 1"), "by default")

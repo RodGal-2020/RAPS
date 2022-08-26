@@ -14,6 +14,7 @@ The vector v without the NAs.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+\strong{Deprecation info}: Deprecated in favor of \code{tidyr::replace_na()} and other local functions.
 Used as help in some functions
 }
 \section{Warning}{

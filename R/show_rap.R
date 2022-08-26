@@ -1,12 +1,26 @@
-#' Template for new functions
+#' Print info of a given `rap` object
 #'
-#' This is a template.
-#' @param my_param Yep, it's a parameter.
-#' @return It returns...
+#' @description
+#' `r lifecycle::badge("stable")`
+#' Print objects, rules or subsets of those of a given `rap` object.
+#'
+#' @param rap The `rap` object.
+#' @param focus_on A sublistof `list("MEM" = 2:3, "OBJ")` or `list("RUL")`.
+#'
+#' @return
+#' Nothing, only prints.
+#'
 #' @examples
-#' Some examples
+#' rap = RAPS::path2rap(demo = 1)
+#' focus_on = list("MEM" = 2:3, "OBJ")
+#' show_rap(rap, focus_on)
+#' focus_on = list("RUL")
+#' show_rap(rap, focus_on)
+#'
 #' @section TODO:
 #' * Improve visualization.
+#' * Add syntax guide for the `focus_on` parameter.
+#'
 #' @export
 show_rap = function(rap, focus_on = NULL) {
 

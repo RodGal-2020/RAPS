@@ -1,12 +1,17 @@
-#' Template for new functions
+#' Kernel of Gillespie's algorithm
 #'
-#' This is a template.
-#' @param my_param Yep, it's a parameter.
-#' @return It returns...
-#' @examples
-#' Some examples
-#' @section Warning:
-#' This is a warning
+#' @description
+#' `r lifecycle::badge("stable")`
+#' Kernel of Gillespie's algorithm, required for both multienvironmental and monoenvironmental simulations.
+#'
+#' @param rules A set of rules
+#'
+#' @return
+#' A rule to be executed, given as a `tibble` object with fields `j_c`, the rule id, and `tau_c`, the execution time of the rule.
+#'
+#' @section TODO:
+#' Add references.
+#'
 #' @export
 alg_gillespie_kernel = function(rules) {
   cat(crayon::italic("\n\talg_gillepie_kernel"), "is under develpment")

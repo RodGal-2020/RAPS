@@ -2,24 +2,24 @@
 % Please edit documentation in R/load_demo_dataset.R
 \name{load_demo_dataset}
 \alias{load_demo_dataset}
-\title{Template for new functions}
+\title{Load one of the demo datasets}
 \usage{
 load_demo_dataset(dataset = NULL)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{dataset}{The code of one of the possible datasets. Run \code{load_demo_dataset()} to get all the possible datasets.}
 }
 \value{
-It returns...
+A \code{rap} object, selected from a group of possible demos. Run \code{load_demo_dataset()} to get all the possible datasets.
 }
 \description{
-This is a template.
-}
-\section{Warning}{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-This is a warning
+Returns a demo \code{rap} object. Run \code{load_demo_dataset()} to get all the possible datasets.
 }
-
 \examples{
-Some examples
+load_demo_dataset()
+my_rap = load_demo_dataset("FAS")
+show_rap(my_rap)
+
 }

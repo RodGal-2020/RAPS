@@ -1,12 +1,20 @@
-#' Template for new functions
+#' Load one of the demo datasets
 #'
-#' This is a template.
-#' @param my_param Yep, it's a parameter.
-#' @return It returns...
+#' @description
+#' `r lifecycle::badge("stable")`
+#'
+#' Returns a demo `rap` object. Run `load_demo_dataset()` to get all the possible datasets.
+#'
+#' @param dataset The code of one of the possible datasets. Run `load_demo_dataset()` to get all the possible datasets.
+#'
+#' @return
+#' A `rap` object, selected from a group of possible demos. Run `load_demo_dataset()` to get all the possible datasets.
+#'
 #' @examples
-#' Some examples
-#' @section Warning:
-#' This is a warning
+#' load_demo_dataset()
+#' my_rap = load_demo_dataset("FAS")
+#' show_rap(my_rap)
+#'
 #' @export
 load_demo_dataset = function(dataset = NULL) {
   datasets = c("EGFR", "FAS", "QUORUM", "TEMPLATE", "demo-1", "demo-2", "demo-small")

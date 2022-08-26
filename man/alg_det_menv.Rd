@@ -2,7 +2,7 @@
 % Please edit documentation in R/alg_det_menv.R
 \name{alg_det_menv}
 \alias{alg_det_menv}
-\title{Template for new functions}
+\title{Deterministic waiting time algorithm for multienvironmental systems}
 \usage{
 alg_det_menv(
   rap,
@@ -14,20 +14,35 @@ alg_det_menv(
 )
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rap}{A \code{rap} object, usually generated with \code{load_demo_dataset()} or \code{path2rap()}.}
+
+\item{max_T}{Maximum simulation time.}
+
+\item{verbose}{The verbosity, between 0 and 5.}
+
+\item{debug}{Useful if you want to debug an execution of the function.}
+
+\item{debug_trinity}{The same as \code{debug} but applied only to the debugging of the generation of the trinities.}
+
+\item{random_trinity_selection}{If there are more than one possible trinity, do you want to select one randomly (TRUE) or do you want to select the first one according to \code{dplyr::arrange()} (FALSE)?}
 }
 \value{
-It returns...
+A new \code{rap} object, the result of simulating the multienvironmental deterministic algorithm.
 }
 \description{
-This is a template.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-}
-\section{Warning}{
 
-This is a warning
+Simulates the evolution of a P system given as a \code{rap} object using the deterministic waiting time algorithm.
+}
+\section{TODO}{
+
+Add references.
 }
 
 \examples{
-Some examples
+fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+my_rap = path2rap(fas_path)
+new_rap = alg_det_menv(my_rap, verbose = 4)
+show_rap(new_rap)
+
 }

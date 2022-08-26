@@ -1,5 +1,8 @@
 #' Template for new functions
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' This is a template.
 #' @param my_param Yep, it's a parameter.
 #' @return It returns...

@@ -2,7 +2,7 @@
 % Please edit documentation in R/alg_gillespie.R
 \name{alg_gillespie}
 \alias{alg_gillespie}
-\title{Template for new functions}
+\title{Gillespie's algorithm for monoenvironmental systems}
 \usage{
 alg_gillespie(
   rap,
@@ -13,19 +13,33 @@ alg_gillespie(
 )
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rap}{A \code{rap} object, usually generated with \code{load_demo_dataset()} or \code{path2rap()}.}
+
+\item{max_T}{Maximum simulation time.}
+
+\item{propensity_function}{A function to update propensities during each step}
+
+\item{return_middle_states}{Useful if you want to debug an execution of the function.}
+
+\item{verbose}{The verbosity, between 0 and 5.}
 }
 \value{
-It returns...
+A new \code{rap} object, the result of simulating the Gillespie's algorithm for monoenvironmental systems.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-}
-\section{Warning}{
 
-This is a warning
+Simulates the evolution of a P system given as a \code{rap} object using the Gillespie's algorithm for monoenvironmental systems
+}
+\section{TODO}{
+
+Add references.
 }
 
 \examples{
-Some examples
+fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+my_rap = path2rap(fas_path)
+new_rap = alg_gillespie (my_rap, verbose = 4)
+show_rap(new_rap)
+
 }

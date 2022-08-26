@@ -2,24 +2,30 @@
 % Please edit documentation in R/show_rule.R
 \name{show_rule}
 \alias{show_rule}
-\title{Template for new functions}
+\title{Print info of a given rule from a \verb{rap object}}
 \usage{
 show_rule(rule)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rule}{The rule from a \code{rap} object.}
 }
 \value{
-It returns...
+Nothing, only prints.
 }
 \description{
-This is a template.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+Print a rule from a \code{rap} object.
 }
-\section{Warning}{
+\section{TODO}{
 
-This is a warning
+\itemize{
+\item Improve visualization.
+\item Add tibble-less mode in order to avoid unnecessary extra tibble info.
+}
 }
 
 \examples{
-Some examples
+rap = RAPS::path2rap(demo = 1)
+show_rule(rap$Rules[1, ])
+
 }

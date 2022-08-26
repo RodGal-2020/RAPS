@@ -2,7 +2,7 @@
 % Please edit documentation in R/apply_rule_menv.R
 \name{apply_rule_menv}
 \alias{apply_rule_menv}
-\title{Apply a rule to a given rap object}
+\title{Apply a rule to a given multienvironmental P system}
 \usage{
 apply_rule_menv(
   rap,
@@ -17,21 +17,27 @@ apply_rule_menv(
 
 \item{rule_id}{The id of the rule to be applied.}
 
-\item{...}{Other parameters such as \code{debug} or \code{verbose}.}
+\item{environment_id}{The id of the affected environment.}
+
+\item{verbose}{The verbosity, between 0 and 5.}
+
+\item{debug}{Useful if you want to debug the execution of the function.}
 }
 \value{
 A new rap object, the result of applying the given rule.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Apply a rule to a given multienvironmental P system given as a \code{rap} object.
 }
-\examples{
-TODO
-}
-\seealso{
-\code{apply_rules} to apply more than one rule at the same time.
-#' @section TODO:
+\section{TODO}{
+
 \itemize{
 \item Print the trace of the execution, perhaps with the \code{RAPS::show_rap()} function.
+\item Include examples
 }
+}
+
+\seealso{
+\code{apply_rules} to apply more than one rule at the same time, \code{apply_rule} to apply one rule in a monoenvironmental P system.
 }

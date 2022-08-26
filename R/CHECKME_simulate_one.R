@@ -1,6 +1,8 @@
 #' Simulate one evolutionary step in a given P system
 #'
-#' TODO: The description.
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param rap A rap object.
 #' @return A rap object.
 #' @examples

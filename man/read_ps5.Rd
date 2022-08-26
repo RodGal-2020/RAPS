@@ -17,6 +17,8 @@ read_ps5(demo_mode = TRUE, path = NULL, verbose = 5)
 A list with a loaded tibble and the properties of the read system.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+\strong{Deprecation info}: Deprecated in favor of \code{path2rap}.
 This functions admits a demo mode, loading predefined systems. It is the basic function of the package.
 }
 \section{Warning}{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_applicability.R
 \name{check_applicability}
 \alias{check_applicability}
-\title{Template for new functions}
+\title{Check if a rule can be applied}
 \usage{
 check_applicability(
   verbose,
@@ -12,19 +12,18 @@ check_applicability(
 )
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{verbose}{The verbosity, between 0 and 5.}
+
+\item{affected_membranes}{A subset of \code{rap$Configuration} for a given \code{rap} object, with all the membranes affected by the application of the rule included in \code{rule_info}.}
+
+\item{main_membrane_index}{The index of the main membrane within the \code{affected_membranes} object.}
+
+\item{rule_info}{A row of \code{rap$Rules} for a given \code{rap} object, \emph{i,e}, everything required to know a certain rule.}
 }
 \value{
-It returns...
+Nothing, only prints a message if everything is OK, and stops the execution otherwise.
 }
 \description{
-This is a template.
-}
-\section{Warning}{
-
-This is a warning
-}
-
-\examples{
-Some examples
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+Used inside application functions, this checks if a given rule can be applied. The parameter may be a little obscure, as it is used in a very specific moment of the workflow.
 }

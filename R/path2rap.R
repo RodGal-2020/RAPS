@@ -1,18 +1,26 @@
 #' Load a P System given as a path/URL to a XML/JSON file
 #'
+#' @description
+#' `r lifecycle::badge("stable")`
+#'
 #' This is the basic function of the package, and allows us to read a given P system, turning it into a rap object.
-#' `r lifecycle::badge("experimental")`
-#' @param path Path/URL to the input file.
-#' @param verbose Level of verbosity, between 0 and 5.
+#'
+#' @param path Path/URL to the input file, given as a `.xml`.
 #' @param demo To execute as a demo.
-#' @param max_depth To look for new structures in the jerarchy of the P system.
-#' @return A rap object.
+#' @param verbose Level of verbosity, between 0 and 5.
+#' @param debug To run in debugging mode, useful in order to catch errors.
+#'
+#' @return
+#' A rap object.
+#'
 #' @examples
-#' TODO.
-#' @section Warning:
-#' Experimental function.
+#' path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+#' my_rap = path2rap(path)
+#' show_rap(my_rap)
+#'
 #' @section Future work:
 #' - Include different formats for inputs, like JSON or even the `.pli` itself.
+#'
 #' @export
 path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, debug = FALSE) {
   cat("Using RAPS", packageDescription("RAPS", fields = "Version"), "\n\n")

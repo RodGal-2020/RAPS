@@ -2,24 +2,22 @@
 % Please edit documentation in R/alg_gillespie_kernel.R
 \name{alg_gillespie_kernel}
 \alias{alg_gillespie_kernel}
-\title{Template for new functions}
+\title{Kernel of Gillespie's algorithm}
 \usage{
 alg_gillespie_kernel(rules)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rules}{A set of rules}
 }
 \value{
-It returns...
+A rule to be executed, given as a \code{tibble} object with fields \code{j_c}, the rule id, and \code{tau_c}, the execution time of the rule.
 }
 \description{
-This is a template.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+Kernel of Gillespie's algorithm, required for both multienvironmental and monoenvironmental simulations.
 }
-\section{Warning}{
+\section{TODO}{
 
-This is a warning
+Add references.
 }
 
-\examples{
-Some examples
-}

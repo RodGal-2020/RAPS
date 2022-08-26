@@ -2,7 +2,7 @@
 % Please edit documentation in R/choose_rule.R
 \name{choose_rule}
 \alias{choose_rule}
-\title{Choose a rule to be applied in a rap object}
+\title{Choose a rule to be applied in a rap object, following some semantics}
 \usage{
 choose_rule(rap, semantics = "GIL")
 }
@@ -15,8 +15,13 @@ choose_rule(rap, semantics = "GIL")
 The id of a rule which is to be applied and the id of the chosen membrane.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\strong{Deprecation info}: This function was developed for a previous version of RAPS, with a different workflow in mind.
+
 Note that the rule is not applied.
 }
 \examples{
 TODO.
+
 }

@@ -1,6 +1,10 @@
 #' Load a P System given as a XML/JSON file
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' **Deprecation info**: Deprecated in favor of `path2rap`.
 #' This functions admits a demo mode, loading predefined systems. It is the basic function of the package.
+#'
 #' @param demo_mode Use demo settings? If FALSE path is mandatory.
 #' @param path Path to the input file if necessary.
 #' @param verbose Level of verbosity, between 0 and 5.

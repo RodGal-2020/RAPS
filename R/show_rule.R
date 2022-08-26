@@ -1,12 +1,22 @@
-#' Template for new functions
+#' Print info of a given rule from a `rap object`
 #'
-#' This is a template.
-#' @param my_param Yep, it's a parameter.
-#' @return It returns...
+#' @description
+#' `r lifecycle::badge("stable")`
+#' Print a rule from a `rap` object.
+#'
+#' @param rule The rule from a `rap` object.
+#'
+#' @return
+#' Nothing, only prints.
+#'
 #' @examples
-#' Some examples
-#' @section Warning:
-#' This is a warning
+#' rap = RAPS::path2rap(demo = 1)
+#' show_rule(rap$Rules[1, ])
+#'
+#' @section TODO:
+#' * Improve visualization.
+#' * Add tibble-less mode in order to avoid unnecessary extra tibble info.
+#'
 #' @export
 show_rule = function(rule) {
   cat("\n------------------------------\n")
