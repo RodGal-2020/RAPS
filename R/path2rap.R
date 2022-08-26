@@ -31,6 +31,16 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ######## Real files
   #### FAS
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+  ## Debugging
+  ## Structure
+  # structure_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/debugging/FAS_structure.xml"
+  ## Constants
+  # constants_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/debugging/FAS_constants.xml"
+  ## Objects
+  # objects_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/debugging/FAS_objects.xml"
+  ## Rules
+  # rules_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/debugging/FAS_rules.xml"
+
   ######## Debugging/Demo files
   #### Evolution rules
   ## Complex evolution rules
@@ -154,7 +164,14 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   #     cat("Using xml data\n")
   #   }
 
-  data_xml = xml2::read_xml(path)
+  ## Debugging FAS
+  # structure_path # Checked
+  # constants_path # Checked
+  # objects_path # Checked
+  # rules_path # Here is the problem
+  # data_xml = xml2::read_xml(rules_path, encoding = "utf-8")
+
+  data_xml = xml2::read_xml(path, encoding = "utf-8")
   cat("Using xml data\n")
 
   data_xml %<>%
