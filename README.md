@@ -1,17 +1,17 @@
 # 🎤 RAPS: R Aid for P systems
-Welcome to the repository behind the RAPS package.
+Welcome to the repository behind the `RAPS` package.
 
 ![BADGE](https://img.shields.io/github/checks-status/Xopre/RAPS/develop?color=orange&label=build&style=plastic)
 
 ## Quickstart
 <!-- Help for mermaid: http://mermaid-js.github.io/mermaid/#/ -->
 
-[Check this presentation](https://docs.google.com/presentation/d/1j6y3RAkCeWzvKYxJpqVUsSfh9C7p0uOEtQdWj0bbCUw/edit#slide=id.p)
-
 Run the following to install the package locally, directly from GitHub:
 ```{r}
 devtools::install_github("Xopre/RAPS")
 ```
+
+Now you can run every example in the [`demos`' folder](demos/). Give the [deterministic waiting time](demos/deterministic_waiting_time_algorithm.Rmd) a try!
 
 Main workflow with `RAPS`:
 ```mermaid
@@ -25,54 +25,64 @@ Main workflow with `RAPS`:
 
       rap-->simulate;
       simulate-->new_rap;
+
+      rap-->alg_gillespie_menv;
+      rap-->alg_det_menv;
+      alg_det_menv-->new_rap;
+      alg_gillespie_menv-->new_rap;
+
+      rap-->show_rap;
+      new_rap-->show_rap;
 ```
-<!-- 
-# rap- ->simulate_gil;
-# simulate_gil- ->new_rap;
-# 
-# rap- ->simulate("GIL");
-# simulate("GIL)- ->new_rap;
--->
 
 In `RAPS` we use the `rap` (Representing A P system) objects, which have the following aspect:
 
 $Configuration
 
-Environment | ID | Label | Objects         | SuperM   | SubM | Charge | Other_params | 
-------------|----|-------|-----------------|----------|------|--------|--------------|
-1           | 1  | 1     | [(a, 1)]        | 0 (skin) | 2    |     -1 | NULL         |
-1           | 2  | 2     | [(b, 2), (c,3)] | 1        | NULL |     +1 | NULL         |
+| Environment | ID | Label | Objects         | SuperM   | SubM  | Charge | Other_params |
+|-------------|----|-------|-----------------|----------|-------|--------|--------------|
+| 1           | 1  | 1     | [(a, 1)]        | 0        | [2,3] |     -1 | @immutable   |
+| 1           | 2  | 2     | [(b, 2), (c,3)] | 1        | NULL  |     +1 | NA           |
+| 1           | 3  | 3     | [(@filler, 1)]  | 1        | NULL  |     +1 | NA           |
 
 $Rules
-TODO:
+| rule_id | dissolves | priority | main_membrane_label | lhs | rhs | propensity
+|---------|-----------|----------|--------------------|-----|-----|----------------|
+| value0 | FALSE | - | 1 | $lhs_1$ | $rhs_1$ | 1974 |
 
 $Properties
-TODO:
+| System | PLingua_model | N_membranes | N_environments | N_objects | N_rules |
+|--------|---------------|--------------|---------------|-----------|--------|
+| FAS | Stochastic | 4 | 1 | 53 | 99 |
 
-## Status
+where:
 
-### **General objectives:**
-- [x] Create `README.md`
-- [ ] Complete `README.md`
-  - [x] Workflow diagram
-  - [x] Functional demos
-  - [ ] Simulation of stochastic P systems
-    - [x] Monoenvironmental Gillespie algorithm
-    - [ ] Multienvironmental Gillespie algorithm
-    - [ ] Multienvironmental deterministic waiting time algorithm
+$$lhs_1 = \begin{pmatrix} 
+  where & object & multiplicity \\
+  \hline \\
+  @here & a & 1 \\
+  mem_2 & b & 2 \\
+  @exists & mem_3 & 1 \\
+  \end{pmatrix}$$
+s
+$$rhs_1 = \begin{pmatrix} 
+  where & object & multiplicity \\
+  \hline \\
+  @here & ap & 2 \\
+  mem_2 & bp & 3 \\
+  \end{pmatrix}$$
 
-- [x] Prepare RAPS object for monoenvironmental P systems
-- [x] Prepare RAPS object for multienvironmental P systems
+## **Main functions**
 
-- [ ] Adapt parser to P-Lingua 5 in function `path2rap()`
-- [x] Create one or more simulators for RAPS' objects
+- `path2rap()`: Create a `rap` object from a path.
+- `alg_det_menv()`: Run the deterministic algorithm on a `rap` object.
+- `alg_gillespie_menv()`: Run the Gillespie algorithm on a `rap` object.
+- `simulate()`: Run a custom simulation algorithm on a `rap` object.
+- `show_rap()`: Show a `rap` object.
+- `apply_rule()`: Apply a rule to a `rap` object.
+- `choose_rule()`: Choose a rule to apply.
 
-### **Functions**
-- [x] Organise the main functions in the "Functions" section
-- [ ] Establish the deprecated functions as such
-- [ ] Achieve control over time
-
-### **Rules**
+## **Supported rules**
 
 Supported rules:
 * Evolution: $[u \rightarrow v]_i$
@@ -91,52 +101,30 @@ Might be supported but are nonstandard:
 * Presence of the *residual* of an object: $a^0 \rightarrow b$
 * Crazy multicommunication: $[u_1]_i [u_2]_j [u_3]_k \rightarrow [v_1]_{ip} [v_2]_{jp} [v_3]_{kp}$
 
-# TODO: Check the following sections
 
-## Functions
+# Other stuff
+- [Check this presentation](https://docs.google.com/presentation/d/1j6y3RAkCeWzvKYxJpqVUsSfh9C7p0uOEtQdWj0bbCUw/edit#slide=id.p)
 
-`R/read_xml_p_system.R`
-- [ ] Check using of `unnest_wider`, `longer` or `auto` to reduce the use of lists
-- [ ] Improve `rhs_multisets` with `process_multiset` and `print_multiset`, just as I did before with `lhs_multisets`
+### **General objectives:**
+- [x] Create `README.md`
+- [x] Complete `README.md`
+  - [x] Workflow diagram
+  - [x] Functional demos
+  - [x] Simulation of stochastic P systems
+    - [x] Monoenvironmental Gillespie algorithm
+    - [x] Multienvironmental Gillespie algorithm
+      - [ ] Revised.
+    - [x] Multienvironmental deterministic waiting time algorithm
+- [x] Establish the deprecated functions as such
 
-`R/simulate_p_system.R`
-- [ ]  Make it work
-  - [ ] Begin with basic evolution rules.
-  
-### New ideas
-> **Important**: The name of the main class considered is `rap`, for *Representing A P-system*, and also to attune with the name of the package.
+- [x] Prepare RAPS object for monoenvironmental P systems
+- [x] Prepare RAPS object for multienvironmental P systems
 
-* `apply_rule`
-* `choose_rule`
-* `tib2rap`
-* `df2rap`
-* `url2rap(format = "pl5")`
-* `show_rap`
-
-Ideal order of application (as shown by the abovementioned `mermaid` diagram):
-```{r}
-my_rap = data.frame %>%
-  tib2rap()
-  
-my_rap = my_url %>%
-  url2rap(format = "pl5")
-  
-selected_rule = my_rap %>%
-  choose_rule()
-  
-new_rap = my_rap %>%
-  apply_rule(selected_rule)
-```
-
-### Original
-* `na_omit`
-* `print_multiset`
-* `process_multiset`
-* `read_ps5`
-* `read_xml_p_system`
-* `simulate_p_system`
+- [x] Adapt parser to P-Lingua 5 in function `path2rap()`
+- [x] Create one or more simulators for RAPS' objects
 
 ## Contents
+<!-- ! CHECKME -->
 * `.Rproj.user/`: User data.
 * `demos/`: Examples of use of the RAPS package.
 * `man/`: `roxygen2`-generated documentation.
@@ -156,3 +144,7 @@ new_rap = my_rap %>%
 * `RAPS.Rproj`: The project wherein everything is developed.
 * `README.md`: The document you're reading right now.
 * `renv.lock`: Info for the `renv` package.
+
+
+#### TODO
+- [ ] Achieve control over time
