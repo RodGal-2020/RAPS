@@ -37,20 +37,19 @@ Main workflow with `RAPS`:
 
 In `RAPS` we use the `rap` (Representing A P system) objects, which have the following aspect:
 
-$Configuration
-
+`$Configuration`
 | Environment | ID | Label | Objects         | SuperM   | SubM  | Charge | Other_params |
 |-------------|----|-------|-----------------|----------|-------|--------|--------------|
 | 1           | 1  | 1     | [(a, 1)]        | 0        | [2,3] |     -1 | @immutable   |
 | 1           | 2  | 2     | [(b, 2), (c,3)] | 1        | NULL  |     +1 | NA           |
 | 1           | 3  | 3     | [(@filler, 1)]  | 1        | NULL  |     +1 | NA           |
 
-$Rules
+`$Rules`
 | rule_id | dissolves | priority | main_membrane_label | lhs | rhs | propensity
 |---------|-----------|----------|--------------------|-----|-----|----------------|
 | value0 | FALSE | - | 1 | $lhs_1$ | $rhs_1$ | 1974 |
 
-$Properties
+`$Properties`
 | System | PLingua_model | N_membranes | N_environments | N_objects | N_rules |
 |--------|---------------|--------------|---------------|-----------|--------|
 | FAS | Stochastic | 4 | 1 | 53 | 99 |
@@ -64,7 +63,7 @@ $$lhs_1 = \begin{pmatrix}
   mem_2 & b & 2 \\
   @exists & mem_3 & 1 \\
   \end{pmatrix}$$
-s
+
 $$rhs_1 = \begin{pmatrix} 
   where & object & multiplicity \\
   \hline \\
@@ -123,7 +122,7 @@ Might be supported but are nonstandard:
 - [x] Adapt parser to P-Lingua 5 in function `path2rap()`
 - [x] Create one or more simulators for RAPS' objects
 
-## Contents
+## Repository contents
 <!-- ! CHECKME -->
 * `.Rproj.user/`: User data.
 * `demos/`: Examples of use of the RAPS package.
