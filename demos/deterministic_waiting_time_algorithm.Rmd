@@ -152,8 +152,9 @@ for (iter in 1:n_data) {
 library(ggplot2)
 
 selected_data %>%
-  ggplot(aes(x=i, y=multiplicity, group=object)) +
-  geom_line(arrow = arrow())+
+  ggplot(aes(x=i, y=multiplicity, group=object, color = object)) +
+  geom_line(arrow = arrow()) +
+  labs(title = "Evolution of multiplicity") +
   geom_point()
 ```
 
