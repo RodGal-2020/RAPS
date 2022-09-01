@@ -114,6 +114,7 @@ Might be supported but are nonstandard:
     - [x] Multienvironmental Gillespie algorithm
       - [ ] Revised.
     - [x] Multienvironmental deterministic waiting time algorithm
+      - [x] With control over time
 - [x] Establish the deprecated functions as such
 
 - [x] Prepare RAPS object for monoenvironmental P systems
@@ -143,7 +144,3 @@ Might be supported but are nonstandard:
 * `RAPS.Rproj`: The project wherein everything is developed.
 * `README.md`: The document you're reading right now.
 * `renv.lock`: Info for the `renv` package.
-
-
-#### TODO
-- [ ] Achieve control over time

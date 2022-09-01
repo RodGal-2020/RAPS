@@ -105,7 +105,7 @@ selected_data %>%
   geom_point()
 ```
 
-## Multiple variables
+## Multiple variables in one membrane
 
 ```{r}
 get_m_objects = function(rap) {
@@ -157,8 +157,86 @@ selected_data %>%
   labs(title = "Evolution of multiplicity") +
   geom_point()
 ```
+## Get `CASP3`
+```{r}
+library(RAPS)
+fas_rap = load_demo_dataset("FAS")
+```
 
 
+```{r}
+get_casp3 = function(rap) {
+  return(
+    rap$Configuration %>%
+    dplyr::select(id, objects) %>%
+    tidyr::unnest_longer(objects) %>%
+    tidyr::unnest_wider(objects) %>%
+    dplyr::filter(object == "CASP3")
+  )
+}
+
+get_casp3(fas_rap)
+```
+
+```{r}
+set.seed(1974)
+results = fas_rap %>%
+  RAPS::alg_det_menv(max_T = 1, verbose = 1, debug = FALSE, save_each = get_casp3)
+
+# Launched for max_T = 1
+
+new_rap = results$final_rap
+selected_data = results$selected_data
+n_data = length(selected_data)
+
+selected_data = tibble::tibble(i = 1:n_data, selected_data) %>% 
+  tidyr::unnest_longer(selected_data) %>%
+  tidyr::unnest_wider(selected_data)
+
+diff_objects = unique(selected_data$object)
+
+for (iter in 1:n_data) {
+  for (name in diff_objects) {
+    if (dim(dplyr::filter(selected_data, object == name & i == iter))[1] == 0) {
+      selected_data %<>%
+        dplyr::bind_rows(
+          tibble::tibble(
+            i = iter,
+            object = name,
+            multiplicity = 0
+          )
+        )
+    }
+  }
+}
+
+library(ggplot2)
+
+selected_data %>%
+  dplyr::group_by(id, i) %>%
+  ggplot(aes(x=i, y=multiplicity, group=id, color = id)) +
+  geom_line(arrow = arrow()) +
+  labs(title = "Evolution of multiplicity") +
+  geom_point()
+
+```
+
+```{r}
+library(ggplot2)
+
+# One of the following
+
+selected_data %>%
+  ggplot(aes(x=i, y=multiplicity, group=object)) +
+  geom_line(arrow = arrow())+
+  geom_point()
+
+selected_data %>%
+  ggplot(aes(x=i, y=multiplicity, group=object, color = object)) +
+  geom_line(arrow = arrow()) +
+  labs(title = "Evolution of multiplicity") +
+  geom_point()
+```
 
 
 # Debugging stochastic example with communication rules

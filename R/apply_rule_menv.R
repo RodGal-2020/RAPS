@@ -22,7 +22,7 @@
 #' @export
 apply_rule_menv = function(rap, rule_id, environment_id = 0, verbose = FALSE, debug = FALSE) {
   # cat(crayon::bold("apply_rule_pdp() is under development"))
-  cat("\nLaunching the rule with id", crayon::bold(rule_id), "in the environment with id", crayon::bold(environment_id), "\n")
+  cat("\nLaunching the rule with id", crayon::bold(rule_id), "in the environment with id", crayon::bold(environment_id))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   #############################################
