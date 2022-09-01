@@ -45,15 +45,121 @@ knitr::opts_chunk$set(echo = TRUE)
 
 If RAPS is not installed, uncomment the following:
 ```{r}
+# devtools::install_github("Xopre/RAPS")
+## Or use (after downloading the project):
 # devtools::document() # To update the documentation
 # devtools::install() # To install as package
-## Or use:
-# devtools::install_github("Xopre/RAPS")
 ```
 
 ```{r}
 library(RAPS)
 ```
+
+# FAS
+```{r}
+# With load_demo_dataset
+fas_rap = RAPS::load_demo_dataset("FAS")
+
+# With PL5
+# path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+# setwd("~/GitHub/example-psystems/plingua5/RAPS/BIG")
+# fas_rap = RAPS::path2rap(path)
+
+fas_rap
+```
+
+```{r}
+get_Bcl2_from_rap = function(rap) {
+  return(rap$Configuration %>%
+    dplyr::filter(id == "m") %$%
+    objects %>%
+      magrittr::extract2(1) %>%
+    dplyr::filter(object == "Bcl2") %$%
+    multiplicity)
+}
+
+get_Bcl2_from_rap(fas_rap)
+```
+
+## Only one variable
+```{r}
+set.seed(1974)
+results = fas_rap %>%
+  RAPS::alg_det_menv(max_T = 1e-6, verbose = TRUE, debug = FALSE, save_each = get_Bcl2_from_rap)
+
+new_rap = results$final_rap
+selected_data = results$selected_data
+n_data = length(selected_data)
+
+selected_data = tibble::tibble(i = 1:n_data, multiplicity = selected_data) %>% 
+  tidyr::unnest_longer(multiplicity)
+
+```
+
+```{r}
+library(ggplot2)
+
+selected_data %>%
+  ggplot(aes(x=i, y=multiplicity, group=object)) +
+  geom_line(arrow = arrow())+
+  geom_point()
+```
+
+## Multiple variables
+
+```{r}
+get_m_objects = function(rap) {
+  return(rap$Configuration %>%
+    dplyr::filter(id == "m") %$%
+    objects %>%
+      magrittr::extract2(1))
+}
+
+get_m_objects(fas_rap)
+```
+
+
+```{r}
+set.seed(1974)
+results = fas_rap %>%
+  RAPS::alg_det_menv(max_T = 1e-3, verbose = TRUE, debug = FALSE, save_each = get_m_objects)
+
+new_rap = results$final_rap
+selected_data = results$selected_data
+n_data = length(selected_data)
+
+selected_data = tibble::tibble(i = 1:n_data, selected_data) %>% 
+  tidyr::unnest_longer(selected_data) %>%
+  tidyr::unnest_wider(selected_data)
+
+diff_objects = unique(selected_data$object)
+
+for (iter in 1:n_data) {
+  for (name in diff_objects) {
+    if (dim(dplyr::filter(selected_data, object == name & i == iter))[1] == 0) {
+      selected_data %<>%
+        dplyr::bind_rows(
+          tibble::tibble(
+            i = iter,
+            object = name,
+            multiplicity = 0
+          )
+        )
+    }
+  }
+}
+
+library(ggplot2)
+
+selected_data %>%
+  ggplot(aes(x=i, y=multiplicity, group=object)) +
+  geom_line(arrow = arrow())+
+  geom_point()
+```
+
+
+
+
 # Debugging stochastic example with communication rules
 ```{r}
 path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
@@ -98,35 +204,3 @@ my_rap %<>%
 my_rap %>%
   RAPS::show_rap(focus_on = list("OBJ", "MEM" = 2:3))
 ```
-
-
-# FAS
-```{r}
-# With load_demo_dataset
-fas_rap = RAPS::load_demo_dataset("FAS")
-
-# With PL5
-path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
-# setwd("~/GitHub/example-psystems/plingua5/RAPS/BIG")
-fas_rap = RAPS::path2rap(path)
-
-fas_rap
-```
-
-```{r}
-fas_rap %>%
-  RAPS::alg_det_menv(max_T = 1e-4, verbose = TRUE, debug = FALSE)
-
-# DELETE: Debugging section
-# problematic_rule = 91
-# problematic_env = "e"
-# 
-# fas_rap %>%
-#   RAPS::apply_rule_menv(rule_id = problematic_rule,
-#                         environment_id = problematic_env,
-#                         debug = TRUE)
-# 
-# RAPS::show_rule(fas_rap$Rules[problematic_rule, ])
-```
-
-

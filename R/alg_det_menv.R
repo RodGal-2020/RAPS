@@ -24,7 +24,7 @@
 #' Add references.
 #'
 #' @export
-alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_trinity = FALSE, random_trinity_selection = FALSE) {
+alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_trinity = FALSE, random_trinity_selection = FALSE, save_each = NULL) {
   cat(crayon::bold("alg_det_menv() is under development\n"))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
@@ -158,6 +158,10 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
   n_rules = dim(rules)[1]
   propensities = rules$propensity
 
+  if (!is.null(save_each)) {
+    saved = list(save_each(rap))
+  }
+
 
   trinities = get_trinities(envs, debug_trinity)
 
@@ -215,6 +219,11 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
                                    environment_id = c_0,
                                    debug)
 
+    if (!is.null(save_each)) {
+      saved %<>% append(list(save_each(rap)))
+    }
+
+
     ## For each environment affected by r_i_0
     affected_environments = c(c_0)
     n_affected_environments = length(affected_environments)
@@ -246,6 +255,15 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
   ########################
   ##### END FUNCTION #####
   ########################
-  return(rap)
+
+  if (is.null(save_each)) {
+    return(rap)
+  } else {
+    return(list(
+      final_rap = rap,
+      selected_data = saved
+    ))
+  }
+
 }
 

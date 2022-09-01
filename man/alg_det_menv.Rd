@@ -10,7 +10,8 @@ alg_det_menv(
   verbose = 2,
   debug = FALSE,
   debug_trinity = FALSE,
-  random_trinity_selection = FALSE
+  random_trinity_selection = FALSE,
+  save_each = NULL
 )
 }
 \arguments{

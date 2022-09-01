@@ -201,8 +201,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   #                         > semantics $RAP
   #                         > structure $RAP (bound to labels)
   #                         > multisets $RAP
-  #                         > rules > left_hand_rule, arrow, right_hand_rule $Rules
-  #                         > features (again) $Properties
+  #                         > rules > left_hand_rule, arrow, right_hand_rule, features $Rules
   ######################################
 
 
