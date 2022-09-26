@@ -4,7 +4,7 @@
 \alias{alg_gillespie_kernel}
 \title{Kernel of Gillespie's algorithm}
 \usage{
-alg_gillespie_kernel(rules)
+alg_gillespie_kernel(rap)
 }
 \arguments{
 \item{rules}{A set of rules}

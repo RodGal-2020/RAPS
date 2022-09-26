@@ -37,7 +37,10 @@ Simulates the evolution of a P system given as a \code{rap} object using the det
 }
 \section{TODO}{
 
-Add references.
+\itemize{
+\item Add references.
+\item Improve efficiency saving the trinities.
+}
 }
 
 \examples{

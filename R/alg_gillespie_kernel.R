@@ -13,20 +13,20 @@
 #' Add references.
 #'
 #' @export
-alg_gillespie_kernel = function(rules) {
-  cat(crayon::italic("\n\talg_gillepie_kernel"), "is under develpment")
+alg_gillespie_kernel = function(rap) {
+  # cat(crayon::italic("\n\talg_gillepie_kernel"), "is under develpment")
+
   ##################
   ##### KERNEL #####
   ##################
 
-  ### DELETE THIS DEMO
-  # cat("\nUsing the demo rap...")
-  # rap = RAPS::path2rap(demo = 2)
-  # rules = rap$Rules
+  ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
+  # library(RAPS)
+  # rap = RAPS::load_demo_dataset("FAS")
   ###
 
-  p = rules$propensity
-  n_rules = dim(rules)[1]
+  p = rap$Rules$propensity
+  n_rules = dim(rap$Rules)[1]
 
   p_0 = sum(p)
 
@@ -34,12 +34,12 @@ alg_gillespie_kernel = function(rules) {
   a_2 = runif(1)
 
   # Selected rule
-  j_0 = sample(x = 1:n_rules, size = 1, prob = p / p_0) # Equivalent to choosing the index verifying the condition
+  i_0 = sample(x = 1:n_rules, size = 1, prob = p / p_0) # Equivalent to choosing the index verifying the condition
 
   # Waiting time
   tau = 1 / p_0 * log(1 / a_1)
 
-  exit_rule = tibble::tibble(j_c = j_0, tau_c = tau)
+  exit_rule = tibble::tibble(i = i_0, tau = tau)
 
   return(exit_rule)
 }

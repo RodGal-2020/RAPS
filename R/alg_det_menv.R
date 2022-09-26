@@ -21,7 +21,8 @@
 #' show_rap(new_rap)
 #'
 #' @section TODO:
-#' Add references.
+#' - Add references.
+#' - Improve efficiency saving the trinities.
 #'
 #' @export
 alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_trinity = FALSE, random_trinity_selection = FALSE, save_each = NULL) {
@@ -35,8 +36,9 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
   # debug = TRUE
   # debug_trinity = FALSE
   # verbose = 5
-  # max_T = 1e-5
+  # max_T = 1e-7
   # random_trinity_selection = FALSE
+  # save_each = NULL
   #############################################
   #############################################
   ###### FAS
@@ -152,6 +154,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
   # Deterministic waiting time algorithm
   ########################################
   simulation_time = 0
+  start_time = Sys.time()
   verbose_print(cat(crayon::bold("\nsimulation_time"), simulation_time), 1)
   envs = unique(rap$Configuration$environment) # Instead of max in order to generalize
   rules = rap$Rules
@@ -195,6 +198,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
     tau_i_0 = chosen_trinity[[2]]
     c_0 = chosen_trinity[[3]]
 
+    verbose_print(cat("\n", rep("-", 50), sep = ""), 1)
     verbose_print(cat("\nWe have chosen the rule", crayon::bold(i_0), "with waiting time", tau_i_0, "to be executed in environment", crayon::bold(c_0)), 1)
 
     verbose_print(RAPS::show_rule(dplyr::filter(rap$Rules, rule_id == i_0)), 3)
@@ -228,7 +232,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
     affected_environments = c(c_0)
     n_affected_environments = length(affected_environments)
     if (debug) {
-      cat("\n\tDebug: Remember that environmental movement rules are not supported... for now 😈")
+      cat("\n\tDebug: Remember that environmental movement rules are not supported... for now at least")
     }
 
     ## Delete trinities of the affected_environment
@@ -250,11 +254,24 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
     trinities %<>%
       dplyr::arrange(tau_i) # Increasing order
 
+    time_now = Sys.time()
+    elapsed_time = as.numeric(time_now - start_time)
+    verbose_print(cat("\nelapsed time:", elapsed_time), 1)
+
+    cat("\n")
+
   } # End of main iteration
 
   ########################
   ##### END FUNCTION #####
   ########################
+
+  end_time = Sys.time()
+  total_elapsed_time = as.numeric(end_time - start_time)
+  verbose_print(cat("\ntotal elapsed time:", total_elapsed_time), 1)
+
+  verbose_print(cat("\n\n", crayon::bold("Reached end of simulation\n"), rep("=", 50), sep = ""), 1)
+
 
   if (is.null(save_each)) {
     return(rap)

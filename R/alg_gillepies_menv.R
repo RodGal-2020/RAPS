@@ -16,107 +16,202 @@
 #' new_rap = alg_gillespie_menv(my_rap, verbose = 4)
 #' show_rap(new_rap)
 #'
-#' @section TODO:
-#' Add references.
+#' @section CAUTION:
+#' For now affected compartment is equal to every compartment, like in the deterministic waiting time algorithm.
 #'
 #' @export
-alg_gillespie_menv = function(rap_environment, max_T = 10) {
-  cat(crayon::bold("alg_gillespie_pdp() is under development"))
+alg_gillespie_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE) {
+  cat(crayon::bold("alg_gillespie_menv() is under development"))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
-  # cat("\nUsing the demo rap...")
-  # rap = RAPS::path2rap(demo = 2)
-  # verbose = 1
+  # library(RAPS)
   # debug = TRUE
-  # new_environment = rap$RAP %>%
-  #   dplyr::filter(label == 1) %>%
-  #   dplyr::mutate(environment = 1)
-  # rap$RAP %<>%
-  #   dplyr::bind_rows(new_environment)
-  # rule_id = 1 # To track errors
+  # verbose = 3
+  # max_T = 1e-1
+  # # RAP object
+  # rap = RAPS::load_demo_dataset("FAS")
+  # new_env = rap$Configuration %>%
+  #   dplyr::mutate(environment = "second_environment")
+  # rap$Configuration %<>%
+  #   dplyr::bind_rows(new_env)
   ###
 
+  ##############################################################################
+  verbose_print = function(action, minimum_verbose_to_print = 1) {
+    if (verbose >= minimum_verbose_to_print) {
+      action
+    }
+  }
+  ##############################################################################
 
-  ########################################
-  # Gillespie algorithm
-  ########################################
+  ##############################################################################
+  get_ac = function(rap, env, mem, rule) {
+    # rule = chosen_rule
+    # compartment = c_0
+
+    verbose_print(cat("\nGetting affected compartments by the application of the rule with id ", crayon::bold(rule$rule_id), " in compartment ", crayon::bold(paste0(env, "-", mem)),".", sep = ""), 3)
+
+    # ac = rule$main_membrane_label
+    #
+    # aux = rule$rhs %>%
+    #   dplyr::bind_rows(rule$lhs) %>%
+    #   dplyr::filter(where != "@here") %$%
+    #   where
+    #
+    # ac %<>% c(aux)
+    #
+    # n_ac = length(ac)
+    #
+    # for (i in 1:n_ac) {
+    #   ac[i] %<>% paste0(env)
+    # }
+
+    case = "ALL"
+
+    if (case == "RAND") {
+      cat("\nReturning a", crayon::bold("random"), "selection of compartments of length 2.")
+      ac = sample(rap$Configuration$compartment, size = 2, replace = FALSE)
+    } else if (case == "ALL") {
+      cat("\nReturning", crayon::bold("all"), "compartments as list.")
+      ac = list(
+        rap$Configuration$environment,
+        rap$Configuration$id
+      )
+    } else {
+      cat("\nReturning", crayon::bold("NULL"))
+      return(NULL)
+    }
+
+    return(ac)
+  }
+  ##############################################################################
+
   simulation_time = 0
-  prov_RAP = rap$RAP
+  start_time = Sys.time()
+  verbose_print(cat(crayon::bold("\nsimulation_time"), simulation_time), 1)
 
-  n_envs = prov_RAP %$%
-    environment %>%
-    max()
+  envs = rap$Configuration$environment %>% unique
+  mems = rap$Configuration$id %>% unique
+  # Add compartment id
+  rap$Configuration %<>%
+    dplyr::mutate(compartment = paste0(environment, "-", id))
 
-  # grouped_RAP = prov_RAP %>%
-  #   dplyr::group_by(environment)
 
-  gil_exit = tibble::tibble()
+  #####################
+  ##### TRINITIES #####
+  #####################
+  # Actually, they are quintets
+  verbose_print(cat("\nComputing trinities"), 2)
 
-  for (i in 0:n_envs) {
-    new_gil_exit = prov_RAP %>%
-      dplyr::filter(environment == i) %>%
-      RAPS::alg_gillespie() %>%
-      dplyr::bind_cols(c = i)
-    gil_exit %<>%
-      dplyr::bind_rows(new_gil_exit) # (j_c, tau_c)
+  trinities = tibble::tibble(i = NULL,
+                             tau_i = NULL,
+                             c = NULL,
+                             env = NULL,
+                             membrane = NULL)
+
+  for (env in envs) {
+    for (mem in mems) {
+      # env = envs[1]
+      # mem = mems[1]
+      c = paste0(env, "-", mem)
+
+      local_rap = rap
+      local_rap$Configuration %<>%
+        dplyr::filter(compartment == c)
+
+      new_trinity = local_rap %>%
+        RAPS::alg_gillespie_kernel() %>%
+        dplyr::rename(tau_c = tau, i_c = i) %>%
+        dplyr::bind_cols(c = c, env = env, mem = mem)
+      trinities %<>%
+        dplyr::bind_rows(new_trinity) # (c, i_c, tau_c)
+    }
   }
 
-  ### DELETE THIS DEMO
-  gil_exit[2,] = list(1, 2, 3)
-  ###
+  ## We don't need to arrange this, as we have the dplyr::top_n() function
+  trinities %<>%
+    dplyr::arrange(tau_c)
+
+  if (debug) {
+    print(trinities)
+  }
 
   #####################
   ##### ITERATION #####
   #####################
   while (simulation_time < max_T) {
 
-    ## We don't need to arrange this, as we have the dplyr::top_n() function
-    gil_exit %<>%
-      dplyr::arrange(tau_c)
-
     ## Choose the trinity
-    chosen_trinity = gil_exit[1, ]
+    chosen_trinity = trinities[1, ]
     tau_c_0 = chosen_trinity$tau_c
-    j_c_0 = chosen_trinity$j_c
+    i_c_0 = chosen_trinity$i_c
     c_0 = chosen_trinity$c
+    # The following are included for the sake of simplicity
+    e_0 = chosen_trinity$env
+    m_0 = chosen_trinity$mem
+    chosen_rule = rap$Rules %>%
+      dplyr::filter(rule_id == i_c_0)
 
     ## Delete the trinity
-    gil_exit %<>%
+    trinities %<>%
       magrittr::extract(-1, )
-
-    # chosen_trinity = gil_exit %>%
-    #   dplyr::top_n(1, dplyr::desc(tau_c))
 
     ## Update simulation time
     simulation_time %<>%
       sum(tau_c_0)
+    verbose_print(cat(crayon::bold("\nsimulation_time"), simulation_time), 1)
 
     ## Update waiting time of other trinities
-    gil_exit %<>%
+    trinities %<>%
       dplyr::mutate(tau_c = tau_c - tau_c_0)
 
-    ## TODO: Apply rule r_j_c_0 ONCE actualizing the affected environments
-    # prov_RAP %<>%
-    #   RAPS::apply_rule()
+    ## Apply rule r_i_c_0 ONCE actualizing the affected compartments
+    verbose_print(cat("\nWe have chosen the rule", crayon::bold(i_c_0), "with waiting time", tau_c_0, "to be executed in environment", crayon::bold(c_0)), 1)
+    rap %<>%
+      RAPS::apply_rule_menv(rule_id = i_c_0, environment_id = e_0)
 
-    ## For each cp affected environment:
+    ## For each affected compartment ac:
+    acs_list = get_ac(rap, env = e_0, mem = m_0, rule = chosen_rule)
 
-    ### Delete trinity (j_cp, tau_cp, cp) from the list
+    cat("\nPropensities are not updated in this version. Take a look at", crayon::italic("alg_det_menv.R"), "for inspiration.")
+    verbose_print(cat("\nComputing trinities for affected compartments"), 2)
 
-    ### Update propensities
+    for (env in acs_list[[1]]) {
+      for (mem in acs_list[[2]]) {
+        ac = paste0(env, "-", mem)
 
-    ### Execute alg_gillespie in cp, obtaining (js_cp, taus_cp, cp) # s for Star
+        ### Delete trinity (j_ac, tau_ac, ac) from the list
+        trinities %<>%
+          dplyr::filter(c != ac)
 
-    ### Add the (js_cp, taus_cp, cp) trinity to the list
-    # gil_exit
+        ### Update propensities
 
-    ### Order the new list by decreasing tau_c
-    ## We don't need to arrange this, as we have the dplyr::top_n() function
+        ### Execute the kernel of the Gillespie algorithm in ac, obtaining (js_ac, tau_ac, ac) # s for Star
+        local_rap = rap
+        local_rap$Configuration %<>%
+          dplyr::filter(compartment == ac)
 
-    ########################
-    #####  UPDATE RAP  #####
-    ########################
-    rap$RAP = prov_RAP
+        new_trinity = local_rap %>%
+          RAPS::alg_gillespie_kernel() %>%
+          dplyr::rename(tau_c = tau, i_c = i) %>%
+          dplyr::bind_cols(c = c, env = env, mem = mem)
+
+        ### Add the (js_ac, tau_ac, ac) trinity to the list
+        trinities %<>%
+          dplyr::bind_rows(new_trinity) # (c, i_c, tau_c)
+
+        ### Order the new list by decreasing tau_c
+        # We don't need to arrange this, as we have the dplyr::top_n() function
+        trinities %<>%
+          dplyr::arrange(tau_c)
+      }
+    }
+
+    time_now = Sys.time()
+    elapsed_time = as.numeric(time_now - start_time)
+    verbose_print(cat("\nelapsed time:", elapsed_time), 1)
+
+    cat("\n")
   }
 
 

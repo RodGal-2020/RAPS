@@ -4,12 +4,12 @@
 \alias{alg_gillespie_menv}
 \title{Gillespie's algorithm for multienvironmental systems}
 \usage{
-alg_gillespie_menv(rap_environment, max_T = 10)
+alg_gillespie_menv(rap, max_T = 1e-05, verbose = 2, debug = FALSE)
 }
 \arguments{
-\item{max_T}{Maximum simulation time.}
-
 \item{rap}{A \code{rap} object, usually generated with \code{load_demo_dataset()} or \code{path2rap()}.}
+
+\item{max_T}{Maximum simulation time.}
 }
 \value{
 A new \code{rap} object, the result of simulating the Gillespie's algorithm for multienvironmental systems.
@@ -19,9 +19,9 @@ A new \code{rap} object, the result of simulating the Gillespie's algorithm for 
 
 Simulates the evolution of a P system given as a \code{rap} object using the Gillespie's algorithm for multienvironmental systems
 }
-\section{TODO}{
+\section{CAUTION}{
 
-Add references.
+For now affected compartment is equal to every compartment, like in the deterministic waiting time algorithm.
 }
 
 \examples{
