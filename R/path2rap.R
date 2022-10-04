@@ -240,6 +240,10 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     colnames(objects_dictionary) = c("object", "true_object")
 
     translate_objects = function(object_tibble, within_rule = FALSE) {
+      ## Debugging
+      # within_rule = TRUE
+      # object_tibble = lhs
+      # object_tibble = rhs
 
       if (within_rule) {
         untouched = object_tibble %>%
@@ -788,8 +792,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ##############################################################################
   get_rule_from_value = function(value) {
     ## Debugging:
-    # (value = rules_value[1]) # RAPS-like
-    # (value = rules_value[2]) # Standard
+    # (value = rules_value[4]) # RAPS-like
 
     rule_id = xml2::xml_name(value) # TODO: Use rules dictionary
 
@@ -877,8 +880,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
         magrittr::extract(2) %>%
         xml2::xml_children() %>%
         magrittr::extract(2) %>%
-        xml2::xml_text() %>%
-        utf8ToInt()
+        xml2::xml_integer()
     } else {
       cat("This function only supports sc among all features.")
       sc = NA # TODO: Check this
