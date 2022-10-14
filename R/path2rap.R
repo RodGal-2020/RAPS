@@ -751,6 +751,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     # (reference = RAPS::load_demo_dataset("FAS")$Rules[1,]$lhs[[1]]) # Reference
     # main_membrane_label = "0"
     # (membrane_info = lhs_membrane_info)
+    # is_rhs = FALSE
     # (membrane_info = rhs_membrane_info)
     # is_rhs = TRUE
     # properties$objects_dictionary
@@ -761,7 +762,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
       where = membrane_info$membrane_label,
       multiset = membrane_info$multiset
     ) %>%
-      tidyr::unnest_wider(multiset) # Let's get object and multiplicity
+      tidyr::unnest_longer(multiset) %>% # Let's get object and multiplicity
+      tidyr::unnest_wider(multiset)
 
     n_rows = dim(side_tibble)[1]
 
