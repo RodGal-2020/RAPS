@@ -6,7 +6,7 @@
 \alias{RAPS-package}
 \title{RAPS: 🎤 RAPS: R Aid for P Systems}
 \description{
-Work with P systems using all the power that R can give you..
+Work with P systems using all the power that R can give you.
 }
 \author{
 \strong{Maintainer}: Xopre - \email{rodgal2020@gmail.com} (\href{https://orcid.org/0000-0002-5825-2724}{ORCID})
