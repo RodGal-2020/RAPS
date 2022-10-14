@@ -1,11 +1,10 @@
 Package: RAPS
 Title: 🎤 RAPS: R Aid for P Systems
-Version: 0.0.4.220826
+Version: 0.0.4.221014
 Authors@R: 
     person("Xopre", "-", , "rodgal2020@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5825-2724"))
-Description: In this paragraph I will explain what the package does.
-    The description continues here.
+Description: Work with P systems using all the power that R can give you.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
