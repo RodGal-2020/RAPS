@@ -58,12 +58,12 @@ library(RAPS)
 # FAS
 ```{r}
 # With load_demo_dataset
-fas_rap = RAPS::load_demo_dataset("FAS")
+# fas_rap = RAPS::load_demo_dataset("FAS")
 
 # With PL5
-# path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
-# setwd("~/GitHub/example-psystems/plingua5/RAPS/BIG")
-# fas_rap = RAPS::path2rap(path)
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+setwd("~/GitHub/example-psystems/plingua5/RAPS/BIG")
+fas_rap = RAPS::path2rap(path)
 
 fas_rap
 ```

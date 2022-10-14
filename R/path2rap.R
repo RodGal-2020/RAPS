@@ -270,15 +270,15 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   labels_node = data_xml %>%
     xml2::xml_find_all("//labels")
 
-  codification = labels_node %>%
-    xml2::xml_children() %>%
-    xml2::xml_name()
-
-  real_value = labels_node %>%
-    xml2::xml_children() %>%
-    xml2::xml_text() # May not be numbers
-
-  properties$labels_dictionary = tibble::tibble(codification, real_value)
+  properties$labels_dictionary = tibble::tibble(
+    codification_as_id = labels_node %>%
+      xml2::xml_children() %>%
+      xml2::xml_name() %>%
+      substr(start = 6, stop = 8), # Only 3 digits
+    real_name = labels_node %>%
+      xml2::xml_children() %>%
+      xml2::xml_text() # May not be numbers
+  )
 
   ## Property: Features
   properties$features = data_xml[3] %>%
@@ -629,6 +629,15 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ######################################
   verbose_print(cat(crayon::bold("\nother_params"), "are not supported yet"), 2)
   configuration$other_params = NA
+
+
+  ######################################
+  # TODO: Use the properties$labels_dictionary to translate the ids CORRECTLY.
+  ######################################
+  # Quickfix
+  configuration$id = exit$Properties$labels_dictionary$real_value[as.integer(configuration$id) + 1]
+  configuration$label = configuration$id
+
 
   ######################################
   exit$Configuration = configuration
