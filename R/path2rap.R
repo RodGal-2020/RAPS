@@ -632,11 +632,28 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
 
   ######################################
-  # TODO: Use the properties$labels_dictionary to translate the ids CORRECTLY.
+  # Codification: Translation of ids and labels
   ######################################
-  # Quickfix
-  configuration$id = exit$Properties$labels_dictionary$real_value[as.integer(configuration$id) + 1]
-  configuration$label = configuration$id
+  if (!use_codification) {
+    ## Debugging
+    # Configuration
+    # labels_tibble = tibble::tibble(codification_as_id = configuration$id)
+    # name_by = "codification_as_id"
+
+    translate_property_labels = function(labels_tibble, name_by = "codification_as_id") {
+      return(labels_tibble %>%
+        dplyr::full_join(properties$labels_dictionary, by = name_by) %$%
+        # Full join to guarantee that we preserve the order of the codes
+        real_name
+      )
+    }
+
+    labels_tibble = tibble::tibble(codification_as_id = configuration$id)
+    new_labels = translate_property_labels(labels_tibble, name_by = "codification_as_id")
+
+    configuration$label = new_labels
+    configuration$id = configuration$label
+  }
 
 
   ######################################
@@ -676,6 +693,34 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     }
 
     return(membrane_info_parameter)
+  }
+  ##############################################################################
+
+  ##############################################################################
+  # translate_side_labels()
+  if (!use_codification) {
+    labels = properties$labels_dictionary
+    where_labels = labels %>% dplyr::rename(where = codification_as_id)
+    object_labels = labels %>% dplyr::rename(object = codification_as_id)
+
+    translate_side_labels = function(side) {
+      ## Debugging
+      # side = get_rule_from_value(rules_value[8])$lhs[[1]] %>% dplyr::bind_rows(
+      #   tibble::tibble(where = "@exists", multiplicity = 1, object = "2")
+      #   )
+      # side = lhs
+      # side = rhs
+
+      new_side = side %>%
+        dplyr::left_join(where_labels, by = "where") %>%
+        dplyr::mutate(where = ifelse(is.na(real_name), where, real_name)) %>%
+        dplyr::select(-real_name) %>%
+        dplyr::left_join(object_labels, by = "object") %>%
+        dplyr::mutate(object = ifelse(is.na(real_name), object, real_name)) %>%
+        dplyr::select(-real_name)
+
+      return(new_side)
+    }
   }
   ##############################################################################
 
@@ -764,8 +809,6 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     # (membrane_info = rhs_membrane_info)
     # is_rhs = TRUE
     # properties$objects_dictionary
-
-    ### FIXME: Not working for rhs standard (the second one)
 
     side_tibble = tibble::tibble(
       where = membrane_info$membrane_label,
@@ -898,9 +941,14 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     }
 
     ## Update names if necessary
+    ## Important: They do different things! Must join.
     if (!use_codification) {
       lhs %<>% translate_objects(within_rule = TRUE)
       rhs %<>% translate_objects(within_rule = TRUE)
+    }
+    if (!use_codification) {
+      lhs %<>% translate_side_labels()
+      rhs %<>% translate_side_labels()
     }
 
     my_tibble = tibble::tibble(
