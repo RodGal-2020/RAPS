@@ -725,6 +725,22 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ##############################################################################
 
   ##############################################################################
+  if (!use_codification) {
+    labels = properties$labels_dictionary # Redefined just in case
+    translate_main_membranes = function(main_membranes) {
+      ## Debugging
+      # (main_membranes = as.character(c(0:3, 0:3, 0:3)))
+
+      return(
+        tibble::tibble(codification_as_id = main_membranes) %>%
+               dplyr::left_join(labels, by = "codification_as_id") %$%
+               real_name
+        )
+    }
+  }
+  ##############################################################################
+
+  ##############################################################################
   get_membrane_info = function(membrane) {
     ### Returns a tibble with info about the membrane and its inner objects (children are ignored for now)
 
@@ -989,6 +1005,9 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     rules %<>%
       dplyr::bind_rows(get_rule_from_value(rules_value[i]))
   }
+
+  # Update names if necessary
+  rules$main_membrane_label %<>% translate_main_membranes()
 
   exit$Rules = rules
 
