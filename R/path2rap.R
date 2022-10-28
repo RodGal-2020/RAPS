@@ -28,7 +28,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ####################################################
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   ######## Common
-  # library(RAPS)
+  # library(RAPS) # Estás seguro de que quieres hacer eso?
   # use_codification = FALSE
   # verbose = 5
   # demo = FALSE
@@ -54,13 +54,13 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ## Complex evolution rules
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
   ## 0 - a to b
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/0%20-%20%20a_to_b.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/0%20-%20%20a_to_b.xml"
   ## 1 - a to b2
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/1%20-%20%20a_to_b2.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/1%20-%20%20a_to_b2.xml"
   ## 2 - a2 to b3
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20%20a2_to_b3.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/2%20-%20%20a2_to_b3.xml"
   ## 3 - a1,b2 to c3,d4
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
 
   #### Communication rules
   ## 0 - Outside to inside
@@ -69,6 +69,9 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/1%20-%20a_inside_to_a_outside_r.xml"
   ## 2 - Multiinsde to multioutside
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
+  ### Debugging
+  ## Communication mix
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/debugging/from_membrane_info_to_rap/0.xml"
 
   ## N - Crazy multicommunication
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/N%20-%20crazy_multi_inside_to_crazy_multi_outside.xml"
@@ -721,16 +724,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
       return(new_side)
     }
-  }
-  ##############################################################################
 
-  ##############################################################################
-  if (!use_codification) {
-    labels = properties$labels_dictionary # Redefined just in case
     translate_main_membranes = function(main_membranes) {
-      ## Debugging
-      # (main_membranes = as.character(c(0:3, 0:3, 0:3)))
-
       return(
         tibble::tibble(codification_as_id = main_membranes) %>%
                dplyr::left_join(labels, by = "codification_as_id") %$%
@@ -819,19 +814,40 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   from_membrane_info_to_rap = function(membrane_info, is_rhs = FALSE, main_membrane_label, raps_like = TRUE) {
     ## Debugging
     # (reference = RAPS::load_demo_dataset("FAS")$Rules[1,]$lhs[[1]]) # Reference
+    ## LHS
     # main_membrane_label = "0"
     # (membrane_info = lhs_membrane_info)
     # is_rhs = FALSE
+    ## RHS
     # (membrane_info = rhs_membrane_info)
     # is_rhs = TRUE
-    # properties$objects_dictionary
+    # properties$objects_dictionary # Must exist
 
-    side_tibble = tibble::tibble(
-      where = membrane_info$membrane_label,
-      multiset = membrane_info$multiset
-    ) %>%
-      tidyr::unnest_longer(multiset) %>% # Let's get object and multiplicity
-      tidyr::unnest_wider(multiset)
+    # In order to avoid unexpected unnesting with the @exists object
+    dummy_tibble = tibble::tibble(
+      where = as.character(NA),
+      multiset = list(
+        tibble::tibble(object = as.character(NA), multiplicity = as.integer(NA)))
+      )
+
+    side_tibble = dummy_tibble %>%
+      dplyr::bind_rows(
+        tibble::tibble(
+          where = membrane_info$membrane_label,
+          multiset = membrane_info$multiset
+        )
+      )
+
+    side_tibble %<>%
+      tidyr::unnest(multiset, keep_empty = TRUE) %>%
+      magrittr::extract(-1, ) # Delete dummy row
+
+    ## With this basic inside and basic outside work
+    # side_tibble %<>% tidyr::unnest_wider(multiset)
+    ## With this FAS and crazy multicommunication work BUT we lose the @exists elements
+    # side_tibble %<>%
+    #   tidyr::unnest_longer(multiset) %>% # Let's get object and multiplicity
+    #   tidyr::unnest_wider(multiset)
 
     n_rows = dim(side_tibble)[1]
 
@@ -862,7 +878,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ##############################################################################
   get_rule_from_value = function(value) {
     ## Debugging:
-    # (value = rules_value[4]) # RAPS-like
+    # (value = rules_value[2])
 
     rule_id = xml2::xml_name(value) # TODO: Use rules dictionary
 
@@ -872,7 +888,6 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ###############################################
     # lhs
-    # In the demo the first rules are: [a -> b]'1, [a -> b*2]'1
     # In "a []'1 -> whatever" a would be in the multiset node, while []'1 would appear in the membrane zone
 
     ### Multiset
@@ -911,10 +926,8 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     ###############################################
     # Parameters for RAPS
     ## Now that we have all the info we needed it's time to adapt this info, to be RAPS-like
-    ### Debugging
-    # fas_chosen_rules = RAPS::load_demo_dataset("FAS")$Rules[1:2, ]
 
-    # We have:
+        # We have:
     # lhs_multiset_objects
     # lhs_membrane_info
     # rhs_multiset_objects
@@ -958,6 +971,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     ## Update names if necessary
     ## Important: They do different things! Must join.
+
     if (!use_codification) {
       lhs %<>% translate_objects(within_rule = TRUE)
       rhs %<>% translate_objects(within_rule = TRUE)
@@ -1001,15 +1015,31 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   exit$Properties$n_rules = n_rules
   ####################################
 
+  ####################################
+  ## Debugging
+  if (debug) {
+    for (i in 1:n_rules) {
+      cat("\n\n\n\n\n\n\n\n=========================================================\n")
+      cat("=========================================================\n")
+      cat("i =", i)
+      get_rule_from_value(rules_value[i]) %>% RAPS::show_rule()
+    }
+  }
+  ####################################
+
   for (i in 1:n_rules) {
+    # i = 2
     rules %<>%
       dplyr::bind_rows(get_rule_from_value(rules_value[i]))
   }
 
   # Update names if necessary
-  rules$main_membrane_label %<>% translate_main_membranes()
+  if (!use_codification) {
+    rules$main_membrane_label %<>% translate_main_membranes()
+  }
 
   exit$Rules = rules
 
   return(exit)
 }
+
