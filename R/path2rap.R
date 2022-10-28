@@ -612,8 +612,9 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ######################################
   # environment
   ######################################
-  verbose_print(cat(crayon::bold("\nenvironments"), "are not supported yet, using common environment dummy_env for all"), 2)
-  configuration$environment = "dummy_environment"
+  verbose_print(cat(crayon::bold("\nenvironments"), "are not supported yet, using ids"), 2)
+  # configuration$environment = "dummy_environment"
+  configuration$environment = configuration$id
 
   ######################################
   # label
@@ -656,6 +657,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
     configuration$label = new_labels
     configuration$id = configuration$label
+    configuration$environment = configuration$label
   }
 
 
