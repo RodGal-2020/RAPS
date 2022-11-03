@@ -3,7 +3,7 @@
 ################ R only file ####################
 #################################################
 #################################################
-# install.packages("devtools") # For Rscript
+install.packages("devtools", repos='http://cran.us.r-project.org') # For Rscript
 devtools::install_github("Xopre/RAPS")
 library(RAPS)
 fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
