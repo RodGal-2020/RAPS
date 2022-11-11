@@ -437,6 +437,8 @@ load_demo_dataset = function(dataset = NULL) {
   ################# FAS ############################
   ##################################################
   if (dataset == "FAS") {
+    ## TODO: Avoid the last 4 rules, at least for the first experiment
+
     cat(crayon::bold("Returning fas_rap"))
     cat("\nBased on", crayon::italic("Simulating FAS-Induced Apoptosis by Using P Systems"), "by Smitha Cheruku, Andrei Păun, Francisco J. Romero-Campero, Mario J. Pérez-Jiménez, and Oscar H. Ibarra")
 
@@ -1729,6 +1731,12 @@ load_demo_dataset = function(dataset = NULL) {
         Max_depth_in_rules = NaN # For now at least
       )
     )
+
+    ## TODO: Avoid the last 4 rules in a coherent way, at least for the first experiment
+    fas_rap$Rules %<>%
+      dplyr::top_n(n_rules - 4)
+
+
     return(fas_rap)
   }
   ##################################################
