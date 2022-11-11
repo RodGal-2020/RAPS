@@ -880,7 +880,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ##############################################################################
   get_rule_from_value = function(value) {
     ## Debugging:
-    # (value = rules_value[2])
+    # (value = rules_value[1])
 
     rule_id = xml2::xml_name(value) # TODO: Use rules dictionary
 
@@ -965,7 +965,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
         magrittr::extract(2) %>%
         xml2::xml_children() %>%
         magrittr::extract(2) %>%
-        xml2::xml_integer()
+        xml2::xml_double()
     } else {
       cat("This function only supports sc among all features.")
       sc = NA # TODO: Check this
