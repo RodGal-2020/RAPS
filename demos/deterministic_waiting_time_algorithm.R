@@ -3,10 +3,10 @@
 ################ R only file ####################
 #################################################
 #################################################
-install.packages("devtools", repos='http://cran.us.r-project.org') # For Rscript
+# install.packages("devtools", repos='http://cran.us.r-project.org') # For Rscript
 devtools::install_github("Xopre/RAPS")
 library(RAPS)
-fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
 
 #############
 coded = FALSE
@@ -85,7 +85,8 @@ check_object = function(rap, focus) {
 
 
 set.seed(1974)
-my_max_T = 1e-8
+# my_max_T = 1e-8
+my_max_T = 60 # Real example
 
 ## Bcl2
 # results = fas_rap %>%
@@ -94,9 +95,18 @@ my_max_T = 1e-8
 ## CASP3
 # It appears only in membrane "c"
 # check_object(fas_rap, "CASP3")
+(save_path = paste0("RData/max_T_", my_max_T, ".RData"))
 get_concentration_of_CASP3 = function(rap) {get_concentration_of(rap, membrane_id = "c", chosen_object = "CASP3")}
+start=Sys.time()
 results = fas_rap %>%
-  RAPS::alg_det_menv(max_T = my_max_T, verbose = TRUE, debug = FALSE, save_each = get_concentration_of_CASP3)
+  RAPS::alg_det_menv(
+    max_T = my_max_T,
+    verbose = TRUE,
+    debug = FALSE,
+    save_each = get_concentration_of_CASP3); save.image(save_path); cat("\nProceso iniciado a las: \n"); print(start); cat("\ny terminado a las: \n"); Sys.time()
+################################################################
+# LAST LAUNCHED RULE
+################################################################
 
 ## CASP9_XIAP
 # get_concentration_of_CASP9_XIAP = function(rap) {get_concentration_of(rap, membrane_id = "c", chosen_object = "CASP9_XIAP")}
@@ -110,7 +120,8 @@ n_data = length(selected_data)
 selected_data = tibble::tibble(i = 1:n_data, multiplicity = selected_data) %>%
   tidyr::unnest_longer(multiplicity)
 
-(save_path = paste0("RData/max_T_", my_max_T, ".RData"))
 save.image(save_path)
+# Alternative:
+# save(new_rap, selected_data, n_data, file = save_path)
 
 

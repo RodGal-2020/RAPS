@@ -14,7 +14,7 @@
 #' A rap object.
 #'
 #' @examples
-#' path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+#' path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
 #' my_rap = path2rap(path)
 #' show_rap(my_rap)
 #'
@@ -38,49 +38,50 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ####################################################
   ######## Real files
   #### FAS
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
+
   ## Debugging
   ## Structure
-  # structure_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/debugging/FAS_structure.xml"
+  # structure_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/debugging/FAS_structure.xml"
   ## Constants
-  # constants_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/debugging/FAS_constants.xml"
+  # constants_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/debugging/FAS_constants.xml"
   ## Objects
-  # objects_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/debugging/FAS_objects.xml"
+  # objects_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/debugging/FAS_objects.xml"
   ## Rules
-  # rules_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/debugging/FAS_rules.xml"
+  # rules_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/debugging/FAS_rules.xml"
 
   ######## Debugging/Demo files
   #### Evolution rules
   ## Complex evolution rules
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/stochastic_model_001_RAPS_like_evolution.xml"
   ## 0 - a to b
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/0%20-%20%20a_to_b.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/increasing_rules_evolution/0%20-%20%20a_to_b.xml"
   ## 1 - a to b2
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/1%20-%20%20a_to_b2.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/increasing_rules_evolution/1%20-%20%20a_to_b2.xml"
   ## 2 - a2 to b3
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/2%20-%20%20a2_to_b3.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/increasing_rules_evolution/2%20-%20%20a2_to_b3.xml"
   ## 3 - a1,b2 to c3,d4
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/increasing_rules_evolution/3%20-%20%20a1%2Cb2_to_c3%2Cd4.xml"
 
   #### Communication rules
   ## 0 - Outside to inside
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/0%20-%20a_outside_to_a_inside_r.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/increasing_rules_communication/0%20-%20a_outside_to_a_inside_r.xml"
   ## 1 - Inside to outside
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/1%20-%20a_inside_to_a_outside_r.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/increasing_rules_communication/1%20-%20a_inside_to_a_outside_r.xml"
   ## 2 - Multiinsde to multioutside
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
   ### Debugging
   ## Communication mix
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/debugging/from_membrane_info_to_rap/0.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/debugging/from_membrane_info_to_rap/0.xml"
 
   ## N - Crazy multicommunication
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/N%20-%20crazy_multi_inside_to_crazy_multi_outside.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/increasing_rules_communication/N%20-%20crazy_multi_inside_to_crazy_multi_outside.xml"
 
   #### Stochastic rules
   ## 0 - Stochastic a to b
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/0%20-%20a_to_b_stochastic.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/increasing_rules_evolution/0%20-%20a_to_b_stochastic.xml"
   ## 0 - Mixed stochastic a to b
-  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_evolution/0%20-%20a_to_b_stochastic_mixed.xml"
+  # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/increasing_rules_evolution/0%20-%20a_to_b_stochastic_mixed.xml"
 
   if (demo) {
     cat("\nChoose a dataset from the following:\n")
@@ -149,7 +150,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   #   cat("Using the demo mode with XML files\n") %>% verbose_print()
   #   cat("Choose between transition_i for i in 1:3u7:8\n")
   #   xml_file = readline()
-  #   dir = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/", xml_file, ".xml")
+  #   dir = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/", xml_file, ".xml")
   #   psystem_pli = paste0("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/", xml_file, ".pli")
   #
   #   psystem_pli %<>% readr::read_lines(n_max = 100)
