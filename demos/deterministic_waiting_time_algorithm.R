@@ -60,8 +60,8 @@ check_object = function(rap, focus) {
 
 
 set.seed(1974)
-# my_max_T = 9*60 # Real example
-my_max_T = 1
+my_max_T = 9*60 # Real example
+# my_max_T = 1
 
 ## CASP3
 # It appears only in membrane "c"

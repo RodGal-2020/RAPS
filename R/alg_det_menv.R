@@ -1,7 +1,7 @@
 #' Deterministic waiting time algorithm for multienvironmental systems
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`
+#' `r lifecycle::badge("stable")`
 #'
 #' Simulates the evolution of a P system given as a `rap` object using the deterministic waiting time algorithm.
 #' @param rap A `rap` object, usually generated with `load_demo_dataset()` or `path2rap()`.
