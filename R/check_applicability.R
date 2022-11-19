@@ -28,7 +28,6 @@ check_applicability = function(verbose, affected_membranes, main_membrane_index,
   check_lhs_object = function(lhs_object) {
     ## Debugging
     # lhs_object = rule_info$lhs[[1]][1, ]
-    # lhs_object = rule_info$lhs[[1]][2, ]
 
     where = lhs_object$where
 
@@ -41,7 +40,7 @@ check_applicability = function(verbose, affected_membranes, main_membrane_index,
         dplyr::filter(object == lhs_object$object) %$%
         multiplicity
 
-      if (mult < lhs_object$multiplicity) {
+      if (mult < lhs_object$rule_multiplicity) {
         RAPS::show_rule(rule_info)
         stop("ERROR: This rule cannot be applied.")
       }
@@ -68,7 +67,7 @@ check_applicability = function(verbose, affected_membranes, main_membrane_index,
         dplyr::filter(object == lhs_object$object) %$%
         multiplicity
 
-      if (mult < lhs_object$multiplicity) {
+      if (mult < lhs_object$rule_multiplicity) {
         RAPS::show_rule(rule_info)
         stop("ERROR: This rule cannot be applied.")
       }
@@ -80,7 +79,7 @@ check_applicability = function(verbose, affected_membranes, main_membrane_index,
   n_lhs = dim(lhs)[1]
 
   for (i in 1:n_lhs) {
-    check_lhs_object(lhs[i])
+    check_lhs_object(lhs[i, ])
   }
 
   verbose_print(cat("\nThe rule could be applied.\n"), 1)

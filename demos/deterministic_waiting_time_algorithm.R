@@ -85,8 +85,8 @@ check_object = function(rap, focus) {
 
 
 set.seed(1974)
-# my_max_T = 1e-8
-my_max_T = 60 # Real example
+# my_max_T = 9*60 # Real example
+my_max_T = 1e-5
 
 ## Bcl2
 # results = fas_rap %>%
@@ -97,7 +97,7 @@ my_max_T = 60 # Real example
 # check_object(fas_rap, "CASP3")
 (save_path = paste0("RData/max_T_", my_max_T, ".RData"))
 get_concentration_of_CASP3 = function(rap) {get_concentration_of(rap, membrane_id = "c", chosen_object = "CASP3")}
-start=Sys.time()
+start = Sys.time()
 results = fas_rap %>%
   RAPS::alg_det_menv(
     max_T = my_max_T,

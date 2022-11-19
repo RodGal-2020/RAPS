@@ -105,6 +105,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
     n_objects = dim(lhs)[1]
 
     for (i in 1:n_objects) {
+      # i = 2 ## Debugging
       where = lhs[i, ]$where
       # object = lhs[i, ]$object
       # rule_multiplicity = lhs[i, ]$rule_multiplicity
@@ -116,7 +117,6 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
           dplyr::mutate(multiplicity = multiplicity - tidyr::replace_na(rule_multiplicity, 0), .keep = "all") %>%
           dplyr::select(object, multiplicity)
 
-        # Some other membrane or "@exists"
       } else if (where == "@exists"){
         # In this case we just check that it can be applied
         cat("\nChecking existance within labels, without using subM or superM")
@@ -129,6 +129,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
         )
 
       } else {
+        # Membrane h
         secondary_membrane_index = which(affected_membranes$label == where)
         affected_membranes[secondary_membrane_index, ]$objects[[1]] %<>%
           # affected_membranes[secondary_membrane_index, ]$objects[[1]] %>% # Debugging
@@ -151,6 +152,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
     n_objects = dim(rhs)[1]
 
     for (i in 1:n_objects) {
+      # i = 1 ## Debugging
       where = rhs[i, ]$where
       # affected_membrane_index = which(affected_membranes$label == where) # alternative
 
@@ -187,6 +189,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
     ###### Update rap ########
     ##########################
     rap$Configuration %<>%
+    # rap$Configuration %>% ## Debugging
       # dplyr::filter(label != rule_info$rhs_membrane_label) %>% # Untouched ones
       dplyr::filter(!label %in% affected_membranes_labels) %>%
       # dplyr::bind_rows(affected_rhs_membranes) %>%
@@ -198,7 +201,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
   ################################
   ####### Create fillers #########
   ################################
-  l_objects = length(objects)
+  l_objects = length(rap$Configuration$objects)
   for (i in 1:l_objects) {
     if (dim(rap$Configuration$objects[[i]])[1] == 0) {
       rap$Configuration$objects[[i]] = tibble::tibble(

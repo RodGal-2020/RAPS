@@ -37,7 +37,7 @@ This is the basic function of the package, and allows us to read a given P syste
 }
 
 \examples{
-path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
 my_rap = path2rap(path)
 show_rap(my_rap)
 

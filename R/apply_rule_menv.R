@@ -5,7 +5,7 @@
 #'
 #' @param rap A rap object.
 #' @param rule_id The id of the rule to be applied.
-#' @param environment_id The id of the affected environment.
+#' @param comp_id The id of the affected compartment.
 #' @param verbose The verbosity, between 0 and 5.
 #' @param debug Useful if you want to debug the execution of the function.
 #'
@@ -20,48 +20,36 @@
 #' * Include examples
 #'
 #' @export
-apply_rule_menv = function(rap, rule_id, environment_id = 0, verbose = FALSE, debug = FALSE) {
+apply_rule_menv = function(rap, rule_id, comp_id, verbose = FALSE, debug = FALSE) {
   # cat(crayon::bold("apply_rule_pdp() is under development"))
-  cat("\nLaunching the rule with id", crayon::bold(rule_id), "in the environment with id", crayon::bold(environment_id))
+  cat("\nLaunching the rule with id", crayon::bold(rule_id), "in the environment with id", crayon::bold(comp_id))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   #############################################
-  # cat(crayon::bold("Using demo mode\n"))
   # verbose = TRUE
   # debug = TRUE
-  #############################################
-  #############################################
-  ###### FAS
-  # rap = RAPS::load_demo_dataset("FAS")
-  # environment_id = "e"
-  # rule_id = 96
-  # cat(crayon::bold("Working with FAS in demo mode\n"))
-  ###### demo 1 from path2rap
-  # rap = RAPS::path2rap(demo = 1)
-  # environment_id = "0"
-  # rule_id = "In-out"
-  #############################################
-  #############################################
-  ###### alg_det_menv
+  # comp_id = c_0
   # rule_id = i_0
-  # environment_id = c_0
-
+  #############################################
+  #############################################
 
   affected_rap = rap
-  affected_rap$Configuration %<>% dplyr::filter(environment == environment_id)
-
-  ## Debugging
-  # affected_rap %>%
-  #   RAPS::apply_rule(rule_id, debug)
+  local_rule_id = rule_id
+  affected_comps = rap$Rules %>%
+    dplyr::filter(rule_id == local_rule_id) %$%
+    affected %>%
+    magrittr::extract2(1)
+  affected_rap$Configuration %<>% dplyr::filter(id %in% affected_comps)
 
   affected_rap %<>%
+  # affected_rap %>% # Debugging
     RAPS::apply_rule(rule_id, debug)
 
   ## Debugging
   # RAPS::show_rap(rap, focus_on = list("MEM" = 2:3, "OBJ"))
 
   rap$Configuration %<>%
-    dplyr::filter(environment != environment_id) %>%
+    dplyr::filter(id != comp_id) %>%
     dplyr::bind_rows(affected_rap$Configuration)
 
   ## Debugging

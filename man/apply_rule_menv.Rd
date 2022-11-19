@@ -4,20 +4,14 @@
 \alias{apply_rule_menv}
 \title{Apply a rule to a given multienvironmental P system}
 \usage{
-apply_rule_menv(
-  rap,
-  rule_id,
-  environment_id = 0,
-  verbose = FALSE,
-  debug = FALSE
-)
+apply_rule_menv(rap, rule_id, comp_id, verbose = FALSE, debug = FALSE)
 }
 \arguments{
 \item{rap}{A rap object.}
 
 \item{rule_id}{The id of the rule to be applied.}
 
-\item{environment_id}{The id of the affected environment.}
+\item{comp_id}{The id of the affected compartment.}
 
 \item{verbose}{The verbosity, between 0 and 5.}
 

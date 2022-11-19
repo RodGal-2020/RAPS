@@ -26,7 +26,7 @@
 #'
 #' @export
 alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_trinity = FALSE, random_trinity_selection = FALSE, save_each = NULL) {
-  cat(crayon::bold("alg_det_menv() is under development\n"))
+  cat(crayon::bold("alg_det_menv() has not been validated yet\n"))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   #############################################
@@ -34,9 +34,9 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
   # cat(crayon::bold("Using demo mode\n"))
   # verbose = TRUE
   # debug = TRUE
-  # debug_trinity = FALSE
+  # debug_trinity = FALSE # Too much
   # verbose = 5
-  # max_T = 1e-7
+  # max_T = 1e-5
   # random_trinity_selection = FALSE
   # save_each = NULL
   #############################################
@@ -45,13 +45,12 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
   # cat(crayon::bold("Working with FAS in demo mode\n"))
   ## Using load_demo_dataset
   # rap = RAPS::load_demo_dataset("FAS")
-  # # Using the PL5 XML
-  # rap = RAPS::path2rap("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml")
+  ## Using the PL5 XML
+  # rap = RAPS::path2rap("https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml")
   ###### multi_communication from path2rap
   # path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/increasing_rules_communication/2%20-%20multi_inside_to_multi_outside_r.xml"
   # rap = path2rap(path)
   #############################################
-
 
   ##############################################################################
   verbose_print = function(action, minimum_verbose_to_print = 1) {
@@ -61,37 +60,93 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
   }
   ##############################################################################
 
-  ########################################
-  get_trinities = function(envs, debug = FALSE) {
+  ##############################################################################
+  get_affected_envs = function(rules) {
     ## Debugging
-    # envs = unique(rap$Configuration$environment)
-    # debug = TRUE
+    # rules = rap$Rules
+    n_rules = dim(rules)[1]
+    affected = list()
+    main_membranes = rules$main_membrane_label
+    for (rule in 1:n_rules) {
+      new_affected = c()
+      # rule = 1
+      # NOT SUITABLE FOR CRAZY MULTICOMMUNICATION (use list() instead for that case)
+      w_lhs = rules$lhs[[rule]] %>%
+        dplyr::filter(where != "@here" && where != "@exists") %$%
+        where
+      if (length(w_lhs) != 0) {
+        new_affected %<>% c(w_lhs)
+      }
 
-    verbose_print(cat("\nComputing trinities"), 2)
+      w_rhs = rules$rhs[[rule]] %>%
+        dplyr::filter(where != "@here") %$%
+        where
+      if (length(w_rhs) != 0) {
+        new_affected %<>% c(w_rhs)
+      }
+
+      new_affected %<>% c(main_membranes[rule])
+
+      affected[[rule]] = unique(new_affected)
+    }
+
+    rules %<>%
+      dplyr::bind_cols(tibble::tibble(affected))
+
+    return(rules)
+  }
+  rap$Rules %<>% get_affected_envs() # We must undo this later
+  ##############################################################################
+
+  ##############################################################################
+  drop_affected = function(rap) {
+    rap$Rules %<>%
+      dplyr::select(-affected)
+    return(rap)
+  }
+  ##############################################################################
+
+  ########################################
+  get_trinities = function(rap, comps, debug = FALSE) {
+    if (debug) {
+      init = Sys.time()
+      cat("\n\tDebug: Computing trinities...")
+      cat("\n", rep("=", 50), sep = "")
+      }
 
     trinities = tibble::tibble(i = NULL,
                                tau_i = NULL,
                                c = NULL)
-    for (env in envs) {
-      # # Debugging
-      # env = envs[1]
-      chosen_env = rap$Configuration %>%
-        dplyr::filter(environment == env)
+
+    for (comp in comps) {
+      chosen_comp = rap$Configuration %>%
+        dplyr::filter(id == comp)
 
       if (debug) {
-        cat("\n\n", rep("-", 50), sep = "")
-        cat("\n\tDebug: Focusing on env", crayon::bold(env), "\n")
-        cat(rep("-", 50), "\n", sep = "")
+        cat("\n", rep("-", 50), sep = "")
+        cat("\n\tDebug: Focusing on comp", crayon::bold(comp), "\n")
+        cat(rep("-", 50), sep = "")
+        cat("\n\t\tDebug: Computing trinities for rules: ")
       }
 
+      ## For each rule affecting chosen_comp
+      # We define that a rule affects chosen_comp if it's its main membrane
       for (rule in 1:n_rules) {
-        # # Debugging
+        ## Debugging
+        # rule = 1
+        if (chosen_comp$id != rules$main_membrane_label[rule]) {
+          # It doesn't affect, so we ignore it
+          next
+        }
+
+        ## Debugging
         # rule = 1
         if (debug) {
-          cat("\n\tDebug: Computing trinity for rule", rule, "with id =", rules[rule, ]$rule_id)
-          # RAPS::show_rule(rules[rule, ])
+          cat(rule, ", ", sep = "")
         }
+
         prod_concentration_of_reactives = 1
+
         main_membrane_label = rules[rule, ]$main_membrane_label
         lhs = rules[rule, ]$lhs[[1]] %>%
           dplyr::filter(where != "@exists")
@@ -102,7 +157,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
           # reactive = 1
           where = lhs$where[reactive]
           if (where == "@here") {
-            chosen_objects = chosen_env %>%
+            chosen_objects = rap$Configuration %>%
               dplyr::filter(id == main_membrane_label) %$%
               objects
 
@@ -118,7 +173,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
 
           } else {
             # It is in some other membrane "h"
-            chosen_objects = chosen_env %>%
+            chosen_objects = rap$Configuration %>%
               dplyr::filter(id == where) %$%
               objects
 
@@ -141,32 +196,39 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
           tibble::tibble(
             i = rules[rule, ]$rule_id,
             tau_i = ifelse(v_r != 0, 1 / v_r, Inf),
-            c = env
+            c = comp
           )
         )
       }
     }
 
+    if (debug) {
+      elapsed_time = (Sys.time() - init) %>% round(2)
+      cat("\n", rep("-", 50), sep = "")
+      cat("\n\tDebug: Trinities computed after", crayon::bold(elapsed_time), "seconds" )
+      cat("\n", rep("=", 50), sep = "")
+    }
     return(trinities)
   }
 
   ########################################
   # Deterministic waiting time algorithm
   ########################################
-  simulation_time = 0
   start_time = Sys.time()
-  verbose_print(cat(crayon::bold("\nsimulation_time"), simulation_time), 1)
-  envs = unique(rap$Configuration$environment) # Instead of max in order to generalize
   rules = rap$Rules
   n_rules = dim(rules)[1]
   propensities = rules$propensity
+  comps = unique(rap$Configuration$id)
+
+  simulation_time = 0
+  verbose_print(cat(crayon::bold("\nsimulation_time"), simulation_time), 1)
+
 
   if (!is.null(save_each)) {
-    saved = list(save_each(rap))
+    saved = list(save_each(rap %>% drop_affected()))
   }
 
-
-  trinities = get_trinities(envs, debug_trinity)
+  trinities = get_trinities(rap, comps, debug_trinity)
 
   ## Order by increasing tau_i
   trinities %<>%
@@ -184,13 +246,13 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
   while (simulation_time < max_T) {
 
     ## Get the first trinity
-    if (random_trinity_selection) {
+    if (!random_trinity_selection) {
       chosen_trinity = trinities %>%
-        dplyr::sample_n(1)
+        dplyr::top_n(tau_i, n = -1) %>%
         magrittr::extract(1, )
     } else {
       chosen_trinity = trinities %>%
-        dplyr::top_n(tau_i, n = -1) %>%
+        dplyr::sample_n(1)
         magrittr::extract(1, )
     }
 
@@ -201,7 +263,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
     verbose_print(cat("\n", rep("-", 50), sep = ""), 1)
     verbose_print(cat("\nWe have chosen the rule", crayon::bold(i_0), "with waiting time", tau_i_0, "to be executed in environment", crayon::bold(c_0)), 1)
 
-    verbose_print(RAPS::show_rule(dplyr::filter(rap$Rules, rule_id == i_0)), 3)
+    verbose_print(RAPS::show_rule(dplyr::filter(rules, rule_id == i_0)), 3)
 
     ## Delete the chosen trinity from the trinities' list
     trinities %<>%
@@ -216,47 +278,50 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
       dplyr::mutate(tau_i = tau_i - tau_i_0)
 
     ## Apply rule r_i_0 ONCE
-
-    ## Debugging
-    # rap %>% RAPS::apply_rule_menv(rule_id = i_0,
     rap %<>% RAPS::apply_rule_menv(rule_id = i_0,
-                                   environment_id = c_0,
+                                   comp_id = c_0,
                                    debug)
 
     if (!is.null(save_each)) {
-      saved %<>% append(list(save_each(rap)))
+      saved %<>% append(list(save_each(rap %>% drop_affected())))
     }
 
 
     ## For each environment affected by r_i_0
-    affected_environments = c(c_0)
-    n_affected_environments = length(affected_environments)
-    if (debug) {
-      cat("\n\tDebug: Remember that environmental movement rules are not supported... for now at least")
-    }
+      affected_environments = rules %>%
+        dplyr::filter(rule_id == i_0) %$%
+        affected %>%
+        magrittr::extract2(1)
+      n_affected_environments = length(affected_environments)
+      if (debug) {
+        cat("\n\tDebug: Remember that environmental movement rules are not supported... for now at least")
+      }
 
-    ## Delete trinities of the affected_environment
-    trinities %<>%
-      dplyr::filter(!(c %in% affected_environments))
+      ## Delete trinities of the affected_environment
+      trinities %<>%
+        dplyr::filter(!(c %in% affected_environments))
 
-    ## Update multiplicities of objects in c'
-    # Already done in the "Apply rule" step
+      ## Update multiplicities of objects in c'
+      # Already done in the "Apply rule" step
 
-    ## Compute new waiting times for affected_environment
-    # Made inside the get_trinities() function
+      ## Compute new waiting times for affected_environment
+      # Made inside the following get_trinities() function
 
-    ## Add new trinities for affected_environment
-    new_trinities = get_trinities(affected_environments, debug_trinity)
-    trinities %<>%
-      dplyr::bind_rows(new_trinities)
+      ## Add new trinities for affected_environment
+      new_trinities = get_trinities(rap, affected_environments, debug_trinity)
+      trinities %<>%
+        dplyr::bind_rows(new_trinities)
 
-    ## Order by increasing tau_i
-    trinities %<>%
-      dplyr::arrange(tau_i) # Increasing order
+      ## Order by increasing tau_i
+      trinities %<>%
+        dplyr::arrange(tau_i) # Increasing order
+
+    ## End for c environment
 
     time_now = Sys.time()
     elapsed_time = as.numeric(time_now - start_time)
-    verbose_print(cat("\nelapsed time:", elapsed_time), 1)
+
+    verbose_print(cat("\nElapsed time:", elapsed_time, "seconds."), 1)
 
     cat("\n")
 
@@ -268,8 +333,8 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
 
   end_time = Sys.time()
   total_elapsed_time = as.numeric(end_time - start_time)
-  verbose_print(cat("\ntotal elapsed time:", total_elapsed_time), 1)
-
+  verbose_print(cat("\n", rep("=", 50), sep = ""), 1)
+  verbose_print(cat("\nTotal elapsed time:", total_elapsed_time), 1)
   verbose_print(cat("\n\n", crayon::bold("Reached end of simulation\n"), rep("=", 50), sep = ""), 1)
 
 
