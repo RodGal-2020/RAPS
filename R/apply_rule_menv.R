@@ -22,7 +22,7 @@
 #' @export
 apply_rule_menv = function(rap, rule_id, comp_id, verbose = FALSE, debug = FALSE) {
   # cat(crayon::bold("apply_rule_pdp() is under development"))
-  cat("\nLaunching the rule with id", crayon::bold(rule_id), "in the environment with id", crayon::bold(comp_id))
+  cat("\nLaunching the rule with id", crayon::bold(rule_id), "in the compartment with id", crayon::bold(comp_id))
 
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   #############################################
@@ -35,7 +35,7 @@ apply_rule_menv = function(rap, rule_id, comp_id, verbose = FALSE, debug = FALSE
 
   affected_rap = rap
   local_rule_id = rule_id
-  affected_comps = rap$Rules %>%
+  affected_comps = affected_rap$Rules %>%
     dplyr::filter(rule_id == local_rule_id) %$%
     affected %>%
     magrittr::extract2(1)
@@ -49,7 +49,8 @@ apply_rule_menv = function(rap, rule_id, comp_id, verbose = FALSE, debug = FALSE
   # RAPS::show_rap(rap, focus_on = list("MEM" = 2:3, "OBJ"))
 
   rap$Configuration %<>%
-    dplyr::filter(id != comp_id) %>%
+  # rap$Configuration %>% # Debugging
+    dplyr::filter(!id %in% affected_comps) %>%
     dplyr::bind_rows(affected_rap$Configuration)
 
   ## Debugging

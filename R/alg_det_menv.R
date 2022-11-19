@@ -28,6 +28,10 @@
 alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_trinity = FALSE, random_trinity_selection = FALSE, save_each = NULL) {
   cat(crayon::bold("alg_det_menv() has not been validated yet\n"))
 
+  if (debug) {
+    cat("\n\tDebug: Remember that environmental movement rules are not supported... for now at least")
+  }
+
   ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
   #############################################
   # library(RAPS)
@@ -108,6 +112,9 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
 
   ########################################
   get_trinities = function(rap, comps, debug = FALSE) {
+    ## Debugging
+    # comps = affected_comps
+    # debug = TRUE
     if (debug) {
       init = Sys.time()
       cat("\n\tDebug: Computing trinities...")
@@ -261,7 +268,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
     c_0 = chosen_trinity[[3]]
 
     verbose_print(cat("\n", rep("-", 50), sep = ""), 1)
-    verbose_print(cat("\nWe have chosen the rule", crayon::bold(i_0), "with waiting time", tau_i_0, "to be executed in environment", crayon::bold(c_0)), 1)
+    verbose_print(cat("\nWe have chosen the rule", crayon::bold(i_0), "with waiting time", tau_i_0, "to be executed in compartment", crayon::bold(c_0)), 1)
 
     verbose_print(RAPS::show_rule(dplyr::filter(rules, rule_id == i_0)), 3)
 
@@ -287,28 +294,25 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
     }
 
 
-    ## For each environment affected by r_i_0
-      affected_environments = rules %>%
+    ## For each compartment affected by r_i_0
+      affected_comps = rules %>%
         dplyr::filter(rule_id == i_0) %$%
         affected %>%
         magrittr::extract2(1)
-      n_affected_environments = length(affected_environments)
-      if (debug) {
-        cat("\n\tDebug: Remember that environmental movement rules are not supported... for now at least")
-      }
+      n_affected_comps = length(affected_comps)
 
-      ## Delete trinities of the affected_environment
+      ## Delete trinities of the affected_comps
       trinities %<>%
-        dplyr::filter(!(c %in% affected_environments))
+        dplyr::filter(!(c %in% affected_comps))
 
       ## Update multiplicities of objects in c'
       # Already done in the "Apply rule" step
 
-      ## Compute new waiting times for affected_environment
+      ## Compute new waiting times for affected_comps
       # Made inside the following get_trinities() function
 
-      ## Add new trinities for affected_environment
-      new_trinities = get_trinities(rap, affected_environments, debug_trinity)
+      ## Add new trinities for affected_comps
+      new_trinities = get_trinities(rap, affected_comps, debug_trinity)
       trinities %<>%
         dplyr::bind_rows(new_trinities)
 
@@ -316,7 +320,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
       trinities %<>%
         dplyr::arrange(tau_i) # Increasing order
 
-    ## End for c environment
+    ## End for c compartment
 
     time_now = Sys.time()
     elapsed_time = as.numeric(time_now - start_time)

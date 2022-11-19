@@ -21,27 +21,27 @@ if (coded) {
 ################################################################################
 # The function that will recover what we are interested in, in this case, the CASP3,
 # considering the original paper. However, we will make it as general as possible:
-get_concentration_of = function(rap, membrane_id, chosen_object) {
-  labels = rap$Configuration$label
-  ids = rap$Configuration$id
-  coded_id = ids[which(ids == membrane_id)]
-
-  if (coded) {
-    return(rap$Configuration %>%
-             dplyr::filter(id == coded_id) %$%
-             objects %>%
-             magrittr::extract2(1) %>%
-             dplyr::filter(object == chosen_object) %$%
-             multiplicity)
-  } else {
-    return(rap$Configuration %>%
-             dplyr::filter(id == membrane_id) %$% # This should work if we use the recodification
-             objects %>%
-             magrittr::extract2(1) %>%
-             dplyr::filter(object == chosen_object) %$%
-             multiplicity)
-  }
-}
+# get_concentration_of = function(rap, membrane_id, chosen_object, is_coded = FALSE) {
+#   labels = rap$Configuration$label
+#   ids = rap$Configuration$id
+#   coded_id = ids[which(ids == membrane_id)]
+#
+#   if (is_coded) {
+#     return(rap$Configuration %>%
+#              dplyr::filter(id == coded_id) %$%
+#              objects %>%
+#              magrittr::extract2(1) %>%
+#              dplyr::filter(object == chosen_object) %$%
+#              multiplicity)
+#   } else {
+#     return(rap$Configuration %>%
+#              dplyr::filter(id == membrane_id) %$% # This should work if we use the recodification
+#              objects %>%
+#              magrittr::extract2(1) %>%
+#              dplyr::filter(object == chosen_object) %$%
+#              multiplicity)
+#   }
+# }
 
 # get_concentration_of(fas_rap, membrane_id = "c", chosen_object = "CASP3")
 ################################################################################
@@ -61,17 +61,16 @@ check_object = function(rap, focus) {
 
 set.seed(1974)
 # my_max_T = 9*60 # Real example
-my_max_T = 1e-5
-
-## Bcl2
-# results = fas_rap %>%
-#   RAPS::alg_det_menv(max_T = my_max_T, verbose = TRUE, debug = FALSE, save_each = get_Bcl2_from_rap)
+my_max_T = 1
 
 ## CASP3
 # It appears only in membrane "c"
 # check_object(fas_rap, "CASP3")
 (save_path = paste0("RData/max_T_", my_max_T, ".RData"))
-get_concentration_of_CASP3 = function(rap) {get_concentration_of(rap, membrane_id = "c", chosen_object = "CASP3")}
+get_concentration_of_CASP3 = function(rap) {RAPS::get_concentration_of(rap, membrane_id = "c", chosen_object = "CASP3", is_coded = coded)}
+get_concentration_of_CASP3(fas_rap) # Demo
+
+## Main chunk
 start = Sys.time()
 results = fas_rap %>%
   RAPS::alg_det_menv(
@@ -82,11 +81,6 @@ results = fas_rap %>%
 ################################################################
 # LAST LAUNCHED RULE
 ################################################################
-
-## CASP9_XIAP
-# get_concentration_of_CASP9_XIAP = function(rap) {get_concentration_of(rap, membrane_id = "c", chosen_object = "CASP9_XIAP")}
-# results = fas_rap %>%
-#   RAPS::alg_det_menv(max_T = my_max_T, verbose = TRUE, debug = FALSE, save_each = get_concentration_of_CASP9_XIAP)
 
 new_rap = results$final_rap
 selected_data = results$selected_data
