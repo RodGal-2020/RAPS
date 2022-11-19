@@ -18,31 +18,6 @@ if (coded) {
   fas_rap = RAPS::path2rap(fas_path, use_codification = FALSE)
 }
 
-
-################################################################################
-# The function that will recover what we are interested in, in this case, the Bcl2,
-# considering the original paper:
-# get_Bcl2_from_rap = function(rap) {
-#   if (coded) {
-#     return(rap$Configuration %>%
-#              dplyr::filter(id == coded_id) %$%
-#              objects %>%
-#              magrittr::extract2(1) %>%
-#              dplyr::filter(object == "Bcl2") %$%
-#              multiplicity)
-#   } else {
-#     return(rap$Configuration %>%
-#              dplyr::filter(id == "m") %$% # This should work if we use the recodification
-#              objects %>%
-#              magrittr::extract2(1) %>%
-#              dplyr::filter(object == "Bcl2") %$%
-#              multiplicity)
-#   }
-# }
-#
-# get_Bcl2_from_rap(fas_rap)
-################################################################################
-
 ################################################################################
 # The function that will recover what we are interested in, in this case, the CASP3,
 # considering the original paper. However, we will make it as general as possible:
