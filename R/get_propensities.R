@@ -17,7 +17,7 @@
 #' This is a warning
 #'
 #' @export
-get_propensities = function(rap, verbose = 1, debug = FALSE) {
+get_propensities = function(rap, verbose = 0, debug = FALSE) {
 
   ##############################################################################
   get_stochastic_constant = function(lhs_object, kinetic_constant) {
@@ -95,23 +95,10 @@ get_propensities = function(rap, verbose = 1, debug = FALSE) {
     # i = 1 # Debugging
     rule = rules[i, ]
 
-    tryCatch(
-      expr = {
-        RAPS::check_applicability(rap, rule, verbose = 0)
-      },
-      error = function(e){ # If it cannot be applied
-        propensity = 0
-        propensities %<>% c(propensity)
-      },
-      warning = function(w){
-        # (Optional)
-        # Do this if an warning is caught...
-      },
-      finally = {
-        # (Optional)
-        # Do this at the end before quitting the tryCatch structure...
-      }
-    )
+    if (!RAPS::is_applicable(rap, rule)) {
+      propensities %<>% c(0)
+      next
+    }
 
     lhs_object = rule$lhs[[1]] %>%
       dplyr::filter(where != "@exists") # Omitting presence of membrane/s
