@@ -66,7 +66,7 @@ alg_gillespie = function(rap, max_T = 10, propensity_function = RAPS::get_propen
   while (simulation_time < max_T) {
     ## Update propensities
     if (!is.null(propensity_function)) {
-      rap$rules$propensity = propensity_function(rap)
+      rap$rules = propensity_function(rap)
     } # Else we keep them constant
 
     ## Execute Gillespie algorithm with the new propensities

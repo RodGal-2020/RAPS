@@ -29,7 +29,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
   cat(crayon::bold("alg_det_menv() has not been validated yet\n"))
 
   cat(crayon::bold("WARNING: Using RAPS::get_propensities()\n"))
-  rap$Rules$propensity = RAPS::get_propensities(rap, verbose = 0, debug = FALSE)
+  rap$Rules = RAPS::get_propensities(rap, verbose = 0, debug = FALSE)
 
   if (debug) {
     cat("\n\tDebug: Remember that environmental movement rules are not supported... for now at least")
@@ -281,7 +281,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
     # Made inside the following get_trinities() function
 
     ## Add new trinities for affected_comps
-    rap$Rules$propensity = RAPS::get_propensities(rap, verbose = 0, debug = FALSE)
+    rap$Rules = RAPS::get_propensities(rap, verbose = 0, debug = FALSE)
     new_trinities = get_trinities(rap, affected_comps, debug_trinity)
     trinities %<>%
       dplyr::bind_rows(new_trinities)

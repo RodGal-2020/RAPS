@@ -150,5 +150,7 @@ get_propensities = function(rap, verbose = 1, debug = FALSE) {
     propensities %<>% c(propensity)
   }
 
-  return(propensities)
+  rules$propensity = propensities
+
+  return(rules)
 }

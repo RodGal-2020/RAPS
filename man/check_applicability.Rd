@@ -4,7 +4,7 @@
 \alias{check_applicability}
 \title{Check if a rule can be applied}
 \usage{
-check_applicability(rap, rule_info, verbose)
+check_applicability(rap, rule_info, verbose = 0)
 }
 \arguments{
 \item{rule_info}{A row of \code{rap$Rules} for a given \code{rap} object, \emph{i,e}, everything required to know a certain rule.}

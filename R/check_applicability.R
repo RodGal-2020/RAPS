@@ -12,10 +12,12 @@
 #' Nothing, only prints a message if everything is OK, and stops the execution otherwise.
 #'
 #' @export
-check_applicability = function(rap, rule_info, verbose) {
+check_applicability = function(rap, rule_info, verbose = 0) {
 
-  # here = affected_membranes[main_membrane_index, ]
-  affected_membranes = rap$Configuration # Quickfix
+  # (rule_info = rap$Rules[21, ]) # Debugging
+
+  # here = affected_membranes[main_membrane_index, ] # Quickfix A
+  affected_membranes = rap$Configuration # Quickfix A
   here = rap$Configuration %>%
     dplyr::filter(id == rule_info$main_membrane_label)
 
@@ -30,7 +32,7 @@ check_applicability = function(rap, rule_info, verbose) {
   ##############################################################################
   check_lhs_object = function(lhs_object) {
     ## Debugging
-    # lhs_object = rule_info$lhs[[1]][i, ]
+    # (lhs_object = rule_info$lhs[[1]][i, ])
 
     where = lhs_object$where
 
@@ -41,7 +43,8 @@ check_applicability = function(rap, rule_info, verbose) {
 
       mult = here$objects[[1]] %>%
         dplyr::filter(object == lhs_object$object) %$%
-        multiplicity
+        multiplicity %>%
+        sum(0)
 
       if (mult < lhs_object$rule_multiplicity) {
         RAPS::show_rule(rule_info)
@@ -68,7 +71,8 @@ check_applicability = function(rap, rule_info, verbose) {
         objects %>%
         magrittr::extract2(1) %>%
         dplyr::filter(object == lhs_object$object) %$%
-        multiplicity
+        multiplicity %>%
+        sum(0)
 
       if (mult < lhs_object$rule_multiplicity) {
         RAPS::show_rule(rule_info)
