@@ -23,7 +23,7 @@ get_propensities = function(rap, verbose = 1, debug = FALSE) {
   get_stochastic_constant = function(lhs_object, kinetic_constant) {
     lhs_object %<>%
       magrittr::extract2(1) %>%
-      dplyr::filter(where != "@exists") # Omitting presence of membrane/s
+      # dplyr::filter(where != "@exists")
     n_objects_lhs = dim(lhs_object)[1]
 
     # rhs_object = chosen_rule$rhs[[1]]
@@ -55,7 +55,7 @@ get_propensities = function(rap, verbose = 1, debug = FALSE) {
     # (rule = rules[1, ]) # Debugging
     # (coded_object = rule$lhs[[1]]$object[1])
     where = rule$lhs[[1]] %>%
-      dplyr::filter(where != "@exists") %>%
+      # dplyr::filter(where != "@exists") %>%
       dplyr::filter(object == coded_object) %$%
       where
 

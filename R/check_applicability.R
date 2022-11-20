@@ -16,6 +16,11 @@ check_applicability = function(rap, rule_info, verbose = 0) {
 
   # (rule_info = rap$Rules[21, ]) # Debugging
 
+  rule_info$lhs[[1]] %<>%
+    dplyr::rename(rule_multiplicity = multiplicity)
+  rule_info$rhs[[1]] %<>%
+    dplyr::rename(rule_multiplicity = multiplicity)
+
   # here = affected_membranes[main_membrane_index, ] # Quickfix A
   affected_membranes = rap$Configuration # Quickfix A
   here = rap$Configuration %>%

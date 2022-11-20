@@ -44,17 +44,18 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
   #   dplyr::filter(rule_id_col == rule_id) %>%
   #   dplyr::mutate(rule_id = rule_id_col)
 
+  ##############################
+  # Check if it can be applied
+  ##############################
+  # RAPS::check_applicability(verbose = 1, affected_membranes, main_membrane_index, rule_info)
+  RAPS::check_applicability(rap, rule_info, verbose = 1) # Quickfix A
+
   # To directly avoid duplicates with dplyr
   rule_info$lhs[[1]] %<>%
     dplyr::rename(rule_multiplicity = multiplicity)
   rule_info$rhs[[1]] %<>%
     dplyr::rename(rule_multiplicity = multiplicity)
 
-  ##############################
-  # Check if it can be applied
-  ##############################
-  # RAPS::check_applicability(verbose = 1, affected_membranes, main_membrane_index, rule_info)
-  RAPS::check_applicability(rap, rule_info, verbose = 1) # Quickfix A
 
 
   if (verbose) {
