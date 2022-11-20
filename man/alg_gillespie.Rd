@@ -7,7 +7,7 @@
 alg_gillespie(
   rap,
   max_T = 10,
-  propensity_function = RAPS::update_propensity,
+  propensity_function = RAPS::get_propensities,
   verbose = 2,
   debug = FALSE,
   debug_pair = FALSE,
