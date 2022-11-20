@@ -30,9 +30,8 @@ apply_rule_menv = function(rap, rule_id, comp_id, verbose = FALSE, debug = FALSE
   # verbose = TRUE
   # debug = TRUE
 
-  ## For FAS
+  ## FAS
   # rap = fas_rap
-  # rule_id = "value2"
   # rule_id = "value33"
 
   ## For alg_det_menv
@@ -40,24 +39,24 @@ apply_rule_menv = function(rap, rule_id, comp_id, verbose = FALSE, debug = FALSE
   # rule_id = i_0
   #############################################
 
-  affected_rap = rap
-  local_rule_id = rule_id
-  affected_comps = affected_rap$Rules %>%
-    dplyr::filter(rule_id == local_rule_id) %$%
-    affected %>%
-    magrittr::extract2(1)
-  affected_rap$Configuration %<>% dplyr::filter(id %in% affected_comps)
+  affected_rap = rap # Quickfix A
+  # local_rule_id = rule_id
+  # affected_comps = affected_rap$Rules %>%
+  #   dplyr::filter(rule_id == local_rule_id) %$%
+  #   affected %>%
+  #   magrittr::extract2(1)
+  # affected_rap$Configuration %<>% dplyr::filter(id %in% affected_comps)
 
   affected_rap %<>%
   # affected_rap %>% # Debugging
-    RAPS::apply_rule(rule_id, debug)
+    RAPS::apply_rule(rule_id, verbose, debug)
 
   ## Debugging
   # RAPS::show_rap(rap, focus_on = list("MEM" = 2:3, "OBJ"))
 
   rap$Configuration %<>%
   # rap$Configuration %>% # Debugging
-    dplyr::filter(!id %in% affected_comps) %>%
+    # dplyr::filter(!id %in% affected_comps) %>% # Quickfix A
     dplyr::bind_rows(affected_rap$Configuration)
 
   ## Debugging
