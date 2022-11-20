@@ -12,9 +12,10 @@
 #' Nothing, only prints a message if everything is OK, and stops the execution otherwise.
 #'
 #' @export
-check_applicability = function(rap, rule_info, verbose = 0) {
+check_applicability = function(rap, rule_info, verbose = 0, return_error = TRUE) {
 
   # (rule_info = rap$Rules[21, ]) # Debugging
+  # return_error = FALSE
 
   rule_info$lhs[[1]] %<>%
     dplyr::rename(rule_multiplicity = multiplicity)
@@ -35,7 +36,7 @@ check_applicability = function(rap, rule_info, verbose = 0) {
   ##############################################################################
 
   ##############################################################################
-  check_lhs_object = function(lhs_object) {
+  check_lhs_object = function(lhs_object, local_return_error = return_error) {
     ## Debugging
     # (lhs_object = rule_info$lhs[[1]][i, ])
 
@@ -53,7 +54,11 @@ check_applicability = function(rap, rule_info, verbose = 0) {
 
       if (mult < lhs_object$rule_multiplicity) {
         RAPS::show_rule(rule_info)
-        stop("ERROR: This rule cannot be applied.")
+        if (local_return_error) {
+          stop("ERROR: This rule cannot be applied.")
+        } else {
+          return(0)
+        }
       }
 
     # @EXISTS
@@ -63,7 +68,11 @@ check_applicability = function(rap, rule_info, verbose = 0) {
 
       if (! lhs_object$object %in% here$subM[[1]]) {
         RAPS::show_rule(rule_info)
-        stop("ERROR: This rule cannot be applied due to the lack of a membrane.")
+        if (local_return_error) {
+          stop("ERROR: This rule cannot be applied due to the lack of a membrane.")
+        } else {
+          return(0)
+        }
       }
 
     # H
@@ -81,7 +90,11 @@ check_applicability = function(rap, rule_info, verbose = 0) {
 
       if (mult < lhs_object$rule_multiplicity) {
         RAPS::show_rule(rule_info)
-        stop("ERROR: This rule cannot be applied.")
+        if (local_return_error) {
+          stop("ERROR: This rule cannot be applied.")
+        } else {
+          return(0)
+        }
       }
     }
   }
@@ -92,6 +105,7 @@ check_applicability = function(rap, rule_info, verbose = 0) {
 
   for (i in 1:n_lhs) {
     check_lhs_object(lhs[i, ])
+    # We need to return the result from the previous one
   }
 
   verbose_print(cat("\nThe rule could be applied.\n"), 1)

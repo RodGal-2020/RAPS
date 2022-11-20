@@ -23,7 +23,7 @@ get_propensities = function(rap, verbose = 1, debug = FALSE) {
   get_stochastic_constant = function(lhs_object, kinetic_constant) {
     lhs_object %<>%
       magrittr::extract2(1) %>%
-      # dplyr::filter(where != "@exists")
+      dplyr::filter(where != "@exists")
     n_objects_lhs = dim(lhs_object)[1]
 
     # rhs_object = chosen_rule$rhs[[1]]
@@ -55,7 +55,7 @@ get_propensities = function(rap, verbose = 1, debug = FALSE) {
     # (rule = rules[1, ]) # Debugging
     # (coded_object = rule$lhs[[1]]$object[1])
     where = rule$lhs[[1]] %>%
-      # dplyr::filter(where != "@exists") %>%
+      dplyr::filter(where != "@exists") %>%
       dplyr::filter(object == coded_object) %$%
       where
 
@@ -94,6 +94,24 @@ get_propensities = function(rap, verbose = 1, debug = FALSE) {
   for (i in 1:n_rules) {
     # i = 1 # Debugging
     rule = rules[i, ]
+
+    tryCatch(
+      expr = {
+        RAPS::check_applicability(rap, rule, verbose = 0)
+      },
+      error = function(e){ # If it cannot be applied
+        propensity = 0
+        propensities %<>% c(propensity)
+      },
+      warning = function(w){
+        # (Optional)
+        # Do this if an warning is caught...
+      },
+      finally = {
+        # (Optional)
+        # Do this at the end before quitting the tryCatch structure...
+      }
+    )
 
     lhs_object = rule$lhs[[1]] %>%
       dplyr::filter(where != "@exists") # Omitting presence of membrane/s
