@@ -65,7 +65,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
   ##############################################################################
 
   ##############################################################################
-  get_affected_envs = function(rules) {
+  get_affected_comps = function(rules) {
     ## Debugging
     # rules = rap$Rules
     n_rules = dim(rules)[1]
@@ -99,7 +99,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
 
     return(rules)
   }
-  rap$Rules %<>% get_affected_envs() # We must undo this later
+  rap$Rules %<>% get_affected_comps() # We must undo this later
   ##############################################################################
 
   ##############################################################################

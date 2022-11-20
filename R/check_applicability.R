@@ -12,9 +12,12 @@
 #' Nothing, only prints a message if everything is OK, and stops the execution otherwise.
 #'
 #' @export
-check_applicability = function(verbose, affected_membranes, main_membrane_index, rule_info) {
+check_applicability = function(rap, rule_info, verbose) {
 
-  here = affected_membranes[main_membrane_index, ]
+  # here = affected_membranes[main_membrane_index, ]
+  affected_membranes = rap$Configuration # Quickfix
+  here = rap$Configuration %>%
+    dplyr::filter(id == rule_info$main_membrane_label)
 
   ##############################################################################
   verbose_print = function(action, minimum_verbose_to_print = 1) {
@@ -27,7 +30,7 @@ check_applicability = function(verbose, affected_membranes, main_membrane_index,
   ##############################################################################
   check_lhs_object = function(lhs_object) {
     ## Debugging
-    # lhs_object = rule_info$lhs[[1]][1, ]
+    # lhs_object = rule_info$lhs[[1]][i, ]
 
     where = lhs_object$where
 
@@ -55,7 +58,7 @@ check_applicability = function(verbose, affected_membranes, main_membrane_index,
         stop("ERROR: This rule cannot be applied due to the lack of a membrane.")
       }
 
-    # N
+    # H
     ##########################
     } else {
       verbose_print(cat("\nChecking", crayon::bold("standard"), "element."), 2)

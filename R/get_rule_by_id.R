@@ -17,9 +17,10 @@
 #' This is a warning
 #'
 #' @export
-get_rule_by_id = function(my_rap, my_rule_id) {
+get_rule_by_id = function(rap, rule_id) {
+  my_rule_id = rule_id
   return(
-    my_rap$Rules %>%
+    rap$Rules %>%
       dplyr::filter(rule_id == my_rule_id)
   )
 }

@@ -24,13 +24,20 @@ apply_rule_menv = function(rap, rule_id, comp_id, verbose = FALSE, debug = FALSE
   # cat(crayon::bold("apply_rule_pdp() is under development"))
   cat("\nLaunching the rule with id", crayon::bold(rule_id), "in the compartment with id", crayon::bold(comp_id))
 
-  ### UNCOMMENT TO TRACK ERRORS IN DEMO MODE
+  #############################################
+  ### Debugging
   #############################################
   # verbose = TRUE
   # debug = TRUE
+
+  ## For FAS
+  # rap = fas_rap
+  # rule_id = "value2"
+  # rule_id = "value33"
+
+  ## For alg_det_menv
   # comp_id = c_0
   # rule_id = i_0
-  #############################################
   #############################################
 
   affected_rap = rap

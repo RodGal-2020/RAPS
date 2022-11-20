@@ -4,21 +4,16 @@
 \alias{check_applicability}
 \title{Check if a rule can be applied}
 \usage{
-check_applicability(
-  verbose,
-  affected_membranes,
-  main_membrane_index,
-  rule_info
-)
+check_applicability(rap, rule_info, verbose)
 }
 \arguments{
+\item{rule_info}{A row of \code{rap$Rules} for a given \code{rap} object, \emph{i,e}, everything required to know a certain rule.}
+
 \item{verbose}{The verbosity, between 0 and 5.}
 
 \item{affected_membranes}{A subset of \code{rap$Configuration} for a given \code{rap} object, with all the membranes affected by the application of the rule included in \code{rule_info}.}
 
 \item{main_membrane_index}{The index of the main membrane within the \code{affected_membranes} object.}
-
-\item{rule_info}{A row of \code{rap$Rules} for a given \code{rap} object, \emph{i,e}, everything required to know a certain rule.}
 }
 \value{
 Nothing, only prints a message if everything is OK, and stops the execution otherwise.
