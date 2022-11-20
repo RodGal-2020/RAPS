@@ -33,9 +33,10 @@ if (coded) {
 # check_object(fas_rap, "CASP3")
 
 
-set.seed(1974)
 # my_max_T = 9*60 # Real example
-my_max_T = 1e-4
+my_max_T = 1 # Minimal example
+# my_max_T = 1e-4
+set.seed(1974)
 
 ## CASP3
 (save_path = paste0("RData/max_T_", my_max_T, ".RData"))

@@ -34,7 +34,8 @@ alg_gillespie_kernel = function(rap) {
   a_2 = runif(1)
 
   # Selected rule
-  i_0 = sample(x = 1:n_rules, size = 1, prob = p / p_0) # Equivalent to choosing the index verifying the condition
+  i_0_0 = sample(x = 1:n_rules, size = 1, prob = p / p_0) # Equivalent to choosing the index verifying the condition
+  i_0 = rap$Rules[i_0_0, ]$rule_id # In order to use its id
 
   # Waiting time
   tau = 1 / p_0 * log(1 / a_1)

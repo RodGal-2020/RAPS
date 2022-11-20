@@ -13,7 +13,7 @@
 #' @return A new `rap` object, the result of simulating the Gillespie's algorithm for monoenvironmental systems.
 #'
 #' @examples
-#' fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+#' fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
 #' my_rap = path2rap(fas_path)
 #' new_rap = alg_gillespie (my_rap, verbose = 4)
 #' show_rap(new_rap)
@@ -22,15 +22,28 @@
 #' Add references.
 #'
 #' @export
-alg_gillespie = function(rap, max_T = 10, propensity_function = NULL, return_middle_states = TRUE, verbose = FALSE) {
-  ### DELETE THIS DEMO
-  # cat("\nUsing the demo rap...")
-  # rap = RAPS::path2rap(demo = 2)
-  # max_T = 10
-  # propensity_function = NULL
-  # return_middle_states = TRUE
-  # verbose = TRUE
-  ###
+alg_gillespie = function(rap, max_T = 10, propensity_function = RAPS::update_propensity(), verbose = 2, debug = FALSE, debug_pair = FALSE, random_pair_selection = FALSE, save_each = NULL) {
+  #################################################
+  ## Debugging
+  # library(RAPS)
+  # fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
+  # rap = path2rap(fas_path)
+  # max_T = 1e-5
+  # propensity_function = RAPS::update_propensity()
+  # verbose = 5
+  # debug = FALSE
+  # debug_pair = FALSE
+  # random_pair_selection = FALSE
+  # save_each = NULL
+  #################################################
+
+  ##############################################################################
+  verbose_print = function(action, minimum_verbose_to_print = 1) {
+    if (verbose >= minimum_verbose_to_print) {
+      action
+    }
+  }
+  ##############################################################################
 
   if (is.null(propensity_function) & verbose){
     cat("\nUsing constant propensities")
@@ -40,9 +53,8 @@ alg_gillespie = function(rap, max_T = 10, propensity_function = NULL, return_mid
   ##### INICIALIZATION #####
   ##########################
   simulation_time = 0
-  rules = rap$Rules
-  if (return_middle_states) {
-    raps = list(rap$Configuration)
+  if (!is.null(save_each)) {
+    saved = list(save_each(rap))
   }
 
 
@@ -51,31 +63,28 @@ alg_gillespie = function(rap, max_T = 10, propensity_function = NULL, return_mid
   #####################
   while (simulation_time < max_T) {
     ## Update propensities
-    if (is.null(propensity_function)) {
-      rules$propensity = rules$propensity # WOW
-    } else {
-      rules$propensity = propensity_function(rap)
-    }
+    if (!is.null(propensity_function)) {
+      rap$rules$propensity = propensity_function(rap)
+    } # Else we keep them constant
 
     ## Execute Gillespie algorithm with the new propensities
-    exit_rule = RAPS::alg_gillespie_kernel(rules) # Written as an independent function for clearness
+    exit_rule = RAPS::alg_gillespie_kernel(rap) # Written as an independent function for clearness
     if (verbose) {
-      cat("\tThe chosen rule is the one with id =", exit_rule$j_c, "and execution time tau =", exit_rule$tau_c)
+      cat("\tThe chosen rule is the one with id =", exit_rule$i, "and execution time tau =", exit_rule$tau)
     }
 
     ## Execute ONCE the given rule r_j_0
-    rap %<>% # rap is modified
-      RAPS::apply_rule(rule_id = exit_rule$j_c) # TODO: Check membrane_id
+    rap %<>% RAPS::apply_rule(rule_id = exit_rule$i)
 
     ## Update simulation_time
-    simulation_time %<>% sum(exit_rule$tau_c)
+    simulation_time %<>% sum(exit_rule$i)
     if (verbose) {
       cat("Execution time ", simulation_time, "out of", max_T)
     }
 
     ## Append new state
-    if (return_middle_states) {
-      raps %<>% append(rap)
+    if (!is.null(save_each)) {
+      saved %<>% append(list(rap))
     }
   }
 
@@ -83,9 +92,12 @@ alg_gillespie = function(rap, max_T = 10, propensity_function = NULL, return_mid
   ######################
   ######## END #########
   ######################
-  if (return_middle_states) {
-    return(raps)
-  } else {
+  if (is.null(save_each)) {
     return(rap)
+  } else {
+    return(list(
+      final_rap = rap,
+      selected_data = saved
+    ))
   }
 }

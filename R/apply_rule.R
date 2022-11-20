@@ -31,6 +31,9 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
   # rap = affected_rap
   ## alg_det_menv
   # rule_id = i_0
+  ## alg_gillespie
+  # rap = rap
+  # (rule_id = exit_rule$i)
   ###############################
 
   rule_info = RAPS::get_rule_by_id(rap, rule_id)
@@ -62,7 +65,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
   ####################################
   ###### Get affected membranes ######
   ####################################
-  # affected_membranes_labels = unique(c(????????????????))
+  # affected_membranes_labels = rule_info$affected
   affected_membranes_labels = rule_info$main_membrane_label # Quickfix A
 
   lhs = rule_info$lhs[[1]]

@@ -28,13 +28,15 @@ get_concentration_of = function(rap, membrane_id, chosen_object, is_coded = FALS
              objects %>%
              magrittr::extract2(1) %>%
              dplyr::filter(object == chosen_object) %$%
-             multiplicity)
+             multiplicity %>%
+             sum(0))
   } else {
     return(rap$Configuration %>%
              dplyr::filter(id == membrane_id) %$% # This should work if we use the recodification
              objects %>%
              magrittr::extract2(1) %>%
              dplyr::filter(object == chosen_object) %$%
-             multiplicity)
+             multiplicity %>%
+             sum(0))
   }
 }

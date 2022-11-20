@@ -15,7 +15,7 @@
 #' A new `rap` object, the result of simulating the multienvironmental deterministic algorithm.
 #'
 #' @examples
-#' fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+#' fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
 #' my_rap = path2rap(fas_path)
 #' new_rap = alg_det_menv(my_rap, verbose = 4)
 #' show_rap(new_rap)
@@ -81,7 +81,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
       init = Sys.time()
       cat("\n\tDebug: Computing trinities...")
       cat("\n", rep("=", 50), sep = "")
-      }
+    }
 
     trinities = tibble::tibble(i = NULL,
                                tau_i = NULL,
@@ -227,7 +227,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
     } else {
       chosen_trinity = trinities %>%
         dplyr::sample_n(1)
-        magrittr::extract(1, )
+      magrittr::extract(1, )
     }
 
     i_0 = chosen_trinity[[1]]
@@ -262,30 +262,30 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
 
 
     ## For each compartment affected by r_i_0
-      affected_comps = rules %>%
-        dplyr::filter(rule_id == i_0) %$%
-        affected %>%
-        magrittr::extract2(1)
-      n_affected_comps = length(affected_comps)
+    affected_comps = rules %>%
+      dplyr::filter(rule_id == i_0) %$%
+      affected %>%
+      magrittr::extract2(1)
+    n_affected_comps = length(affected_comps)
 
-      ## Delete trinities of the affected_comps
-      trinities %<>%
-        dplyr::filter(!(c %in% affected_comps))
+    ## Delete trinities of the affected_comps
+    trinities %<>%
+      dplyr::filter(!(c %in% affected_comps))
 
-      ## Update multiplicities of objects in c'
-      # Already done in the "Apply rule" step
+    ## Update multiplicities of objects in c'
+    # Already done in the "Apply rule" step
 
-      ## Compute new waiting times for affected_comps
-      # Made inside the following get_trinities() function
+    ## Compute new waiting times for affected_comps
+    # Made inside the following get_trinities() function
 
-      ## Add new trinities for affected_comps
-      new_trinities = get_trinities(rap, affected_comps, debug_trinity)
-      trinities %<>%
-        dplyr::bind_rows(new_trinities)
+    ## Add new trinities for affected_comps
+    new_trinities = get_trinities(rap, affected_comps, debug_trinity)
+    trinities %<>%
+      dplyr::bind_rows(new_trinities)
 
-      ## Order by increasing tau_i
-      trinities %<>%
-        dplyr::arrange(tau_i) # Increasing order
+    ## Order by increasing tau_i
+    trinities %<>%
+      dplyr::arrange(tau_i) # Increasing order
 
     ## End for c compartment
 

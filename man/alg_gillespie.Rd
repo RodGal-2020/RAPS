@@ -7,9 +7,12 @@
 alg_gillespie(
   rap,
   max_T = 10,
-  propensity_function = NULL,
-  return_middle_states = TRUE,
-  verbose = FALSE
+  propensity_function = RAPS::update_propensity(),
+  verbose = 2,
+  debug = FALSE,
+  debug_pair = FALSE,
+  random_pair_selection = FALSE,
+  save_each = NULL
 )
 }
 \arguments{
@@ -19,9 +22,9 @@ alg_gillespie(
 
 \item{propensity_function}{A function to update propensities during each step}
 
-\item{return_middle_states}{Useful if you want to debug an execution of the function.}
-
 \item{verbose}{The verbosity, between 0 and 5.}
+
+\item{return_middle_states}{Useful if you want to debug an execution of the function.}
 }
 \value{
 A new \code{rap} object, the result of simulating the Gillespie's algorithm for monoenvironmental systems.
@@ -37,7 +40,7 @@ Add references.
 }
 
 \examples{
-fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
+fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
 my_rap = path2rap(fas_path)
 new_rap = alg_gillespie (my_rap, verbose = 4)
 show_rap(new_rap)
