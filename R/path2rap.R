@@ -1041,6 +1041,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
     rules$main_membrane_label %<>% translate_main_membranes()
   }
 
+  rules %<>% RAPS::get_affected_comps()
   exit$Rules = rules
 
   return(exit)

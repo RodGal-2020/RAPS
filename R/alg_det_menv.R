@@ -65,7 +65,6 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
   ##############################################################################
 
   ##############################################################################
-  rap$Rules %<>% RAPS::get_affected_comps() # We must undo this later
   drop_affected = function(rap) {
     rap$Rules %<>%
       dplyr::select(-affected)
