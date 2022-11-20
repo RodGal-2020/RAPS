@@ -4,7 +4,7 @@
 \alias{get_rule_by_id}
 \title{Template for new functions}
 \usage{
-get_rule_by_id(my_rap, my_rule_id)
+get_rule_by_id(rap, rule_id)
 }
 \arguments{
 \item{my_param}{Yep, it's a parameter.}
