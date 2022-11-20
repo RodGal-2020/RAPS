@@ -18,54 +18,26 @@ if (coded) {
   fas_rap = RAPS::path2rap(fas_path, use_codification = FALSE)
 }
 
-################################################################################
-# The function that will recover what we are interested in, in this case, the CASP3,
-# considering the original paper. However, we will make it as general as possible:
-# get_concentration_of = function(rap, membrane_id, chosen_object, is_coded = FALSE) {
-#   labels = rap$Configuration$label
-#   ids = rap$Configuration$id
-#   coded_id = ids[which(ids == membrane_id)]
-#
-#   if (is_coded) {
-#     return(rap$Configuration %>%
-#              dplyr::filter(id == coded_id) %$%
-#              objects %>%
-#              magrittr::extract2(1) %>%
-#              dplyr::filter(object == chosen_object) %$%
-#              multiplicity)
-#   } else {
-#     return(rap$Configuration %>%
-#              dplyr::filter(id == membrane_id) %$% # This should work if we use the recodification
-#              objects %>%
-#              magrittr::extract2(1) %>%
-#              dplyr::filter(object == chosen_object) %$%
-#              multiplicity)
+## Utility
+# check_object = function(rap, focus) {
+#   # focus = "CASP3"
+#   for (i in 1:dim(rap$Rules)[1]) {
+#     rule = rap$Rules[i,]
+#     if (focus %in% rule$lhs[[1]]$object || focus %in% rule$rhs[[1]]$object) {
+#       cat(crayon::bold("\nRULE DETECTED\n"))
+#       RAPS::show_rule(rule)
+#     }
 #   }
 # }
-
-# get_concentration_of(fas_rap, membrane_id = "c", chosen_object = "CASP3")
-################################################################################
-
-## Utility
-check_object = function(rap, focus) {
-  # focus = "CASP3"
-  for (i in 1:dim(rap$Rules)[1]) {
-    rule = rap$Rules[i,]
-    if (focus %in% rule$lhs[[1]]$object || focus %in% rule$rhs[[1]]$object) {
-      cat(crayon::bold("\nRULE DETECTED\n"))
-      RAPS::show_rule(rule)
-    }
-  }
-}
+# CASP3 only appears in membrane "c"
+# check_object(fas_rap, "CASP3")
 
 
 set.seed(1974)
-my_max_T = 9*60 # Real example
-# my_max_T = 1
+# my_max_T = 9*60 # Real example
+my_max_T = 1e-4
 
 ## CASP3
-# It appears only in membrane "c"
-# check_object(fas_rap, "CASP3")
 (save_path = paste0("RData/max_T_", my_max_T, ".RData"))
 get_concentration_of_CASP3 = function(rap) {RAPS::get_concentration_of(rap, membrane_id = "c", chosen_object = "CASP3", is_coded = coded)}
 get_concentration_of_CASP3(fas_rap) # Demo

@@ -154,6 +154,11 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
 
         prod_concentration_of_reactives = 1
 
+        ################################################
+        ## TODO:
+        # Use the RAPS::get_concentration_of() function.
+        ################################################
+
         main_membrane_label = rules[rule, ]$main_membrane_label
         lhs = rules[rule, ]$lhs[[1]] %>%
           dplyr::filter(where != "@exists")
