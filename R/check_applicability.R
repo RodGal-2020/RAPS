@@ -52,7 +52,7 @@ check_applicability = function(rap, rule_info, verbose = 0) {
         sum(0)
 
       if (mult < lhs_object$rule_multiplicity) {
-        RAPS::show_rule(rule_info)
+        verbose_print(RAPS::show_rule(rule_info), 4)
         stop("ERROR: This rule cannot be applied.")
       }
 
@@ -62,7 +62,7 @@ check_applicability = function(rap, rule_info, verbose = 0) {
       verbose_print(cat("\nChecking", crayon::bold("@exists"), "element."), 2)
 
       if (! lhs_object$object %in% here$subM[[1]]) {
-        RAPS::show_rule(rule_info)
+        verbose_print(RAPS::show_rule(rule_info), 4)
         stop("ERROR: This rule cannot be applied due to the lack of a membrane.")
       }
 
@@ -80,7 +80,7 @@ check_applicability = function(rap, rule_info, verbose = 0) {
         sum(0)
 
       if (mult < lhs_object$rule_multiplicity) {
-        RAPS::show_rule(rule_info)
+        verbose_print(RAPS::show_rule(rule_info), 4)
         stop("ERROR: This rule cannot be applied.")
       }
     }

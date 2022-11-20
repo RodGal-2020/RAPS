@@ -4,7 +4,7 @@
 \alias{get_propensities}
 \title{Template for new functions}
 \usage{
-get_propensities(rap, verbose = 1, debug = FALSE)
+get_propensities(rap, verbose = 0, debug = FALSE)
 }
 \arguments{
 \item{my_param}{Yep, it's a parameter.}
