@@ -17,7 +17,7 @@
 #' This is a warning
 #'
 #' @export
-update_propensity = function(rap, verbose = 1, debug = FALSE) {
+get_propensities = function(rap, verbose = 1, debug = FALSE) {
 
   ##############################################################################
   get_stochastic_constant = function(lhs_object, kinetic_constant) {
@@ -150,7 +150,5 @@ update_propensity = function(rap, verbose = 1, debug = FALSE) {
     propensities %<>% c(propensity)
   }
 
-  rules$propensity = propensities
-
-  return(rules)
+  return(propensities)
 }

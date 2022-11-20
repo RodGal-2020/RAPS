@@ -22,14 +22,14 @@
 #' Add references.
 #'
 #' @export
-alg_gillespie = function(rap, max_T = 10, propensity_function = RAPS::update_propensity(), verbose = 2, debug = FALSE, debug_pair = FALSE, random_pair_selection = FALSE, save_each = NULL) {
+alg_gillespie = function(rap, max_T = 10, propensity_function = RAPS::update_propensity, verbose = 2, debug = FALSE, debug_pair = FALSE, random_pair_selection = FALSE, save_each = NULL) {
   #################################################
   ## Debugging
   # library(RAPS)
   # fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
   # rap = path2rap(fas_path)
   # max_T = 1e-5
-  # propensity_function = RAPS::update_propensity()
+  # propensity_function = RAPS::update_propensity
   # verbose = 5
   # debug = FALSE
   # debug_pair = FALSE
@@ -47,6 +47,8 @@ alg_gillespie = function(rap, max_T = 10, propensity_function = RAPS::update_pro
 
   if (is.null(propensity_function) & verbose){
     cat("\nUsing constant propensities")
+  } else {
+    cat("\nUpdating propensities each step")
   }
 
   ##########################
