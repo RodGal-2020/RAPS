@@ -51,7 +51,7 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
   # Check if it can be applied
   ##############################
   # RAPS::check_applicability(verbose = 1, affected_membranes, main_membrane_index, rule_info)
-  RAPS::check_applicability(rap, rule_info, verbose = 1) # Quickfix
+  RAPS::check_applicability(rap, rule_info, verbose = 1) # Quickfix A
 
 
   if (verbose) {
@@ -62,7 +62,8 @@ apply_rule = function(rap, rule_id, verbose = FALSE, debug = FALSE, keep_residue
   ####################################
   ###### Get affected membranes ######
   ####################################
-  affected_membranes_labels = unique(c(rule_info$main_membrane_label)) # Quickfix
+  # affected_membranes_labels = unique(c(????????????????))
+  affected_membranes_labels = rule_info$main_membrane_label # Quickfix A
 
   lhs = rule_info$lhs[[1]]
   rhs = rule_info$rhs[[1]]

@@ -54,10 +54,12 @@ apply_rule_menv = function(rap, rule_id, comp_id, verbose = FALSE, debug = FALSE
   ## Debugging
   # RAPS::show_rap(rap, focus_on = list("MEM" = 2:3, "OBJ"))
 
-  rap$Configuration %<>%
+  rap$Configuration = affected_rap$Configuration # Quickfix A
+  ## Quickfix A
+  # rap$Configuration %<>%
   # rap$Configuration %>% # Debugging
-    # dplyr::filter(!id %in% affected_comps) %>% # Quickfix A
-    dplyr::bind_rows(affected_rap$Configuration)
+    # dplyr::filter(!id %in% affected_comps) %>%
+    # dplyr::bind_rows(affected_rap$Configuration)
 
   ## Debugging
   # rap$Configuration %>% dplyr::filter(id %in% 2:3) %$% objects
