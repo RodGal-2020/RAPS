@@ -81,7 +81,7 @@ alg_gillespie = function(rap, max_T = 10, propensity_function = RAPS::get_propen
     ## Update simulation_time
     simulation_time %<>% sum(exit_rule$tau)
     verbose_print(cat("\nExecution time ", simulation_time, "out of", max_T), 1)
-    verbose_print(cat(rep("-", 50), sep = ""), 1)
+    verbose_print(cat("\n", rep("-", 50), sep = ""), 1)
 
     ## Append new state
     if (!is.null(save_each)) {
