@@ -13,7 +13,7 @@ load_demo_dataset(dataset = NULL)
 A \code{rap} object, selected from a group of possible demos. Run \code{load_demo_dataset()} to get all the possible datasets.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Returns a demo \code{rap} object. Run \code{load_demo_dataset()} to get all the possible datasets.
 }

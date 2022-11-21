@@ -5,7 +5,8 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' @param my_param Yep, it's a parameter.
+#' @param rap A `rap` object.
+#' @param rule_id The id of the rule we are looking for.
 #'
 #' @return
 #' It returns...

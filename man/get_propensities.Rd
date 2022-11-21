@@ -7,7 +7,11 @@
 get_propensities(rap, verbose = 0, debug = FALSE)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rap}{A \code{rap} object.}
+
+\item{debug}{Useful if you want to debug an execution of the function.}
+
+\item{max_T}{Maximum simulation time.}
 }
 \value{
 It returns...

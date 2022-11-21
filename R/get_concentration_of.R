@@ -5,7 +5,10 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' @param my_param Yep, it's a parameter.
+#' @param rap A `rap` object.
+#' @param membrane_id The id of the membrane in which we are looking for `chosen_object`.
+#' @param chosen_object The id or the coded id of the object we are looking for.
+#' @param is_coded Is `chosen_object` coded?
 #'
 #' @return
 #' It returns...

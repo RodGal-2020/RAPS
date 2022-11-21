@@ -24,7 +24,13 @@ alg_gillespie(
 
 \item{verbose}{The verbosity, between 0 and 5.}
 
-\item{return_middle_states}{Useful if you want to debug an execution of the function.}
+\item{debug}{Useful if you want to debug an execution of the function.}
+
+\item{debug_pair}{Used for debugging the creation of the pairs.}
+
+\item{random_pair_selection}{If two pairs are available, do you want to choose one at random?}
+
+\item{save_each}{A \verb{function(rap)}. If not \code{NULL}, a list of \verb{function(rap)} is returned.}
 }
 \value{
 A new \code{rap} object, the result of simulating the Gillespie's algorithm for monoenvironmental systems.

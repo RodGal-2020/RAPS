@@ -10,6 +10,7 @@
 #' @param debug Useful if you want to debug an execution of the function.
 #' @param debug_trinity The same as `debug` but applied only to the debugging of the generation of the trinities.
 #' @param random_trinity_selection If there are more than one possible trinity, do you want to select one randomly (TRUE) or do you want to select the first one according to `dplyr::arrange()` (FALSE)?
+#' @param save_each A `function(rap)`. If not `NULL`, a list of `function(rap)` is returned.
 #'
 #' @return
 #' A new `rap` object, the result of simulating the multienvironmental deterministic algorithm.

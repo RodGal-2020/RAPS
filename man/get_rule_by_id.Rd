@@ -7,7 +7,9 @@
 get_rule_by_id(rap, rule_id)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rap}{A \code{rap} object.}
+
+\item{rule_id}{The id of the rule we are looking for.}
 }
 \value{
 It returns...

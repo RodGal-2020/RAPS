@@ -1,7 +1,7 @@
 #' Load one of the demo datasets
 #'
 #' @description
-#' `r lifecycle::badge("stable")`
+#' `r lifecycle::badge("experimental")`
 #'
 #' Returns a demo `rap` object. Run `load_demo_dataset()` to get all the possible datasets.
 #'

@@ -3,9 +3,13 @@
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
+#' **Under development**.
+#'
 #' Simulates the evolution of a P system given as a `rap` object using the Gillespie's algorithm for multienvironmental systems
 #' @param rap A `rap` object, usually generated with `load_demo_dataset()` or `path2rap()`.
 #' @param max_T Maximum simulation time.
+#' @param verbose The verbosity, between 0 and 5.
+#' @param debug Useful if you want to debug an execution of the function.
 #'
 #' @return
 #' A new `rap` object, the result of simulating the Gillespie's algorithm for multienvironmental systems.

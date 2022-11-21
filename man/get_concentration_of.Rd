@@ -7,7 +7,13 @@
 get_concentration_of(rap, membrane_id, chosen_object, is_coded = FALSE)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rap}{A \code{rap} object.}
+
+\item{membrane_id}{The id of the membrane in which we are looking for \code{chosen_object}.}
+
+\item{chosen_object}{The id or the coded id of the object we are looking for.}
+
+\item{is_coded}{Is \code{chosen_object} coded?}
 }
 \value{
 It returns...

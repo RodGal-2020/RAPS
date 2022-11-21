@@ -4,7 +4,7 @@
 #' Apply one or more ruless to a given P system given as a `rap` object.
 #'
 #' @param rap A rap object.
-#' @param rules The set of rules to be applied.
+#' @param rules_ids The ids of the rules to be applied.
 #' @param return_between Do you want to return the middle states?
 #'
 #' @return
@@ -17,20 +17,23 @@
 #' * Include examples
 #'
 #' @export
-apply_rules = function(rap, rules, return_between = FALSE) {
-  cat("Needs: ", crayon::italic("apply_rule"), "?", sep = "")
-  l = length(rules)
+apply_rules_sequentially = function(rap, rules_ids, return_between = FALSE) {
+  n_rules = length(rules_ids)
 
   if (return_between) {
-    confs = c(rap)
-    for (i in 1:l) {
-      confs[i+1] = RAPS::apply_rule(confs[i], rules[i]) # Evolve to the following state
-    }
+    confs = list(rap)
+  }
+
+  for (i in 1:n_rules) {
+      rap %<>% RAPS::apply_rule(rules_ids[i]) # Evolve to the following state
+      if (return_between) {
+        confs %<>% append(list(rap))
+      }
+  }
+
+  if (return_between) {
     return(confs)
   } else {
-    for (i in 1:l) {
-      rap %<>% RAPS::apply_rule(rules[i])
-      return(rap)
-    }
+    return(rap)
   }
 }

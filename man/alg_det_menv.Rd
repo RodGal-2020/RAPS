@@ -26,6 +26,8 @@ alg_det_menv(
 \item{debug_trinity}{The same as \code{debug} but applied only to the debugging of the generation of the trinities.}
 
 \item{random_trinity_selection}{If there are more than one possible trinity, do you want to select one randomly (TRUE) or do you want to select the first one according to \code{dplyr::arrange()} (FALSE)?}
+
+\item{save_each}{A \verb{function(rap)}. If not \code{NULL}, a list of \verb{function(rap)} is returned.}
 }
 \value{
 A new \code{rap} object, the result of simulating the multienvironmental deterministic algorithm.

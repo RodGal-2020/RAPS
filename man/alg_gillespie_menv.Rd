@@ -10,12 +10,18 @@ alg_gillespie_menv(rap, max_T = 1e-05, verbose = 2, debug = FALSE)
 \item{rap}{A \code{rap} object, usually generated with \code{load_demo_dataset()} or \code{path2rap()}.}
 
 \item{max_T}{Maximum simulation time.}
+
+\item{verbose}{The verbosity, between 0 and 5.}
+
+\item{debug}{Useful if you want to debug an execution of the function.}
 }
 \value{
 A new \code{rap} object, the result of simulating the Gillespie's algorithm for multienvironmental systems.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\strong{Under development}.
 
 Simulates the evolution of a P system given as a \code{rap} object using the Gillespie's algorithm for multienvironmental systems
 }

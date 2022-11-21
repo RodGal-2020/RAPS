@@ -7,7 +7,7 @@
 get_affected_comps(rules)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rules}{A set of rules from a \code{rap} object.}
 }
 \value{
 It returns...

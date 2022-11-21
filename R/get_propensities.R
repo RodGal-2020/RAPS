@@ -5,7 +5,9 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' @param my_param Yep, it's a parameter.
+#' @param rap A `rap` object.
+#' @param max_T Maximum simulation time.
+#' @param debug Useful if you want to debug an execution of the function.
 #'
 #' @return
 #' It returns...

@@ -7,7 +7,7 @@
 alg_gillespie_kernel(rap)
 }
 \arguments{
-\item{rules}{A set of rules}
+\item{rap}{A \code{rap} object.}
 }
 \value{
 A rule to be executed, given as a \code{tibble} object with fields \code{j_c}, the rule id, and \code{tau_c}, the execution time of the rule.

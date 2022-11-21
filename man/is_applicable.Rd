@@ -7,7 +7,11 @@
 is_applicable(rap, rule_info, verbose = 0)
 }
 \arguments{
-\item{my_param}{Yep, it's a parameter.}
+\item{rap}{A \code{rap} object.}
+
+\item{rule_info}{A rule taken from a \code{rap$Rules} object. \strong{NOT} an id.}
+
+\item{verbose}{The verbosity, between 0 and 5.}
 }
 \value{
 It returns...

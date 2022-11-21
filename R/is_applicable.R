@@ -5,7 +5,9 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' @param my_param Yep, it's a parameter.
+#' @param rap A `rap` object.
+#' @param rule_info A rule taken from a `rap$Rules` object. **NOT** an id.
+#' @param verbose The verbosity, between 0 and 5.
 #'
 #' @return
 #' It returns...

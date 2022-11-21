@@ -5,7 +5,7 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' @param my_param Yep, it's a parameter.
+#' @param rules A set of rules from a `rap` object.
 #'
 #' @return
 #' It returns...

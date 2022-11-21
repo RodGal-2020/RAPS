@@ -4,7 +4,7 @@
 #' `r lifecycle::badge("stable")`
 #' Print a rule from a `rap` object.
 #'
-#' @param rule The rule from a `rap` object.
+#' @param rule The rule from a `rap` object. **NOT** the id.
 #'
 #' @return
 #' Nothing, only prints.

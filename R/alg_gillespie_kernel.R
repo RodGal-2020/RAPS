@@ -4,7 +4,7 @@
 #' `r lifecycle::badge("stable")`
 #' Kernel of Gillespie's algorithm, required for both multienvironmental and monoenvironmental simulations.
 #'
-#' @param rules A set of rules
+#' @param rap A `rap` object.
 #'
 #' @return
 #' A rule to be executed, given as a `tibble` object with fields `j_c`, the rule id, and `tau_c`, the execution time of the rule.

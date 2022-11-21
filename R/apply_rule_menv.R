@@ -1,6 +1,6 @@
 #' Apply a rule to a given multienvironmental P system
 #'
-#' `r lifecycle::badge("experimental")`
+#' `r lifecycle::badge("stable")`
 #' Apply a rule to a given multienvironmental P system given as a `rap` object.
 #'
 #' @param rap A rap object.

@@ -7,7 +7,7 @@
 show_rule(rule)
 }
 \arguments{
-\item{rule}{The rule from a \code{rap} object.}
+\item{rule}{The rule from a \code{rap} object. \strong{NOT} the id.}
 }
 \value{
 Nothing, only prints.

@@ -15,6 +15,8 @@ path2rap(
 \arguments{
 \item{path}{Path/URL to the input file, given as a \code{.xml}.}
 
+\item{use_codification}{Do you want to use the codification of the objects or should we translate them to human legible text?}
+
 \item{verbose}{Level of verbosity, between 0 and 5.}
 
 \item{demo}{To execute as a demo.}

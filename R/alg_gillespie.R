@@ -6,9 +6,12 @@
 #' Simulates the evolution of a P system given as a `rap` object using the Gillespie's algorithm for monoenvironmental systems
 #' @param rap A `rap` object, usually generated with `load_demo_dataset()` or `path2rap()`.
 #' @param max_T Maximum simulation time.
-#' @param return_middle_states Useful if you want to debug an execution of the function.
-#' @param verbose The verbosity, between 0 and 5.
 #' @param propensity_function A function to update propensities during each step
+#' @param verbose The verbosity, between 0 and 5.
+#' @param debug Useful if you want to debug an execution of the function.
+#' @param debug_pair Used for debugging the creation of the pairs.
+#' @param random_pair_selection If two pairs are available, do you want to choose one at random?
+#' @param save_each A `function(rap)`. If not `NULL`, a list of `function(rap)` is returned.
 #'
 #' @return A new `rap` object, the result of simulating the Gillespie's algorithm for monoenvironmental systems.
 #'

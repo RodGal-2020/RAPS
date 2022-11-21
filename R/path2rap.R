@@ -6,8 +6,9 @@
 #' This is the basic function of the package, and allows us to read a given P system, turning it into a rap object.
 #'
 #' @param path Path/URL to the input file, given as a `.xml`.
-#' @param demo To execute as a demo.
+#' @param use_codification Do you want to use the codification of the objects or should we translate them to human legible text?
 #' @param verbose Level of verbosity, between 0 and 5.
+#' @param demo To execute as a demo.
 #' @param debug To run in debugging mode, useful in order to catch errors.
 #'
 #' @return

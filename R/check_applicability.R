@@ -3,8 +3,7 @@
 #' `r lifecycle::badge("stable")`
 #' Used inside application functions, this checks if a given rule can be applied. The parameter may be a little obscure, as it is used in a very specific moment of the workflow.
 #'
-#' @param affected_membranes A subset of `rap$Configuration` for a given `rap` object, with all the membranes affected by the application of the rule included in `rule_info`.
-#' @param main_membrane_index The index of the main membrane within the `affected_membranes` object.
+#' @param rap A `rap`.
 #' @param rule_info A row of `rap$Rules` for a given `rap` object, *i,e*, everything required to know a certain rule.
 #' @param verbose The verbosity, between 0 and 5.
 #'
