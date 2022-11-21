@@ -167,7 +167,8 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
           prod_concentration_of_reactives %<>%
             prod(old_concentration)
         }
-        v_r = rap$Rules$propensity[rule] * prod_concentration_of_reactives
+        # v_r = rap$Rules$propensity[rule] * prod_concentration_of_reactives # TODO: Check this
+        v_r = rap$Rules$stochastic_constant[rule] * prod_concentration_of_reactives
 
         trinities %<>% dplyr::bind_rows(
           tibble::tibble(
@@ -281,7 +282,7 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
     # Made inside the following get_trinities() function
 
     ## Add new trinities for affected_comps
-    rap$Rules = RAPS::get_propensities(rap, verbose = 0, debug = FALSE)
+    # rap$Rules = RAPS::get_propensities(rap, verbose = 0, debug = FALSE) # Not necessary, as we work only with the sc
     new_trinities = get_trinities(rap, affected_comps, debug_trinity)
     trinities %<>%
       dplyr::bind_rows(new_trinities)
