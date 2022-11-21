@@ -22,7 +22,7 @@ jobs:
     runs-on: windows-latest # Original: macos-latest
     strategy:
       matrix:
-        r-version: ['4.1.3']
+        r-version: ['3.6.0', '4.1.3']
 
     steps:
       - uses: actions/checkout@v3
