@@ -79,7 +79,7 @@ get_propensities = function(rap, verbose = 0, debug = FALSE) {
   # Computed only once
   if (! "stochastic_constant" %in% colnames(rules)) {
     rules %<>% dplyr::mutate(
-        stochastic_constant = get_stochastic_constant(lhs, kinetic_constant),
+        stochastic_constant = get_stochastic_constant(lhs, kinetic_constant, volume = 1),
         .keep = "all"
       )
   }
