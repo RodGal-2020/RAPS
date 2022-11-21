@@ -38,6 +38,6 @@ jobs:
       - name: My Check
         run: print("This is my check")
         shell: Rscript {0}
-      # - name: CMD Check
-      #   run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error") # Coming soon
-      #   shell: Rscript {0}
+      - name: CMD Check
+        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "never") # error Coming soon
+        shell: Rscript {0}
