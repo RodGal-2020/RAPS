@@ -75,7 +75,7 @@ get_concentration_of_CASP3(fas_rap)
 ```
 ```{r}
 set.seed(1974)
-my_max_T = 1e-6
+my_max_T = 1
 (save_path = paste0("../RData/alg_gillespie_max_T_", my_max_T, ".RData"))
 ```
 

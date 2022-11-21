@@ -4,15 +4,13 @@
 \alias{choose_rule}
 \title{Choose a rule to be applied in a rap object, following some semantics}
 \usage{
-choose_rule(rap, semantics = "GIL")
+choose_rule(rap)
 }
 \arguments{
 \item{rap}{A rap object.}
-
-\item{semantics}{The path to a semantics object, or the id of a given algorithm from the following list: GIL (for Gillespie), DET (for Deterministic Waiting Times Algorithm).}
 }
 \value{
-The id of a rule which is to be applied and the id of the chosen membrane.
+The id of a rule which is to be applied.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}

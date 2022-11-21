@@ -38,6 +38,8 @@ my_max_T = 1 # Minimal example
 # my_max_T = 1e-4
 set.seed(1974)
 
+setwd("RAPS") # Just in case
+
 ## CASP3
 (save_path = paste0("RData/max_T_", my_max_T, ".RData"))
 get_concentration_of_CASP3 = function(rap) {RAPS::get_concentration_of(rap, membrane_id = "c", chosen_object = "CASP3", is_coded = coded)}

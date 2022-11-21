@@ -167,6 +167,9 @@ alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_tri
           prod_concentration_of_reactives %<>%
             prod(old_concentration)
         }
+
+        # TODO: Case EGFR*2
+
         # v_r = rap$Rules$propensity[rule] * prod_concentration_of_reactives # TODO: Check this
         v_r = rap$Rules$stochastic_constant[rule] * prod_concentration_of_reactives
 
