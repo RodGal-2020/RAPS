@@ -97,8 +97,7 @@ get_propensities = function(rap, verbose = 0, debug = FALSE) {
 
     if (!RAPS::is_applicable(rap, rule)) {
       propensities %<>% c(0)
-      print("----------------------------New zero!----------------------------")
-      next # WRONG USE
+      next
     }
 
     lhs_object = rule$lhs[[1]] %>%
