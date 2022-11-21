@@ -2,6 +2,7 @@
 Welcome to the repository behind the `RAPS` package.
 
 [![build](https://github.com/Xopre/RAPS/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/Xopre/RAPS/actions/workflows/pages/pages-build-deployment)
+[![R](https://github.com/Xopre/RAPS/actions/workflows/r.yml/badge.svg?branch=main)](https://github.com/Xopre/RAPS/actions/workflows/r.yml)
 
 > **_NEWS:_**  Last 21 / 11 / 2022 **RAPS 1.0.0** was launched. Have a good time trying it!.
 
