@@ -18,7 +18,7 @@
 #' @examples
 #' fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
 #' my_rap = path2rap(fas_path)
-#' new_rap = alg_det_menv(my_rap, verbose = 4)
+#' new_rap = alg_det_menv(my_rap, max_T = 1e-6, verbose = 4)
 #' show_rap(new_rap)
 #'
 #' @section TODO:
@@ -27,9 +27,7 @@
 #'
 #' @export
 alg_det_menv = function(rap, max_T = 1e-5, verbose = 2, debug = FALSE, debug_trinity = FALSE, random_trinity_selection = FALSE, save_each = NULL) {
-  cat(crayon::bold("alg_det_menv() has not been validated yet\n"))
-
-  cat(crayon::bold("WARNING: Using RAPS::get_propensities()\n"))
+  # cat(crayon::bold("alg_det_menv() has not been validated yet\n"))
   rap$Rules = RAPS::get_propensities(rap, verbose = 0, debug = FALSE)
 
   if (debug) {

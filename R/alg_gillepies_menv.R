@@ -17,8 +17,8 @@
 #' @examples
 #' fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua5/RAPS/BIG/FAS.xml"
 #' my_rap = path2rap(fas_path)
-#' new_rap = alg_gillespie_menv(my_rap, verbose = 4)
-#' show_rap(new_rap)
+#' # new_rap = alg_gillespie_menv(my_rap, verbose = 4)
+#' # show_rap(new_rap)
 #'
 #' @section CAUTION:
 #' For now affected compartment is equal to every compartment, like in the deterministic waiting time algorithm.

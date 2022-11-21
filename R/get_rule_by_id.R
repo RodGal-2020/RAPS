@@ -12,7 +12,7 @@
 #' It returns...
 #'
 #' @examples
-#' Some examples
+#' print("TODO:")
 #'
 #' @section Warning:
 #' This is a warning

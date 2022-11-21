@@ -7,7 +7,7 @@
 #' @param n_steps The number of evolutive steps to simulate.
 #' @return A rap object.
 #' @examples
-#' TODO.
+#' print("TODO:")
 #' @section Warning:
 #' This function comes with no warranty.
 #' @export

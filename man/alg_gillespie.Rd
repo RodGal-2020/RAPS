@@ -48,7 +48,7 @@ Add references.
 \examples{
 fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
 my_rap = path2rap(fas_path)
-new_rap = alg_gillespie (my_rap, verbose = 4)
+new_rap = alg_gillespie(my_rap, verbose = 4)
 show_rap(new_rap)
 
 }

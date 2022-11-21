@@ -6,7 +6,7 @@
 #' @param rap A rap object.
 #' @return A rap object.
 #' @examples
-#' TODO.
+#' print("TODO:")
 #' @section Warning:
 #' This function comes with no warranty.
 #' @export

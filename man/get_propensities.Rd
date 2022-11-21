@@ -9,9 +9,9 @@ get_propensities(rap, verbose = 0, debug = FALSE)
 \arguments{
 \item{rap}{A \code{rap} object.}
 
-\item{debug}{Useful if you want to debug an execution of the function.}
+\item{verbose}{The verbosity, between 0 and 5.}
 
-\item{max_T}{Maximum simulation time.}
+\item{debug}{Useful if you want to debug an execution of the function.}
 }
 \value{
 It returns...
@@ -27,6 +27,6 @@ This is a warning
 }
 
 \examples{
-Some examples
+print("TODO:")
 
 }

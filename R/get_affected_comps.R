@@ -11,7 +11,7 @@
 #' It returns...
 #'
 #' @examples
-#' Some examples
+#' print("TODO:")
 #'
 #' @section Warning:
 #' This is a warning
@@ -28,7 +28,7 @@ get_affected_comps = function(rules) {
     # rule = 1
     # NOT SUITABLE FOR CRAZY MULTICOMMUNICATION (use list() instead for that case)
     w_lhs = rules$lhs[[rule]] %>%
-      dplyr::filter(where != "@here" && where != "@exists") %$%
+      dplyr::filter(where != "@here" & where != "@exists") %$%
       where
     if (length(w_lhs) != 0) {
       new_affected %<>% c(w_lhs)

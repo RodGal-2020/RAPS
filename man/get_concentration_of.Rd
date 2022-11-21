@@ -29,6 +29,6 @@ This is a warning
 }
 
 \examples{
-Some examples
+print("TODO:")
 
 }

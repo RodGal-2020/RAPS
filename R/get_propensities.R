@@ -6,14 +6,14 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' @param rap A `rap` object.
-#' @param max_T Maximum simulation time.
+#' @param verbose The verbosity, between 0 and 5.
 #' @param debug Useful if you want to debug an execution of the function.
 #'
 #' @return
 #' It returns...
 #'
 #' @examples
-#' Some examples
+#' print("TODO:")
 #'
 #' @section Warning:
 #' This is a warning

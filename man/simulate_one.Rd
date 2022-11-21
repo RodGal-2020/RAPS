@@ -21,5 +21,5 @@ This function comes with no warranty.
 }
 
 \examples{
-TODO.
+print("TODO:")
 }

@@ -12,7 +12,7 @@
 #' The id of a rule which is to be applied.
 #'
 #' @examples
-#' TODO.
+#' print("TODO:")
 #'
 #' @export
 choose_rule = function(rap) {

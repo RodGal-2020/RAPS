@@ -110,7 +110,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
 
   ### is.empty?
   is_empty = function(var) {
-    return(length(var) == 0 || is.null(var)|| length(var) == 0 || var == "")
+    return(length(var) == 0 || all(is.null(var)) || length(var) == 0 || all(var == ""))
   }
   ## Examples
   # is_empty(NA)
@@ -122,7 +122,7 @@ path2rap = function(path, use_codification = FALSE, verbose = 5, demo = FALSE, d
   ### if(is.na or is.null) {exit} else {var}
   ## TODO: Substitute with tidyr::replace_na(var, new_element = "-"), which is compatible w/ mutate & friends
   substitute_if_empty = function(var, new_element = "-") {
-    if (is.na(var) || is_empty(var)) {
+    if (all(is.na(var)) || is_empty(var)) {
       return(new_element)
     } else {
       return(var)

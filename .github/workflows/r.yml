@@ -35,8 +35,8 @@ jobs:
           install.packages(c("remotes", "rcmdcheck"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
-      - name: My Check
-        run: print("This is my check")
+      - name: Custom Check
+        run: print("This is a custom check")
         shell: Rscript {0}
       - name: CMD Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "never") # error Coming soon

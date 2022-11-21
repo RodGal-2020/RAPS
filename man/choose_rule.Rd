@@ -20,6 +20,6 @@ The id of a rule which is to be applied.
 Note that the rule is not applied.
 }
 \examples{
-TODO.
+print("TODO:")
 
 }
