@@ -1,0 +1,109 @@
+---
+title: "Gillespie algorithm"
+subtitle: "For mono-environmental P systems"
+author: "Xopre"
+date: "`r format(Sys.time(), '%d de %B de %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_float: 
+      collapsed: true
+    number_sections: false 
+    df_print: kable
+    theme: readable
+    highlight: default 
+codification: "UTF-8"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{css, echo = FALSE}
+.blackbox {
+  padding: 1em;
+  background: #F47174;
+  color: white;
+  /* border: 2px solid orange; */
+  border-radius: 10px;
+}
+.greenbox {
+  padding: 1em;
+  background: #79d279;
+  color: white;
+  /* border: 2px solid orange; */
+  border-radius: 10px;
+}
+.center {
+  text-align: center;
+}
+
+.code {
+  font-family: Courier, "Lucida Console", monospace;
+}
+```
+
+If RAPS is not installed, uncomment the following:
+```{r}
+# devtools::install_github("Xopre/RAPS")
+## Or use (after downloading the project):
+# devtools::document() # To update the documentation
+# devtools::install() # To install as package
+```
+
+```{r}
+library(RAPS)
+```
+
+# FAS
+```{r}
+fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
+coded = FALSE
+
+if (coded) {
+  fas_rap = RAPS::path2rap(fas_path, use_codification = TRUE)
+} else {
+  fas_rap = RAPS::path2rap(fas_path, use_codification = FALSE)
+}
+
+summary(fas_rap)
+```
+
+```{r}
+get_concentration_of_CASP3 = function(rap) {RAPS::get_concentration_of(rap, membrane_id = "c", chosen_object = "CASP3", is_coded = coded)}
+get_concentration_of_CASP3(fas_rap)
+```
+```{r}
+set.seed(1974)
+my_max_T = 1e-6
+(save_path = paste0("../RData/alg_gillespie_max_T_", my_max_T, ".RData"))
+```
+
+
+```{r}
+start = Sys.time()
+results = fas_rap %>%
+  RAPS::alg_gillespie(max_T = my_max_T, verbose = 1, debug = FALSE, save_each = get_concentration_of_CASP3)
+save.image(save_path)
+cat("\nProceso iniciado a las: \n"); print(start)
+cat("\ny terminado a las: \n"); Sys.time()
+```
+
+```{r}
+new_rap = results$final_rap
+selected_data = results$selected_data
+n_data = length(selected_data)
+
+selected_data = tibble::tibble(i = 1:n_data, multiplicity = selected_data) %>% 
+  tidyr::unnest_longer(multiplicity)
+```
+
+
+```{r}
+library(ggplot2)
+
+selected_data %>%
+  ggplot(aes(x=i, y=multiplicity, group=object)) +
+  geom_line(arrow = arrow())+
+  geom_point()
+```

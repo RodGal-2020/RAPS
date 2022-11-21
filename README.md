@@ -1,7 +1,9 @@
 # 🎤 RAPS: R Aid for P systems
 Welcome to the repository behind the `RAPS` package.
 
-![BADGE](https://img.shields.io/github/checks-status/Xopre/RAPS/develop?color=orange&label=build&style=plastic)
+[![build](https://github.com/Xopre/RAPS/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/Xopre/RAPS/actions/workflows/pages/pages-build-deployment)
+
+> **_NEWS:_**  Last 21 / 11 / 2022 **RAPS 1.0.0** was launched. Have a good time trying it!.
 
 ## Quickstart
 <!-- Help for mermaid: http://mermaid-js.github.io/mermaid/#/ -->

@@ -1,7 +1,7 @@
 #' Gillespie's algorithm for monoenvironmental systems
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`
+#' `r lifecycle::badge("stable")`
 #'
 #' Simulates the evolution of a P system given as a `rap` object using the Gillespie's algorithm for monoenvironmental systems
 #' @param rap A `rap` object, usually generated with `load_demo_dataset()` or `path2rap()`.
@@ -79,10 +79,9 @@ alg_gillespie = function(rap, max_T = 10, propensity_function = RAPS::get_propen
     rap %<>% RAPS::apply_rule(rule_id = exit_rule$i)
 
     ## Update simulation_time
-    simulation_time %<>% sum(exit_rule$i)
-    if (verbose) {
-      cat("Execution time ", simulation_time, "out of", max_T)
-    }
+    simulation_time %<>% sum(exit_rule$tau)
+    verbose_print(cat("\nExecution time ", simulation_time, "out of", max_T), 1)
+    verbose_print(cat(rep("-", 50), sep = ""), 1)
 
     ## Append new state
     if (!is.null(save_each)) {
