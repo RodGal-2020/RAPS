@@ -20,7 +20,7 @@
 get_propensities = function(rap, verbose = 0, debug = FALSE) {
 
   ##############################################################################
-  get_stochastic_constant = function(lhs_object, kinetic_constant) {
+  get_stochastic_constant = function(lhs_object, kinetic_constant, volume = 1) {
     # (rule = rules[92, ])
     # (lhs_object = rule$lhs)
     # (kinetic_constant = rule$kinetic_constant)
@@ -29,8 +29,6 @@ get_propensities = function(rap, verbose = 0, debug = FALSE) {
     magrittr::extract2(1) %>%
     dplyr::filter(where != "@exists")
     n_objects_lhs = dim(lhs_object)[1]
-
-    volume = 1
 
     if (n_objects_lhs == 1) {
       if (lhs_object$multiplicity == 1) {
