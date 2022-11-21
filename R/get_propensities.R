@@ -21,31 +21,31 @@ get_propensities = function(rap, verbose = 0, debug = FALSE) {
 
   ##############################################################################
   get_stochastic_constant = function(lhs_object, kinetic_constant) {
-    lhs_object %<>%
-      magrittr::extract2(1) %>%
-      dplyr::filter(where != "@exists")
-    n_objects_lhs = dim(lhs_object)[1]
+    # (rule = rules[92, ])
+    # (lhs_object = rule$lhs)
+    # (kinetic_constant = rule$kinetic_constant)
 
-    # rhs_object = chosen_rule$rhs[[1]]
-    # n_objects_rhs = dim(rhs_object)[1]
+    lhs_object %<>%
+    magrittr::extract2(1) %>%
+    dplyr::filter(where != "@exists")
+    n_objects_lhs = dim(lhs_object)[1]
 
     volume = 1
 
-    if (n_objects_lhs == 1 &&
-        lhs_object$multiplicity == 1) {
-      return(kinetic_constant)
+    if (n_objects_lhs == 1) {
+      if (lhs_object$multiplicity == 1) {
+        return(kinetic_constant)
+      } else if (lhs_object$multiplicity == 2) {
+        # TODO: Test this, as it cannot be tested with FAS
+        return(2 * kinetic_constant / volume)
+      }
 
-    } else if (n_objects_lhs == 1 &&
-               lhs_object$multiplicity == 2) {
-      return(2 * kinetic_constant / volume)
-
-    } else if (n_objects_lhs > 1 &&
-               all(lhs_object$multiplicity == 1)) {
+    } else if (all(lhs_object$multiplicity == 1)) {
       return(kinetic_constant / volume)
 
     } else {
       return(0)
-      warning("Returning zero status. Strange rule detected")
+      warning("Returning sc = 0. Strange rule detected")
     }
   }
   ##############################################################################
@@ -97,6 +97,7 @@ get_propensities = function(rap, verbose = 0, debug = FALSE) {
 
     if (!RAPS::is_applicable(rap, rule)) {
       propensities %<>% c(0)
+      print("----------------------------New zero!----------------------------")
       next # WRONG USE
     }
 

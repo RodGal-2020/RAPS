@@ -21,16 +21,12 @@ is_applicable = function(rap, rule_info, verbose = 0) {
   tryCatch(
     expr = {
       RAPS::check_applicability(rap, rule_info, verbose)
+      return(TRUE)
     },
     error = function(e){
       return(FALSE)
     },
-    warning = function(w){
-      # (Optional)
-      # Do this if an warning is caught...
-    },
-    finally = {
-      return(TRUE)
-    }
+    warning = function(w){},
+    finally = {}
   )
 }
