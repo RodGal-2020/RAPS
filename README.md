@@ -115,7 +115,8 @@ Might be supported but are nonstandard:
   - [x] Simulation of stochastic P systems
     - [x] Monoenvironmental Gillespie algorithm
     - [x] Multienvironmental Gillespie algorithm
-      - [ ] Revised
+      - [x] With control over time
+      - [ ] Validated with FAS
     - [x] Multienvironmental deterministic waiting time algorithm
       - [x] With control over time
       - [ ] Validated with FAS
@@ -151,4 +152,5 @@ Might be supported but are nonstandard:
 
 ## Future work
 
+* Improve the R workflow within GitHub.
 * Include the [`tictoc`](https://github.com/collectivemedia/tictoc) package to control time in a convenient way.
