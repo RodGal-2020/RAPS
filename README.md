@@ -153,4 +153,5 @@ Might be supported but are nonstandard:
 ## Future work
 
 * Improve the R workflow within GitHub.
-* Include the [`tictoc`](https://github.com/collectivemedia/tictoc) package to control time in a convenient way.
+* Include the [`tictoc`](https://github.com/collectivemedia/tictoc) or the [`lubridate`](https://lubridate.tidyverse.org/) packages to control time in a convenient way.
+* Design custom [hexSticker](https://github.com/GuangchuangYu/hexSticker).
