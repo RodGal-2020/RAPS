@@ -25,7 +25,7 @@ Print a rule from a \code{rap} object.
 }
 
 \examples{
-rap = RAPS::path2rap(demo = 1)
-show_rule(rap$Rules[1, ])
+# rap = RAPS::path2rap(demo = 1)
+# show_rule(rap$Rules[1, ])
 
 }
