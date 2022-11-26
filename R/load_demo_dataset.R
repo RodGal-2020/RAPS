@@ -11,9 +11,9 @@
 #' A `rap` object, selected from a group of possible demos. Run `load_demo_dataset()` to get all the possible datasets.
 #'
 #' @examples
-#' load_demo_dataset()
-#' my_rap = load_demo_dataset("FAS")
-#' show_rap(my_rap)
+#' # vload_demo_dataset()
+#' # my_rap = load_demo_dataset("FAS")
+#' # show_rap(my_rap)
 #'
 #' @export
 load_demo_dataset = function(dataset = NULL) {

@@ -17,9 +17,9 @@
 #'
 #' @examples
 #' fas_path = "https://raw.githubusercontent.com/Xopre/psystems-examples/main/plingua-5.0/RAPS/BIG/FAS.xml"
-#' my_rap = path2rap(fas_path)
-#' new_rap = alg_det_menv(my_rap, max_T = 1e-6, verbose = 4)
-#' show_rap(new_rap)
+#' # my_rap = path2rap(fas_path)
+#' # new_rap = alg_det_menv(my_rap, max_T = 1e-6, verbose = 4)
+#' # show_rap(new_rap)
 #'
 #' @section TODO:
 #' - Add references.

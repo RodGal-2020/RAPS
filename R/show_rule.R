@@ -10,8 +10,8 @@
 #' Nothing, only prints.
 #'
 #' @examples
-#' rap = RAPS::path2rap(demo = 1)
-#' show_rule(rap$Rules[1, ])
+#' # rap = RAPS::path2rap(demo = 1)
+#' # show_rule(rap$Rules[1, ])
 #'
 #' @section TODO:
 #' * Improve visualization.
