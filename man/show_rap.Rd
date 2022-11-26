@@ -27,10 +27,10 @@ Print objects, rules or subsets of those of a given \code{rap} object.
 }
 
 \examples{
-rap = RAPS::path2rap(demo = 1)
-focus_on = list("MEM" = 2:3, "OBJ")
-show_rap(rap, focus_on)
-focus_on = list("RUL")
-show_rap(rap, focus_on)
+# rap = RAPS::path2rap(demo = 1)
+# focus_on = list("MEM" = 2:3, "OBJ")
+# show_rap(rap, focus_on)
+# focus_on = list("RUL")
+# show_rap(rap, focus_on)
 
 }
