@@ -14,7 +14,7 @@ Run the following to install the package locally, directly from GitHub:
 devtools::install_github("Xopre/RAPS")
 ```
 
-Now you can run every example in the [`demos`' folder](demos/). Give the [deterministic waiting time](demos/deterministic_waiting_time_algorithm.Rmd) a try!
+Now you can run every example in the [`demos`' folder](demos/). Give the [deterministic waiting time algorithm](demos/deterministic_waiting_time_algorithm.Rmd) a try!
 
 Main workflow with `RAPS`:
 ```mermaid
