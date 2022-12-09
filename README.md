@@ -19,23 +19,28 @@ Now you can run every example in the [`demos`' folder](demos/). Give the [determ
 Main workflow with `RAPS`:
 ```mermaid
   graph TD;
-      url/path-->path2rap;
-      path2rap-->rap;
-      
-      rap-->choose_rule;
-      choose_rule-->apply_rule;
-      apply_rule-->new_rap;
+    url/path-->path2rap;
+    path2rap-->rap;
 
-      rap-->simulate;
-      simulate-->new_rap;
+    load_demo_dataset-->rap;
+    
+    rap-->choose_rule;
+    choose_rule-->apply_rule;
+    apply_rule-->new_rap;
 
-      rap-->alg_gillespie_menv;
-      rap-->alg_det_menv;
-      alg_det_menv-->new_rap;
-      alg_gillespie_menv-->new_rap;
+    rap-->simulate;
+    simulate-->new_rap;
 
-      rap-->show_rap;
-      new_rap-->show_rap;
+    rap-->alg_gillespie_menv;
+    rap-->alg_det_menv;
+    alg_det_menv-->new_rap;
+    alg_gillespie_menv-->new_rap;
+
+    rap-->get_rule_by_id;
+    get_rule_by_id-->show_rule;
+
+    rap-->show_rap;
+    new_rap-->show_rap;
 ```
 
 In `RAPS` we use the `rap` (Representing A P system) objects, which have the following aspect:
